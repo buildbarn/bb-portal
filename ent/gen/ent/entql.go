@@ -114,24 +114,24 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "ActionExecution",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			actionexecution.FieldBazelInvocationID: {Type: field.TypeInt64, Column: actionexecution.FieldBazelInvocationID},
-			actionexecution.FieldConfigurationID:   {Type: field.TypeInt64, Column: actionexecution.FieldConfigurationID},
-			actionexecution.FieldActionDigestID:    {Type: field.TypeInt64, Column: actionexecution.FieldActionDigestID},
-			actionexecution.FieldLabel:             {Type: field.TypeString, Column: actionexecution.FieldLabel},
-			actionexecution.FieldType:              {Type: field.TypeString, Column: actionexecution.FieldType},
-			actionexecution.FieldRunner:            {Type: field.TypeString, Column: actionexecution.FieldRunner},
-			actionexecution.FieldCacheHit:          {Type: field.TypeBool, Column: actionexecution.FieldCacheHit},
-			actionexecution.FieldSuccess:           {Type: field.TypeBool, Column: actionexecution.FieldSuccess},
-			actionexecution.FieldExitCode:          {Type: field.TypeInt32, Column: actionexecution.FieldExitCode},
-			actionexecution.FieldCommandLine:       {Type: field.TypeJSON, Column: actionexecution.FieldCommandLine},
-			actionexecution.FieldStartTime:         {Type: field.TypeTime, Column: actionexecution.FieldStartTime},
-			actionexecution.FieldEndTime:           {Type: field.TypeTime, Column: actionexecution.FieldEndTime},
-			actionexecution.FieldFailureCode:       {Type: field.TypeString, Column: actionexecution.FieldFailureCode},
-			actionexecution.FieldFailureMessage:    {Type: field.TypeString, Column: actionexecution.FieldFailureMessage},
-			actionexecution.FieldPrimaryOutput:     {Type: field.TypeString, Column: actionexecution.FieldPrimaryOutput},
-			actionexecution.FieldPrimaryOutputURI:  {Type: field.TypeString, Column: actionexecution.FieldPrimaryOutputURI},
-			actionexecution.FieldStdoutURI:         {Type: field.TypeString, Column: actionexecution.FieldStdoutURI},
-			actionexecution.FieldStderrURI:         {Type: field.TypeString, Column: actionexecution.FieldStderrURI},
+			actionexecution.FieldBazelInvocationID:   {Type: field.TypeInt64, Column: actionexecution.FieldBazelInvocationID},
+			actionexecution.FieldConfigurationID:     {Type: field.TypeInt64, Column: actionexecution.FieldConfigurationID},
+			actionexecution.FieldActionDigestID:      {Type: field.TypeInt64, Column: actionexecution.FieldActionDigestID},
+			actionexecution.FieldPrimaryOutputFileID: {Type: field.TypeInt64, Column: actionexecution.FieldPrimaryOutputFileID},
+			actionexecution.FieldStdoutFileID:        {Type: field.TypeInt64, Column: actionexecution.FieldStdoutFileID},
+			actionexecution.FieldStderrFileID:        {Type: field.TypeInt64, Column: actionexecution.FieldStderrFileID},
+			actionexecution.FieldLabel:               {Type: field.TypeString, Column: actionexecution.FieldLabel},
+			actionexecution.FieldType:                {Type: field.TypeString, Column: actionexecution.FieldType},
+			actionexecution.FieldRunner:              {Type: field.TypeString, Column: actionexecution.FieldRunner},
+			actionexecution.FieldCacheHit:            {Type: field.TypeBool, Column: actionexecution.FieldCacheHit},
+			actionexecution.FieldSuccess:             {Type: field.TypeBool, Column: actionexecution.FieldSuccess},
+			actionexecution.FieldExitCode:            {Type: field.TypeInt32, Column: actionexecution.FieldExitCode},
+			actionexecution.FieldCommandLine:         {Type: field.TypeJSON, Column: actionexecution.FieldCommandLine},
+			actionexecution.FieldStartTime:           {Type: field.TypeTime, Column: actionexecution.FieldStartTime},
+			actionexecution.FieldEndTime:             {Type: field.TypeTime, Column: actionexecution.FieldEndTime},
+			actionexecution.FieldFailureCode:         {Type: field.TypeString, Column: actionexecution.FieldFailureCode},
+			actionexecution.FieldFailureMessage:      {Type: field.TypeString, Column: actionexecution.FieldFailureMessage},
+			actionexecution.FieldPrimaryOutput:       {Type: field.TypeString, Column: actionexecution.FieldPrimaryOutput},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
@@ -1014,6 +1014,42 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Digest",
 	)
 	graph.MustAddE(
+		"primary_output_file",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.PrimaryOutputFileTable,
+			Columns: []string{actionexecution.PrimaryOutputFileColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"File",
+	)
+	graph.MustAddE(
+		"stdout",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.StdoutTable,
+			Columns: []string{actionexecution.StdoutColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"File",
+	)
+	graph.MustAddE(
+		"stderr",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.StderrTable,
+			Columns: []string{actionexecution.StderrColumn},
+			Bidi:    false,
+		},
+		"ActionExecution",
+		"File",
+	)
+	graph.MustAddE(
 		"metrics",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -1564,6 +1600,42 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"File",
 		"FilePath",
+	)
+	graph.MustAddE(
+		"action_execution_primary_output",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+		},
+		"File",
+		"ActionExecution",
+	)
+	graph.MustAddE(
+		"action_execution_stdout",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+		},
+		"File",
+		"ActionExecution",
+	)
+	graph.MustAddE(
+		"action_execution_stderr",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+		},
+		"File",
+		"ActionExecution",
 	)
 	graph.MustAddE(
 		"invocation_profile",
@@ -2584,6 +2656,21 @@ func (f *ActionExecutionFilter) WhereActionDigestID(p entql.Int64P) {
 	f.Where(p.Field(actionexecution.FieldActionDigestID))
 }
 
+// WherePrimaryOutputFileID applies the entql int64 predicate on the primary_output_file_id field.
+func (f *ActionExecutionFilter) WherePrimaryOutputFileID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldPrimaryOutputFileID))
+}
+
+// WhereStdoutFileID applies the entql int64 predicate on the stdout_file_id field.
+func (f *ActionExecutionFilter) WhereStdoutFileID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldStdoutFileID))
+}
+
+// WhereStderrFileID applies the entql int64 predicate on the stderr_file_id field.
+func (f *ActionExecutionFilter) WhereStderrFileID(p entql.Int64P) {
+	f.Where(p.Field(actionexecution.FieldStderrFileID))
+}
+
 // WhereLabel applies the entql string predicate on the label field.
 func (f *ActionExecutionFilter) WhereLabel(p entql.StringP) {
 	f.Where(p.Field(actionexecution.FieldLabel))
@@ -2644,21 +2731,6 @@ func (f *ActionExecutionFilter) WherePrimaryOutput(p entql.StringP) {
 	f.Where(p.Field(actionexecution.FieldPrimaryOutput))
 }
 
-// WherePrimaryOutputURI applies the entql string predicate on the primary_output_uri field.
-func (f *ActionExecutionFilter) WherePrimaryOutputURI(p entql.StringP) {
-	f.Where(p.Field(actionexecution.FieldPrimaryOutputURI))
-}
-
-// WhereStdoutURI applies the entql string predicate on the stdout_uri field.
-func (f *ActionExecutionFilter) WhereStdoutURI(p entql.StringP) {
-	f.Where(p.Field(actionexecution.FieldStdoutURI))
-}
-
-// WhereStderrURI applies the entql string predicate on the stderr_uri field.
-func (f *ActionExecutionFilter) WhereStderrURI(p entql.StringP) {
-	f.Where(p.Field(actionexecution.FieldStderrURI))
-}
-
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
 func (f *ActionExecutionFilter) WhereHasBazelInvocation() {
 	f.Where(entql.HasEdge("bazel_invocation"))
@@ -2695,6 +2767,48 @@ func (f *ActionExecutionFilter) WhereHasActionDigest() {
 // WhereHasActionDigestWith applies a predicate to check if query has an edge action_digest with a given conditions (other predicates).
 func (f *ActionExecutionFilter) WhereHasActionDigestWith(preds ...predicate.Digest) {
 	f.Where(entql.HasEdgeWith("action_digest", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasPrimaryOutputFile applies a predicate to check if query has an edge primary_output_file.
+func (f *ActionExecutionFilter) WhereHasPrimaryOutputFile() {
+	f.Where(entql.HasEdge("primary_output_file"))
+}
+
+// WhereHasPrimaryOutputFileWith applies a predicate to check if query has an edge primary_output_file with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasPrimaryOutputFileWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("primary_output_file", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasStdout applies a predicate to check if query has an edge stdout.
+func (f *ActionExecutionFilter) WhereHasStdout() {
+	f.Where(entql.HasEdge("stdout"))
+}
+
+// WhereHasStdoutWith applies a predicate to check if query has an edge stdout with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasStdoutWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("stdout", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasStderr applies a predicate to check if query has an edge stderr.
+func (f *ActionExecutionFilter) WhereHasStderr() {
+	f.Where(entql.HasEdge("stderr"))
+}
+
+// WhereHasStderrWith applies a predicate to check if query has an edge stderr with a given conditions (other predicates).
+func (f *ActionExecutionFilter) WhereHasStderrWith(preds ...predicate.File) {
+	f.Where(entql.HasEdgeWith("stderr", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -4549,6 +4663,48 @@ func (f *FileFilter) WhereHasFilePath() {
 // WhereHasFilePathWith applies a predicate to check if query has an edge file_path with a given conditions (other predicates).
 func (f *FileFilter) WhereHasFilePathWith(preds ...predicate.FilePath) {
 	f.Where(entql.HasEdgeWith("file_path", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionExecutionPrimaryOutput applies a predicate to check if query has an edge action_execution_primary_output.
+func (f *FileFilter) WhereHasActionExecutionPrimaryOutput() {
+	f.Where(entql.HasEdge("action_execution_primary_output"))
+}
+
+// WhereHasActionExecutionPrimaryOutputWith applies a predicate to check if query has an edge action_execution_primary_output with a given conditions (other predicates).
+func (f *FileFilter) WhereHasActionExecutionPrimaryOutputWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_execution_primary_output", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionExecutionStdout applies a predicate to check if query has an edge action_execution_stdout.
+func (f *FileFilter) WhereHasActionExecutionStdout() {
+	f.Where(entql.HasEdge("action_execution_stdout"))
+}
+
+// WhereHasActionExecutionStdoutWith applies a predicate to check if query has an edge action_execution_stdout with a given conditions (other predicates).
+func (f *FileFilter) WhereHasActionExecutionStdoutWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_execution_stdout", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasActionExecutionStderr applies a predicate to check if query has an edge action_execution_stderr.
+func (f *FileFilter) WhereHasActionExecutionStderr() {
+	f.Where(entql.HasEdge("action_execution_stderr"))
+}
+
+// WhereHasActionExecutionStderrWith applies a predicate to check if query has an edge action_execution_stderr with a given conditions (other predicates).
+func (f *FileFilter) WhereHasActionExecutionStderrWith(preds ...predicate.ActionExecution) {
+	f.Where(entql.HasEdgeWith("action_execution_stderr", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}

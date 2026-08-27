@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 )
 
 // ActionExecutionCreate is the builder for creating a ActionExecution entity.
@@ -55,6 +56,48 @@ func (_c *ActionExecutionCreate) SetActionDigestID(v int64) *ActionExecutionCrea
 func (_c *ActionExecutionCreate) SetNillableActionDigestID(v *int64) *ActionExecutionCreate {
 	if v != nil {
 		_c.SetActionDigestID(*v)
+	}
+	return _c
+}
+
+// SetPrimaryOutputFileID sets the "primary_output_file_id" field.
+func (_c *ActionExecutionCreate) SetPrimaryOutputFileID(v int64) *ActionExecutionCreate {
+	_c.mutation.SetPrimaryOutputFileID(v)
+	return _c
+}
+
+// SetNillablePrimaryOutputFileID sets the "primary_output_file_id" field if the given value is not nil.
+func (_c *ActionExecutionCreate) SetNillablePrimaryOutputFileID(v *int64) *ActionExecutionCreate {
+	if v != nil {
+		_c.SetPrimaryOutputFileID(*v)
+	}
+	return _c
+}
+
+// SetStdoutFileID sets the "stdout_file_id" field.
+func (_c *ActionExecutionCreate) SetStdoutFileID(v int64) *ActionExecutionCreate {
+	_c.mutation.SetStdoutFileID(v)
+	return _c
+}
+
+// SetNillableStdoutFileID sets the "stdout_file_id" field if the given value is not nil.
+func (_c *ActionExecutionCreate) SetNillableStdoutFileID(v *int64) *ActionExecutionCreate {
+	if v != nil {
+		_c.SetStdoutFileID(*v)
+	}
+	return _c
+}
+
+// SetStderrFileID sets the "stderr_file_id" field.
+func (_c *ActionExecutionCreate) SetStderrFileID(v int64) *ActionExecutionCreate {
+	_c.mutation.SetStderrFileID(v)
+	return _c
+}
+
+// SetNillableStderrFileID sets the "stderr_file_id" field if the given value is not nil.
+func (_c *ActionExecutionCreate) SetNillableStderrFileID(v *int64) *ActionExecutionCreate {
+	if v != nil {
+		_c.SetStderrFileID(*v)
 	}
 	return _c
 }
@@ -211,48 +254,6 @@ func (_c *ActionExecutionCreate) SetNillablePrimaryOutput(v *string) *ActionExec
 	return _c
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (_c *ActionExecutionCreate) SetPrimaryOutputURI(v string) *ActionExecutionCreate {
-	_c.mutation.SetPrimaryOutputURI(v)
-	return _c
-}
-
-// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
-func (_c *ActionExecutionCreate) SetNillablePrimaryOutputURI(v *string) *ActionExecutionCreate {
-	if v != nil {
-		_c.SetPrimaryOutputURI(*v)
-	}
-	return _c
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (_c *ActionExecutionCreate) SetStdoutURI(v string) *ActionExecutionCreate {
-	_c.mutation.SetStdoutURI(v)
-	return _c
-}
-
-// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
-func (_c *ActionExecutionCreate) SetNillableStdoutURI(v *string) *ActionExecutionCreate {
-	if v != nil {
-		_c.SetStdoutURI(*v)
-	}
-	return _c
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (_c *ActionExecutionCreate) SetStderrURI(v string) *ActionExecutionCreate {
-	_c.mutation.SetStderrURI(v)
-	return _c
-}
-
-// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
-func (_c *ActionExecutionCreate) SetNillableStderrURI(v *string) *ActionExecutionCreate {
-	if v != nil {
-		_c.SetStderrURI(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *ActionExecutionCreate) SetID(v int64) *ActionExecutionCreate {
 	_c.mutation.SetID(v)
@@ -272,6 +273,49 @@ func (_c *ActionExecutionCreate) SetConfiguration(v *Configuration) *ActionExecu
 // SetActionDigest sets the "action_digest" edge to the Digest entity.
 func (_c *ActionExecutionCreate) SetActionDigest(v *Digest) *ActionExecutionCreate {
 	return _c.SetActionDigestID(v.ID)
+}
+
+// SetPrimaryOutputFile sets the "primary_output_file" edge to the File entity.
+func (_c *ActionExecutionCreate) SetPrimaryOutputFile(v *File) *ActionExecutionCreate {
+	return _c.SetPrimaryOutputFileID(v.ID)
+}
+
+// SetStdoutID sets the "stdout" edge to the File entity by ID.
+func (_c *ActionExecutionCreate) SetStdoutID(id int64) *ActionExecutionCreate {
+	_c.mutation.SetStdoutID(id)
+	return _c
+}
+
+// SetNillableStdoutID sets the "stdout" edge to the File entity by ID if the given value is not nil.
+func (_c *ActionExecutionCreate) SetNillableStdoutID(id *int64) *ActionExecutionCreate {
+	if id != nil {
+		_c = _c.SetStdoutID(*id)
+	}
+	return _c
+}
+
+// SetStdout sets the "stdout" edge to the File entity.
+func (_c *ActionExecutionCreate) SetStdout(v *File) *ActionExecutionCreate {
+	return _c.SetStdoutID(v.ID)
+}
+
+// SetStderrID sets the "stderr" edge to the File entity by ID.
+func (_c *ActionExecutionCreate) SetStderrID(id int64) *ActionExecutionCreate {
+	_c.mutation.SetStderrID(id)
+	return _c
+}
+
+// SetNillableStderrID sets the "stderr" edge to the File entity by ID if the given value is not nil.
+func (_c *ActionExecutionCreate) SetNillableStderrID(id *int64) *ActionExecutionCreate {
+	if id != nil {
+		_c = _c.SetStderrID(*id)
+	}
+	return _c
+}
+
+// SetStderr sets the "stderr" edge to the File entity.
+func (_c *ActionExecutionCreate) SetStderr(v *File) *ActionExecutionCreate {
+	return _c.SetStderrID(v.ID)
 }
 
 // Mutation returns the ActionExecutionMutation object of the builder.
@@ -398,18 +442,6 @@ func (_c *ActionExecutionCreate) createSpec() (*ActionExecution, *sqlgraph.Creat
 		_spec.SetField(actionexecution.FieldPrimaryOutput, field.TypeString, value)
 		_node.PrimaryOutput = value
 	}
-	if value, ok := _c.mutation.PrimaryOutputURI(); ok {
-		_spec.SetField(actionexecution.FieldPrimaryOutputURI, field.TypeString, value)
-		_node.PrimaryOutputURI = value
-	}
-	if value, ok := _c.mutation.StdoutURI(); ok {
-		_spec.SetField(actionexecution.FieldStdoutURI, field.TypeString, value)
-		_node.StdoutURI = value
-	}
-	if value, ok := _c.mutation.StderrURI(); ok {
-		_spec.SetField(actionexecution.FieldStderrURI, field.TypeString, value)
-		_node.StderrURI = value
-	}
 	if nodes := _c.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -459,6 +491,57 @@ func (_c *ActionExecutionCreate) createSpec() (*ActionExecution, *sqlgraph.Creat
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.ActionDigestID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PrimaryOutputFileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.PrimaryOutputFileTable,
+			Columns: []string{actionexecution.PrimaryOutputFileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.PrimaryOutputFileID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StdoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.StdoutTable,
+			Columns: []string{actionexecution.StdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.StdoutFileID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.StderrIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   actionexecution.StderrTable,
+			Columns: []string{actionexecution.StderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.StderrFileID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -747,60 +830,6 @@ func (u *ActionExecutionUpsert) ClearPrimaryOutput() *ActionExecutionUpsert {
 	return u
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (u *ActionExecutionUpsert) SetPrimaryOutputURI(v string) *ActionExecutionUpsert {
-	u.Set(actionexecution.FieldPrimaryOutputURI, v)
-	return u
-}
-
-// UpdatePrimaryOutputURI sets the "primary_output_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsert) UpdatePrimaryOutputURI() *ActionExecutionUpsert {
-	u.SetExcluded(actionexecution.FieldPrimaryOutputURI)
-	return u
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (u *ActionExecutionUpsert) ClearPrimaryOutputURI() *ActionExecutionUpsert {
-	u.SetNull(actionexecution.FieldPrimaryOutputURI)
-	return u
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (u *ActionExecutionUpsert) SetStdoutURI(v string) *ActionExecutionUpsert {
-	u.Set(actionexecution.FieldStdoutURI, v)
-	return u
-}
-
-// UpdateStdoutURI sets the "stdout_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsert) UpdateStdoutURI() *ActionExecutionUpsert {
-	u.SetExcluded(actionexecution.FieldStdoutURI)
-	return u
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (u *ActionExecutionUpsert) ClearStdoutURI() *ActionExecutionUpsert {
-	u.SetNull(actionexecution.FieldStdoutURI)
-	return u
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (u *ActionExecutionUpsert) SetStderrURI(v string) *ActionExecutionUpsert {
-	u.Set(actionexecution.FieldStderrURI, v)
-	return u
-}
-
-// UpdateStderrURI sets the "stderr_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsert) UpdateStderrURI() *ActionExecutionUpsert {
-	u.SetExcluded(actionexecution.FieldStderrURI)
-	return u
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (u *ActionExecutionUpsert) ClearStderrURI() *ActionExecutionUpsert {
-	u.SetNull(actionexecution.FieldStderrURI)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -823,6 +852,15 @@ func (u *ActionExecutionUpsertOne) UpdateNewValues() *ActionExecutionUpsertOne {
 		}
 		if _, exists := u.create.mutation.ConfigurationID(); exists {
 			s.SetIgnore(actionexecution.FieldConfigurationID)
+		}
+		if _, exists := u.create.mutation.PrimaryOutputFileID(); exists {
+			s.SetIgnore(actionexecution.FieldPrimaryOutputFileID)
+		}
+		if _, exists := u.create.mutation.StdoutFileID(); exists {
+			s.SetIgnore(actionexecution.FieldStdoutFileID)
+		}
+		if _, exists := u.create.mutation.StderrFileID(); exists {
+			s.SetIgnore(actionexecution.FieldStderrFileID)
 		}
 	}))
 	return u
@@ -1128,69 +1166,6 @@ func (u *ActionExecutionUpsertOne) ClearPrimaryOutput() *ActionExecutionUpsertOn
 	})
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (u *ActionExecutionUpsertOne) SetPrimaryOutputURI(v string) *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetPrimaryOutputURI(v)
-	})
-}
-
-// UpdatePrimaryOutputURI sets the "primary_output_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertOne) UpdatePrimaryOutputURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdatePrimaryOutputURI()
-	})
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (u *ActionExecutionUpsertOne) ClearPrimaryOutputURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearPrimaryOutputURI()
-	})
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (u *ActionExecutionUpsertOne) SetStdoutURI(v string) *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetStdoutURI(v)
-	})
-}
-
-// UpdateStdoutURI sets the "stdout_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertOne) UpdateStdoutURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdateStdoutURI()
-	})
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (u *ActionExecutionUpsertOne) ClearStdoutURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearStdoutURI()
-	})
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (u *ActionExecutionUpsertOne) SetStderrURI(v string) *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetStderrURI(v)
-	})
-}
-
-// UpdateStderrURI sets the "stderr_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertOne) UpdateStderrURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdateStderrURI()
-	})
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (u *ActionExecutionUpsertOne) ClearStderrURI() *ActionExecutionUpsertOne {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearStderrURI()
-	})
-}
-
 // Exec executes the query.
 func (u *ActionExecutionUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1377,6 +1352,15 @@ func (u *ActionExecutionUpsertBulk) UpdateNewValues() *ActionExecutionUpsertBulk
 			}
 			if _, exists := b.mutation.ConfigurationID(); exists {
 				s.SetIgnore(actionexecution.FieldConfigurationID)
+			}
+			if _, exists := b.mutation.PrimaryOutputFileID(); exists {
+				s.SetIgnore(actionexecution.FieldPrimaryOutputFileID)
+			}
+			if _, exists := b.mutation.StdoutFileID(); exists {
+				s.SetIgnore(actionexecution.FieldStdoutFileID)
+			}
+			if _, exists := b.mutation.StderrFileID(); exists {
+				s.SetIgnore(actionexecution.FieldStderrFileID)
 			}
 		}
 	}))
@@ -1680,69 +1664,6 @@ func (u *ActionExecutionUpsertBulk) UpdatePrimaryOutput() *ActionExecutionUpsert
 func (u *ActionExecutionUpsertBulk) ClearPrimaryOutput() *ActionExecutionUpsertBulk {
 	return u.Update(func(s *ActionExecutionUpsert) {
 		s.ClearPrimaryOutput()
-	})
-}
-
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (u *ActionExecutionUpsertBulk) SetPrimaryOutputURI(v string) *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetPrimaryOutputURI(v)
-	})
-}
-
-// UpdatePrimaryOutputURI sets the "primary_output_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertBulk) UpdatePrimaryOutputURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdatePrimaryOutputURI()
-	})
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (u *ActionExecutionUpsertBulk) ClearPrimaryOutputURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearPrimaryOutputURI()
-	})
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (u *ActionExecutionUpsertBulk) SetStdoutURI(v string) *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetStdoutURI(v)
-	})
-}
-
-// UpdateStdoutURI sets the "stdout_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertBulk) UpdateStdoutURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdateStdoutURI()
-	})
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (u *ActionExecutionUpsertBulk) ClearStdoutURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearStdoutURI()
-	})
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (u *ActionExecutionUpsertBulk) SetStderrURI(v string) *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.SetStderrURI(v)
-	})
-}
-
-// UpdateStderrURI sets the "stderr_uri" field to the value that was provided on create.
-func (u *ActionExecutionUpsertBulk) UpdateStderrURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.UpdateStderrURI()
-	})
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (u *ActionExecutionUpsertBulk) ClearStderrURI() *ActionExecutionUpsertBulk {
-	return u.Update(func(s *ActionExecutionUpsert) {
-		s.ClearStderrURI()
 	})
 }
 

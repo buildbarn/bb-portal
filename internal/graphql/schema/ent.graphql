@@ -271,12 +271,12 @@ type ActionExecution implements Node {
   failureCode: String
   failureMessage: String
   primaryOutput: String
-  primaryOutputURI: String
-  stdoutURI: String
-  stderrURI: String
   bazelInvocation: BazelInvocation!
   configuration: Configuration
   actionDigest: Digest
+  primaryOutputFile: File
+  stdout: File
+  stderr: File
 }
 """
 A connection to a list of items.
@@ -487,60 +487,6 @@ input ActionExecutionWhereInput {
   primaryOutputEqualFold: String
   primaryOutputContainsFold: String
   """
-  primary_output_uri field predicates
-  """
-  primaryOutputURI: String
-  primaryOutputURINEQ: String
-  primaryOutputURIIn: [String!]
-  primaryOutputURINotIn: [String!]
-  primaryOutputURIGT: String
-  primaryOutputURIGTE: String
-  primaryOutputURILT: String
-  primaryOutputURILTE: String
-  primaryOutputURIContains: String
-  primaryOutputURIHasPrefix: String
-  primaryOutputURIHasSuffix: String
-  primaryOutputURIIsNil: Boolean
-  primaryOutputURINotNil: Boolean
-  primaryOutputURIEqualFold: String
-  primaryOutputURIContainsFold: String
-  """
-  stdout_uri field predicates
-  """
-  stdoutURI: String
-  stdoutURINEQ: String
-  stdoutURIIn: [String!]
-  stdoutURINotIn: [String!]
-  stdoutURIGT: String
-  stdoutURIGTE: String
-  stdoutURILT: String
-  stdoutURILTE: String
-  stdoutURIContains: String
-  stdoutURIHasPrefix: String
-  stdoutURIHasSuffix: String
-  stdoutURIIsNil: Boolean
-  stdoutURINotNil: Boolean
-  stdoutURIEqualFold: String
-  stdoutURIContainsFold: String
-  """
-  stderr_uri field predicates
-  """
-  stderrURI: String
-  stderrURINEQ: String
-  stderrURIIn: [String!]
-  stderrURINotIn: [String!]
-  stderrURIGT: String
-  stderrURIGTE: String
-  stderrURILT: String
-  stderrURILTE: String
-  stderrURIContains: String
-  stderrURIHasPrefix: String
-  stderrURIHasSuffix: String
-  stderrURIIsNil: Boolean
-  stderrURINotNil: Boolean
-  stderrURIEqualFold: String
-  stderrURIContainsFold: String
-  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -555,6 +501,21 @@ input ActionExecutionWhereInput {
   """
   hasActionDigest: Boolean
   hasActionDigestWith: [DigestWhereInput!]
+  """
+  primary_output_file edge predicates
+  """
+  hasPrimaryOutputFile: Boolean
+  hasPrimaryOutputFileWith: [FileWhereInput!]
+  """
+  stdout edge predicates
+  """
+  hasStdout: Boolean
+  hasStdoutWith: [FileWhereInput!]
+  """
+  stderr edge predicates
+  """
+  hasStderr: Boolean
+  hasStderrWith: [FileWhereInput!]
 }
 type ActionSummary implements Node {
   id: ID!

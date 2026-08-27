@@ -34,6 +34,12 @@ type FileEdges struct {
 	Digest *Digest `json:"digest,omitempty"`
 	// FilePath holds the value of the file_path edge.
 	FilePath *FilePath `json:"file_path,omitempty"`
+	// ActionExecutionPrimaryOutput holds the value of the action_execution_primary_output edge.
+	ActionExecutionPrimaryOutput []*ActionExecution `json:"action_execution_primary_output,omitempty"`
+	// ActionExecutionStdout holds the value of the action_execution_stdout edge.
+	ActionExecutionStdout []*ActionExecution `json:"action_execution_stdout,omitempty"`
+	// ActionExecutionStderr holds the value of the action_execution_stderr edge.
+	ActionExecutionStderr []*ActionExecution `json:"action_execution_stderr,omitempty"`
 	// InvocationProfile holds the value of the invocation_profile edge.
 	InvocationProfile []*BazelInvocation `json:"invocation_profile,omitempty"`
 	// TestActionOutput holds the value of the test_action_output edge.
@@ -42,13 +48,16 @@ type FileEdges struct {
 	TestActionOutputTable []*TestActionOutput `json:"test_action_output_table,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [8]bool
 	// totalCount holds the count of the edges above.
 	totalCount [4]map[string]int
 
-	namedInvocationProfile     map[string][]*BazelInvocation
-	namedTestActionOutput      map[string][]*TestResult
-	namedTestActionOutputTable map[string][]*TestActionOutput
+	namedActionExecutionPrimaryOutput map[string][]*ActionExecution
+	namedActionExecutionStdout        map[string][]*ActionExecution
+	namedActionExecutionStderr        map[string][]*ActionExecution
+	namedInvocationProfile            map[string][]*BazelInvocation
+	namedTestActionOutput             map[string][]*TestResult
+	namedTestActionOutputTable        map[string][]*TestActionOutput
 }
 
 // DigestOrErr returns the Digest value or an error if the edge
@@ -73,10 +82,37 @@ func (e FileEdges) FilePathOrErr() (*FilePath, error) {
 	return nil, &NotLoadedError{edge: "file_path"}
 }
 
+// ActionExecutionPrimaryOutputOrErr returns the ActionExecutionPrimaryOutput value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileEdges) ActionExecutionPrimaryOutputOrErr() ([]*ActionExecution, error) {
+	if e.loadedTypes[2] {
+		return e.ActionExecutionPrimaryOutput, nil
+	}
+	return nil, &NotLoadedError{edge: "action_execution_primary_output"}
+}
+
+// ActionExecutionStdoutOrErr returns the ActionExecutionStdout value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileEdges) ActionExecutionStdoutOrErr() ([]*ActionExecution, error) {
+	if e.loadedTypes[3] {
+		return e.ActionExecutionStdout, nil
+	}
+	return nil, &NotLoadedError{edge: "action_execution_stdout"}
+}
+
+// ActionExecutionStderrOrErr returns the ActionExecutionStderr value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileEdges) ActionExecutionStderrOrErr() ([]*ActionExecution, error) {
+	if e.loadedTypes[4] {
+		return e.ActionExecutionStderr, nil
+	}
+	return nil, &NotLoadedError{edge: "action_execution_stderr"}
+}
+
 // InvocationProfileOrErr returns the InvocationProfile value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) InvocationProfileOrErr() ([]*BazelInvocation, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[5] {
 		return e.InvocationProfile, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_profile"}
@@ -85,7 +121,7 @@ func (e FileEdges) InvocationProfileOrErr() ([]*BazelInvocation, error) {
 // TestActionOutputOrErr returns the TestActionOutput value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) TestActionOutputOrErr() ([]*TestResult, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[6] {
 		return e.TestActionOutput, nil
 	}
 	return nil, &NotLoadedError{edge: "test_action_output"}
@@ -94,7 +130,7 @@ func (e FileEdges) TestActionOutputOrErr() ([]*TestResult, error) {
 // TestActionOutputTableOrErr returns the TestActionOutputTable value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileEdges) TestActionOutputTableOrErr() ([]*TestActionOutput, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[7] {
 		return e.TestActionOutputTable, nil
 	}
 	return nil, &NotLoadedError{edge: "test_action_output_table"}
@@ -163,6 +199,21 @@ func (_m *File) QueryFilePath() *FilePathQuery {
 	return NewFileClient(_m.config).QueryFilePath(_m)
 }
 
+// QueryActionExecutionPrimaryOutput queries the "action_execution_primary_output" edge of the File entity.
+func (_m *File) QueryActionExecutionPrimaryOutput() *ActionExecutionQuery {
+	return NewFileClient(_m.config).QueryActionExecutionPrimaryOutput(_m)
+}
+
+// QueryActionExecutionStdout queries the "action_execution_stdout" edge of the File entity.
+func (_m *File) QueryActionExecutionStdout() *ActionExecutionQuery {
+	return NewFileClient(_m.config).QueryActionExecutionStdout(_m)
+}
+
+// QueryActionExecutionStderr queries the "action_execution_stderr" edge of the File entity.
+func (_m *File) QueryActionExecutionStderr() *ActionExecutionQuery {
+	return NewFileClient(_m.config).QueryActionExecutionStderr(_m)
+}
+
 // QueryInvocationProfile queries the "invocation_profile" edge of the File entity.
 func (_m *File) QueryInvocationProfile() *BazelInvocationQuery {
 	return NewFileClient(_m.config).QueryInvocationProfile(_m)
@@ -208,6 +259,78 @@ func (_m *File) String() string {
 	builder.WriteString(fmt.Sprintf("%v", _m.FilePathID))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedActionExecutionPrimaryOutput returns the ActionExecutionPrimaryOutput named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *File) NamedActionExecutionPrimaryOutput(name string) ([]*ActionExecution, error) {
+	if _m.Edges.namedActionExecutionPrimaryOutput == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedActionExecutionPrimaryOutput[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *File) appendNamedActionExecutionPrimaryOutput(name string, edges ...*ActionExecution) {
+	if _m.Edges.namedActionExecutionPrimaryOutput == nil {
+		_m.Edges.namedActionExecutionPrimaryOutput = make(map[string][]*ActionExecution)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedActionExecutionPrimaryOutput[name] = []*ActionExecution{}
+	} else {
+		_m.Edges.namedActionExecutionPrimaryOutput[name] = append(_m.Edges.namedActionExecutionPrimaryOutput[name], edges...)
+	}
+}
+
+// NamedActionExecutionStdout returns the ActionExecutionStdout named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *File) NamedActionExecutionStdout(name string) ([]*ActionExecution, error) {
+	if _m.Edges.namedActionExecutionStdout == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedActionExecutionStdout[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *File) appendNamedActionExecutionStdout(name string, edges ...*ActionExecution) {
+	if _m.Edges.namedActionExecutionStdout == nil {
+		_m.Edges.namedActionExecutionStdout = make(map[string][]*ActionExecution)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedActionExecutionStdout[name] = []*ActionExecution{}
+	} else {
+		_m.Edges.namedActionExecutionStdout[name] = append(_m.Edges.namedActionExecutionStdout[name], edges...)
+	}
+}
+
+// NamedActionExecutionStderr returns the ActionExecutionStderr named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *File) NamedActionExecutionStderr(name string) ([]*ActionExecution, error) {
+	if _m.Edges.namedActionExecutionStderr == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedActionExecutionStderr[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *File) appendNamedActionExecutionStderr(name string, edges ...*ActionExecution) {
+	if _m.Edges.namedActionExecutionStderr == nil {
+		_m.Edges.namedActionExecutionStderr = make(map[string][]*ActionExecution)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedActionExecutionStderr[name] = []*ActionExecution{}
+	} else {
+		_m.Edges.namedActionExecutionStderr[name] = append(_m.Edges.namedActionExecutionStderr[name], edges...)
+	}
 }
 
 // NamedInvocationProfile returns the InvocationProfile named value or an error if the edge was not

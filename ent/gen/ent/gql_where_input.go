@@ -1101,57 +1101,6 @@ type ActionExecutionWhereInput struct {
 	PrimaryOutputEqualFold    *string  `json:"primaryOutputEqualFold,omitempty"`
 	PrimaryOutputContainsFold *string  `json:"primaryOutputContainsFold,omitempty"`
 
-	// "primary_output_uri" field predicates.
-	PrimaryOutputURI             *string  `json:"primaryOutputURI,omitempty"`
-	PrimaryOutputURINEQ          *string  `json:"primaryOutputURINEQ,omitempty"`
-	PrimaryOutputURIIn           []string `json:"primaryOutputURIIn,omitempty"`
-	PrimaryOutputURINotIn        []string `json:"primaryOutputURINotIn,omitempty"`
-	PrimaryOutputURIGT           *string  `json:"primaryOutputURIGT,omitempty"`
-	PrimaryOutputURIGTE          *string  `json:"primaryOutputURIGTE,omitempty"`
-	PrimaryOutputURILT           *string  `json:"primaryOutputURILT,omitempty"`
-	PrimaryOutputURILTE          *string  `json:"primaryOutputURILTE,omitempty"`
-	PrimaryOutputURIContains     *string  `json:"primaryOutputURIContains,omitempty"`
-	PrimaryOutputURIHasPrefix    *string  `json:"primaryOutputURIHasPrefix,omitempty"`
-	PrimaryOutputURIHasSuffix    *string  `json:"primaryOutputURIHasSuffix,omitempty"`
-	PrimaryOutputURIIsNil        bool     `json:"primaryOutputURIIsNil,omitempty"`
-	PrimaryOutputURINotNil       bool     `json:"primaryOutputURINotNil,omitempty"`
-	PrimaryOutputURIEqualFold    *string  `json:"primaryOutputURIEqualFold,omitempty"`
-	PrimaryOutputURIContainsFold *string  `json:"primaryOutputURIContainsFold,omitempty"`
-
-	// "stdout_uri" field predicates.
-	StdoutURI             *string  `json:"stdoutURI,omitempty"`
-	StdoutURINEQ          *string  `json:"stdoutURINEQ,omitempty"`
-	StdoutURIIn           []string `json:"stdoutURIIn,omitempty"`
-	StdoutURINotIn        []string `json:"stdoutURINotIn,omitempty"`
-	StdoutURIGT           *string  `json:"stdoutURIGT,omitempty"`
-	StdoutURIGTE          *string  `json:"stdoutURIGTE,omitempty"`
-	StdoutURILT           *string  `json:"stdoutURILT,omitempty"`
-	StdoutURILTE          *string  `json:"stdoutURILTE,omitempty"`
-	StdoutURIContains     *string  `json:"stdoutURIContains,omitempty"`
-	StdoutURIHasPrefix    *string  `json:"stdoutURIHasPrefix,omitempty"`
-	StdoutURIHasSuffix    *string  `json:"stdoutURIHasSuffix,omitempty"`
-	StdoutURIIsNil        bool     `json:"stdoutURIIsNil,omitempty"`
-	StdoutURINotNil       bool     `json:"stdoutURINotNil,omitempty"`
-	StdoutURIEqualFold    *string  `json:"stdoutURIEqualFold,omitempty"`
-	StdoutURIContainsFold *string  `json:"stdoutURIContainsFold,omitempty"`
-
-	// "stderr_uri" field predicates.
-	StderrURI             *string  `json:"stderrURI,omitempty"`
-	StderrURINEQ          *string  `json:"stderrURINEQ,omitempty"`
-	StderrURIIn           []string `json:"stderrURIIn,omitempty"`
-	StderrURINotIn        []string `json:"stderrURINotIn,omitempty"`
-	StderrURIGT           *string  `json:"stderrURIGT,omitempty"`
-	StderrURIGTE          *string  `json:"stderrURIGTE,omitempty"`
-	StderrURILT           *string  `json:"stderrURILT,omitempty"`
-	StderrURILTE          *string  `json:"stderrURILTE,omitempty"`
-	StderrURIContains     *string  `json:"stderrURIContains,omitempty"`
-	StderrURIHasPrefix    *string  `json:"stderrURIHasPrefix,omitempty"`
-	StderrURIHasSuffix    *string  `json:"stderrURIHasSuffix,omitempty"`
-	StderrURIIsNil        bool     `json:"stderrURIIsNil,omitempty"`
-	StderrURINotNil       bool     `json:"stderrURINotNil,omitempty"`
-	StderrURIEqualFold    *string  `json:"stderrURIEqualFold,omitempty"`
-	StderrURIContainsFold *string  `json:"stderrURIContainsFold,omitempty"`
-
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
 	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
@@ -1163,6 +1112,18 @@ type ActionExecutionWhereInput struct {
 	// "action_digest" edge predicates.
 	HasActionDigest     *bool               `json:"hasActionDigest,omitempty"`
 	HasActionDigestWith []*DigestWhereInput `json:"hasActionDigestWith,omitempty"`
+
+	// "primary_output_file" edge predicates.
+	HasPrimaryOutputFile     *bool             `json:"hasPrimaryOutputFile,omitempty"`
+	HasPrimaryOutputFileWith []*FileWhereInput `json:"hasPrimaryOutputFileWith,omitempty"`
+
+	// "stdout" edge predicates.
+	HasStdout     *bool             `json:"hasStdout,omitempty"`
+	HasStdoutWith []*FileWhereInput `json:"hasStdoutWith,omitempty"`
+
+	// "stderr" edge predicates.
+	HasStderr     *bool             `json:"hasStderr,omitempty"`
+	HasStderrWith []*FileWhereInput `json:"hasStderrWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1638,141 +1599,6 @@ func (i *ActionExecutionWhereInput) P() (predicate.ActionExecution, error) {
 	if i.PrimaryOutputContainsFold != nil {
 		predicates = append(predicates, actionexecution.PrimaryOutputContainsFold(*i.PrimaryOutputContainsFold))
 	}
-	if i.PrimaryOutputURI != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIEQ(*i.PrimaryOutputURI))
-	}
-	if i.PrimaryOutputURINEQ != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURINEQ(*i.PrimaryOutputURINEQ))
-	}
-	if len(i.PrimaryOutputURIIn) > 0 {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIIn(i.PrimaryOutputURIIn...))
-	}
-	if len(i.PrimaryOutputURINotIn) > 0 {
-		predicates = append(predicates, actionexecution.PrimaryOutputURINotIn(i.PrimaryOutputURINotIn...))
-	}
-	if i.PrimaryOutputURIGT != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIGT(*i.PrimaryOutputURIGT))
-	}
-	if i.PrimaryOutputURIGTE != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIGTE(*i.PrimaryOutputURIGTE))
-	}
-	if i.PrimaryOutputURILT != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURILT(*i.PrimaryOutputURILT))
-	}
-	if i.PrimaryOutputURILTE != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURILTE(*i.PrimaryOutputURILTE))
-	}
-	if i.PrimaryOutputURIContains != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIContains(*i.PrimaryOutputURIContains))
-	}
-	if i.PrimaryOutputURIHasPrefix != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIHasPrefix(*i.PrimaryOutputURIHasPrefix))
-	}
-	if i.PrimaryOutputURIHasSuffix != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIHasSuffix(*i.PrimaryOutputURIHasSuffix))
-	}
-	if i.PrimaryOutputURIIsNil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIIsNil())
-	}
-	if i.PrimaryOutputURINotNil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURINotNil())
-	}
-	if i.PrimaryOutputURIEqualFold != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIEqualFold(*i.PrimaryOutputURIEqualFold))
-	}
-	if i.PrimaryOutputURIContainsFold != nil {
-		predicates = append(predicates, actionexecution.PrimaryOutputURIContainsFold(*i.PrimaryOutputURIContainsFold))
-	}
-	if i.StdoutURI != nil {
-		predicates = append(predicates, actionexecution.StdoutURIEQ(*i.StdoutURI))
-	}
-	if i.StdoutURINEQ != nil {
-		predicates = append(predicates, actionexecution.StdoutURINEQ(*i.StdoutURINEQ))
-	}
-	if len(i.StdoutURIIn) > 0 {
-		predicates = append(predicates, actionexecution.StdoutURIIn(i.StdoutURIIn...))
-	}
-	if len(i.StdoutURINotIn) > 0 {
-		predicates = append(predicates, actionexecution.StdoutURINotIn(i.StdoutURINotIn...))
-	}
-	if i.StdoutURIGT != nil {
-		predicates = append(predicates, actionexecution.StdoutURIGT(*i.StdoutURIGT))
-	}
-	if i.StdoutURIGTE != nil {
-		predicates = append(predicates, actionexecution.StdoutURIGTE(*i.StdoutURIGTE))
-	}
-	if i.StdoutURILT != nil {
-		predicates = append(predicates, actionexecution.StdoutURILT(*i.StdoutURILT))
-	}
-	if i.StdoutURILTE != nil {
-		predicates = append(predicates, actionexecution.StdoutURILTE(*i.StdoutURILTE))
-	}
-	if i.StdoutURIContains != nil {
-		predicates = append(predicates, actionexecution.StdoutURIContains(*i.StdoutURIContains))
-	}
-	if i.StdoutURIHasPrefix != nil {
-		predicates = append(predicates, actionexecution.StdoutURIHasPrefix(*i.StdoutURIHasPrefix))
-	}
-	if i.StdoutURIHasSuffix != nil {
-		predicates = append(predicates, actionexecution.StdoutURIHasSuffix(*i.StdoutURIHasSuffix))
-	}
-	if i.StdoutURIIsNil {
-		predicates = append(predicates, actionexecution.StdoutURIIsNil())
-	}
-	if i.StdoutURINotNil {
-		predicates = append(predicates, actionexecution.StdoutURINotNil())
-	}
-	if i.StdoutURIEqualFold != nil {
-		predicates = append(predicates, actionexecution.StdoutURIEqualFold(*i.StdoutURIEqualFold))
-	}
-	if i.StdoutURIContainsFold != nil {
-		predicates = append(predicates, actionexecution.StdoutURIContainsFold(*i.StdoutURIContainsFold))
-	}
-	if i.StderrURI != nil {
-		predicates = append(predicates, actionexecution.StderrURIEQ(*i.StderrURI))
-	}
-	if i.StderrURINEQ != nil {
-		predicates = append(predicates, actionexecution.StderrURINEQ(*i.StderrURINEQ))
-	}
-	if len(i.StderrURIIn) > 0 {
-		predicates = append(predicates, actionexecution.StderrURIIn(i.StderrURIIn...))
-	}
-	if len(i.StderrURINotIn) > 0 {
-		predicates = append(predicates, actionexecution.StderrURINotIn(i.StderrURINotIn...))
-	}
-	if i.StderrURIGT != nil {
-		predicates = append(predicates, actionexecution.StderrURIGT(*i.StderrURIGT))
-	}
-	if i.StderrURIGTE != nil {
-		predicates = append(predicates, actionexecution.StderrURIGTE(*i.StderrURIGTE))
-	}
-	if i.StderrURILT != nil {
-		predicates = append(predicates, actionexecution.StderrURILT(*i.StderrURILT))
-	}
-	if i.StderrURILTE != nil {
-		predicates = append(predicates, actionexecution.StderrURILTE(*i.StderrURILTE))
-	}
-	if i.StderrURIContains != nil {
-		predicates = append(predicates, actionexecution.StderrURIContains(*i.StderrURIContains))
-	}
-	if i.StderrURIHasPrefix != nil {
-		predicates = append(predicates, actionexecution.StderrURIHasPrefix(*i.StderrURIHasPrefix))
-	}
-	if i.StderrURIHasSuffix != nil {
-		predicates = append(predicates, actionexecution.StderrURIHasSuffix(*i.StderrURIHasSuffix))
-	}
-	if i.StderrURIIsNil {
-		predicates = append(predicates, actionexecution.StderrURIIsNil())
-	}
-	if i.StderrURINotNil {
-		predicates = append(predicates, actionexecution.StderrURINotNil())
-	}
-	if i.StderrURIEqualFold != nil {
-		predicates = append(predicates, actionexecution.StderrURIEqualFold(*i.StderrURIEqualFold))
-	}
-	if i.StderrURIContainsFold != nil {
-		predicates = append(predicates, actionexecution.StderrURIContainsFold(*i.StderrURIContainsFold))
-	}
 
 	if i.HasBazelInvocation != nil {
 		p := actionexecution.HasBazelInvocation()
@@ -1827,6 +1653,60 @@ func (i *ActionExecutionWhereInput) P() (predicate.ActionExecution, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, actionexecution.HasActionDigestWith(with...))
+	}
+	if i.HasPrimaryOutputFile != nil {
+		p := actionexecution.HasPrimaryOutputFile()
+		if !*i.HasPrimaryOutputFile {
+			p = actionexecution.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasPrimaryOutputFileWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasPrimaryOutputFileWith))
+		for _, w := range i.HasPrimaryOutputFileWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasPrimaryOutputFileWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, actionexecution.HasPrimaryOutputFileWith(with...))
+	}
+	if i.HasStdout != nil {
+		p := actionexecution.HasStdout()
+		if !*i.HasStdout {
+			p = actionexecution.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasStdoutWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasStdoutWith))
+		for _, w := range i.HasStdoutWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasStdoutWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, actionexecution.HasStdoutWith(with...))
+	}
+	if i.HasStderr != nil {
+		p := actionexecution.HasStderr()
+		if !*i.HasStderr {
+			p = actionexecution.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasStderrWith) > 0 {
+		with := make([]predicate.File, 0, len(i.HasStderrWith))
+		for _, w := range i.HasStderrWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasStderrWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, actionexecution.HasStderrWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

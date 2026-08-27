@@ -55,16 +55,25 @@ func TestRemoveFiles(t *testing.T) {
 
 		f1, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "1", InstanceName: "1", DigestFunction: 1, Hash: []byte{1}, SizeBytes: 1})
 		require.NoError(t, err)
-		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "2", InstanceName: "2", DigestFunction: 2, Hash: []byte{2}, SizeBytes: 2})
+		f2, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "2", InstanceName: "2", DigestFunction: 2, Hash: []byte{2}, SizeBytes: 2})
 		require.NoError(t, err)
-		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "3", InstanceName: "3", DigestFunction: 3, Hash: []byte{3}, SizeBytes: 3})
+		f3, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "3", InstanceName: "3", DigestFunction: 3, Hash: []byte{3}, SizeBytes: 3})
 		require.NoError(t, err)
 		f4, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "4", InstanceName: "4", DigestFunction: 4, Hash: []byte{4}, SizeBytes: 4})
 		require.NoError(t, err)
-		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "5", InstanceName: "5", DigestFunction: 5, Hash: []byte{5}, SizeBytes: 5})
+		f5, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "5", InstanceName: "5", DigestFunction: 5, Hash: []byte{5}, SizeBytes: 5})
+		require.NoError(t, err)
+		_, err = buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "6", InstanceName: "6", DigestFunction: 6, Hash: []byte{6}, SizeBytes: 6})
 		require.NoError(t, err)
 
 		inv := testutils.StartCreateInvocation(client, instanceName).SetProfileID(f1).SaveX(ctx)
+		client.ActionExecution.Create().
+			SetBazelInvocation(inv).
+			SetLabel("//example:action").
+			SetPrimaryOutputFileID(f5).
+			SetStdoutID(f2).
+			SetStderrID(f3).
+			SaveX(ctx)
 
 		target := client.Target.Create().SetInstanceName(instanceName).SetLabel("foo").SetAspect("bar").SetTargetKind("baz").SaveX(ctx)
 		invTarget := client.InvocationTarget.Create().SetBazelInvocation(inv).SetTarget(target).SetAbortReason(invocationtarget.AbortReasonNONE).SaveX(ctx)
@@ -81,23 +90,56 @@ func TestRemoveFiles(t *testing.T) {
 		require.EqualValues(t, 0, deleted)
 		deleted, err = cleanup.RemoveUnusedFiles(ctx)
 		require.NoError(t, err)
-		require.EqualValues(t, 3, deleted)
+		require.EqualValues(t, 1, deleted)
 		deleted, err = cleanup.RemoveUnusedFilePaths(ctx)
 		require.NoError(t, err)
-		require.EqualValues(t, 3, deleted)
+		require.EqualValues(t, 1, deleted)
 		deleted, err = cleanup.RemoveUnusedDigests(ctx)
 		require.NoError(t, err)
-		require.EqualValues(t, 3, deleted)
+		require.EqualValues(t, 1, deleted)
 
 		count, err := client.File.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 2, count)
+		require.Equal(t, 5, count)
 		count, err = client.FilePath.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 2, count)
+		require.Equal(t, 5, count)
 		count, err = client.Digest.Query().Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, 2, count)
+		require.Equal(t, 5, count)
+	})
+
+	t.Run("ActionExecutionFilesAreRemovedAfterLastInvocationReference", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "testInstance")
+		sharedFileID, err := buildeventrecorder.SaveSingleFile(ctx, db, instanceName.ID, files.ParsedBepFile{Path: "stdout", InstanceName: "remote", DigestFunction: 1, Hash: []byte{1}, SizeBytes: 1})
+		require.NoError(t, err)
+
+		firstInvocation := testutils.StartCreateInvocation(client, instanceName).SaveX(ctx)
+		secondInvocation := testutils.StartCreateInvocation(client, instanceName).SaveX(ctx)
+		client.ActionExecution.Create().SetBazelInvocation(firstInvocation).SetLabel("//example:first").SetStdoutID(sharedFileID).SaveX(ctx)
+		client.ActionExecution.Create().SetBazelInvocation(secondInvocation).SetLabel("//example:second").SetStdoutID(sharedFileID).SaveX(ctx)
+
+		cleanup, err := getNewDbCleanupService(db, clock.SystemClock, traceProvider)
+		require.NoError(t, err)
+		client.BazelInvocation.DeleteOne(firstInvocation).ExecX(ctx)
+		deleted, err := cleanup.RemoveUnusedFiles(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 0, deleted)
+		require.Equal(t, 1, client.File.Query().CountX(ctx))
+
+		client.BazelInvocation.DeleteOne(secondInvocation).ExecX(ctx)
+		deleted, err = cleanup.RemoveUnusedFiles(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+		deleted, err = cleanup.RemoveUnusedFilePaths(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+		deleted, err = cleanup.RemoveUnusedDigests(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
 	})
 
 	t.Run("ActionExecutionDigest", func(t *testing.T) {

@@ -16,21 +16,25 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
 // ActionExecutionQuery is the builder for querying ActionExecution entities.
 type ActionExecutionQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []actionexecution.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.ActionExecution
-	withBazelInvocation *BazelInvocationQuery
-	withConfiguration   *ConfigurationQuery
-	withActionDigest    *DigestQuery
-	modifiers           []func(*sql.Selector)
-	loadTotal           []func(context.Context, []*ActionExecution) error
+	ctx                   *QueryContext
+	order                 []actionexecution.OrderOption
+	inters                []Interceptor
+	predicates            []predicate.ActionExecution
+	withBazelInvocation   *BazelInvocationQuery
+	withConfiguration     *ConfigurationQuery
+	withActionDigest      *DigestQuery
+	withPrimaryOutputFile *FileQuery
+	withStdout            *FileQuery
+	withStderr            *FileQuery
+	modifiers             []func(*sql.Selector)
+	loadTotal             []func(context.Context, []*ActionExecution) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -126,6 +130,72 @@ func (_q *ActionExecutionQuery) QueryActionDigest() *DigestQuery {
 			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
 			sqlgraph.To(digest.Table, digest.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, actionexecution.ActionDigestTable, actionexecution.ActionDigestColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPrimaryOutputFile chains the current query on the "primary_output_file" edge.
+func (_q *ActionExecutionQuery) QueryPrimaryOutputFile() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.PrimaryOutputFileTable, actionexecution.PrimaryOutputFileColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStdout chains the current query on the "stdout" edge.
+func (_q *ActionExecutionQuery) QueryStdout() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StdoutTable, actionexecution.StdoutColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStderr chains the current query on the "stderr" edge.
+func (_q *ActionExecutionQuery) QueryStderr() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StderrTable, actionexecution.StderrColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -320,14 +390,17 @@ func (_q *ActionExecutionQuery) Clone() *ActionExecutionQuery {
 		return nil
 	}
 	return &ActionExecutionQuery{
-		config:              _q.config,
-		ctx:                 _q.ctx.Clone(),
-		order:               append([]actionexecution.OrderOption{}, _q.order...),
-		inters:              append([]Interceptor{}, _q.inters...),
-		predicates:          append([]predicate.ActionExecution{}, _q.predicates...),
-		withBazelInvocation: _q.withBazelInvocation.Clone(),
-		withConfiguration:   _q.withConfiguration.Clone(),
-		withActionDigest:    _q.withActionDigest.Clone(),
+		config:                _q.config,
+		ctx:                   _q.ctx.Clone(),
+		order:                 append([]actionexecution.OrderOption{}, _q.order...),
+		inters:                append([]Interceptor{}, _q.inters...),
+		predicates:            append([]predicate.ActionExecution{}, _q.predicates...),
+		withBazelInvocation:   _q.withBazelInvocation.Clone(),
+		withConfiguration:     _q.withConfiguration.Clone(),
+		withActionDigest:      _q.withActionDigest.Clone(),
+		withPrimaryOutputFile: _q.withPrimaryOutputFile.Clone(),
+		withStdout:            _q.withStdout.Clone(),
+		withStderr:            _q.withStderr.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -364,6 +437,39 @@ func (_q *ActionExecutionQuery) WithActionDigest(opts ...func(*DigestQuery)) *Ac
 		opt(query)
 	}
 	_q.withActionDigest = query
+	return _q
+}
+
+// WithPrimaryOutputFile tells the query-builder to eager-load the nodes that are connected to
+// the "primary_output_file" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionExecutionQuery) WithPrimaryOutputFile(opts ...func(*FileQuery)) *ActionExecutionQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPrimaryOutputFile = query
+	return _q
+}
+
+// WithStdout tells the query-builder to eager-load the nodes that are connected to
+// the "stdout" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionExecutionQuery) WithStdout(opts ...func(*FileQuery)) *ActionExecutionQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withStdout = query
+	return _q
+}
+
+// WithStderr tells the query-builder to eager-load the nodes that are connected to
+// the "stderr" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionExecutionQuery) WithStderr(opts ...func(*FileQuery)) *ActionExecutionQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withStderr = query
 	return _q
 }
 
@@ -451,10 +557,13 @@ func (_q *ActionExecutionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	var (
 		nodes       = []*ActionExecution{}
 		_spec       = _q.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [6]bool{
 			_q.withBazelInvocation != nil,
 			_q.withConfiguration != nil,
 			_q.withActionDigest != nil,
+			_q.withPrimaryOutputFile != nil,
+			_q.withStdout != nil,
+			_q.withStderr != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -493,6 +602,24 @@ func (_q *ActionExecutionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	if query := _q.withActionDigest; query != nil {
 		if err := _q.loadActionDigest(ctx, query, nodes, nil,
 			func(n *ActionExecution, e *Digest) { n.Edges.ActionDigest = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPrimaryOutputFile; query != nil {
+		if err := _q.loadPrimaryOutputFile(ctx, query, nodes, nil,
+			func(n *ActionExecution, e *File) { n.Edges.PrimaryOutputFile = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withStdout; query != nil {
+		if err := _q.loadStdout(ctx, query, nodes, nil,
+			func(n *ActionExecution, e *File) { n.Edges.Stdout = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withStderr; query != nil {
+		if err := _q.loadStderr(ctx, query, nodes, nil,
+			func(n *ActionExecution, e *File) { n.Edges.Stderr = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -591,6 +718,93 @@ func (_q *ActionExecutionQuery) loadActionDigest(ctx context.Context, query *Dig
 	}
 	return nil
 }
+func (_q *ActionExecutionQuery) loadPrimaryOutputFile(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionExecution)
+	for i := range nodes {
+		fk := nodes[i].PrimaryOutputFileID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(file.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "primary_output_file_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *ActionExecutionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionExecution)
+	for i := range nodes {
+		fk := nodes[i].StdoutFileID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(file.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "stdout_file_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *ActionExecutionQuery) loadStderr(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionExecution)
+	for i := range nodes {
+		fk := nodes[i].StderrFileID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(file.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "stderr_file_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *ActionExecutionQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -628,6 +842,15 @@ func (_q *ActionExecutionQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if _q.withActionDigest != nil {
 			_spec.Node.AddColumnOnce(actionexecution.FieldActionDigestID)
+		}
+		if _q.withPrimaryOutputFile != nil {
+			_spec.Node.AddColumnOnce(actionexecution.FieldPrimaryOutputFileID)
+		}
+		if _q.withStdout != nil {
+			_spec.Node.AddColumnOnce(actionexecution.FieldStdoutFileID)
+		}
+		if _q.withStderr != nil {
+			_spec.Node.AddColumnOnce(actionexecution.FieldStderrFileID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

@@ -56,23 +56,6 @@ func getErrorCodeFromFailureDetail(failureDetail *protobuf.FailureDetail) string
 	return ""
 }
 
-// getRemoteFileURI returns a URI that can be resolved away from the Bazel
-// client. Local file:// references are deliberately not persisted.
-func getRemoteFileURI(file *bes.File) string {
-	if file == nil {
-		return ""
-	}
-	uri := strings.TrimSpace(file.GetUri())
-	if uri == "" {
-		return ""
-	}
-	parsedURI, err := url.Parse(uri)
-	if err != nil || parsedURI.Scheme == "" || strings.EqualFold(parsedURI.Scheme, "file") {
-		return ""
-	}
-	return uri
-}
-
 type actionFileAvailability struct {
 	verifyBytestreamURIs bool
 	verified             bool
@@ -80,6 +63,7 @@ type actionFileAvailability struct {
 }
 
 func getBytestreamDigest(uri string) (storagedigest.Digest, bool) {
+	uri = strings.TrimSpace(uri)
 	parsedURI, err := url.Parse(uri)
 	if err != nil || !strings.EqualFold(parsedURI.Scheme, "bytestream") {
 		return storagedigest.BadDigest, false
@@ -87,28 +71,27 @@ func getBytestreamDigest(uri string) (storagedigest.Digest, bool) {
 	return files.GetDigestFromURI(uri), true
 }
 
-func (a actionFileAvailability) getAvailableRemoteFileURI(file *bes.File) string {
-	uri := getRemoteFileURI(file)
-	if uri == "" {
-		return ""
+func (a actionFileAvailability) getAvailableFile(file *bes.File, fallbackPath string) *files.ParsedBepFile {
+	if file == nil {
+		return nil
 	}
-	digest, isBytestreamURI := getBytestreamDigest(uri)
+	digest, isBytestreamURI := getBytestreamDigest(file.GetUri())
 	if !isBytestreamURI {
-		return uri
+		return nil
 	}
 	if digest == storagedigest.BadDigest {
-		return ""
+		return nil
 	}
 	if !a.verifyBytestreamURIs {
-		return uri
+		return files.ParseBepFileWithFallbackPath(file, fallbackPath)
 	}
 	if !a.verified {
-		return ""
+		return nil
 	}
 	if _, missing := a.missingDigests[digest]; missing {
-		return ""
+		return nil
 	}
-	return uri
+	return files.ParseBepFileWithFallbackPath(file, fallbackPath)
 }
 
 func actionExecutedFiles(actionExecuted *bes.ActionExecuted) []*bes.File {
@@ -133,8 +116,7 @@ func (r *buildEventRecorder) verifyActionFileAvailability(ctx context.Context, b
 	digestSetBuilder := storagedigest.NewSetBuilder(len(batch) * 3)
 	for _, info := range batch {
 		for _, file := range actionExecutedFiles(info.Event.GetAction()) {
-			uri := getRemoteFileURI(file)
-			if digest, isBytestreamURI := getBytestreamDigest(uri); isBytestreamURI && digest != storagedigest.BadDigest {
+			if digest, isBytestreamURI := getBytestreamDigest(file.GetUri()); isBytestreamURI && digest != storagedigest.BadDigest {
 				digestSetBuilder = digestSetBuilder.Add(digest)
 			}
 		}
@@ -166,6 +148,37 @@ func getActionConfigurationID(actionExecuted *bes.ActionExecuted, actionComplete
 	return actionExecuted.GetConfiguration().GetId()
 }
 
+type actionExecutionFiles struct {
+	primaryOutput *files.ParsedBepFile
+	stdout        *files.ParsedBepFile
+	stderr        *files.ParsedBepFile
+}
+
+func getAvailableActionFiles(availability actionFileAvailability, batch []BuildEventWithInfo) ([]actionExecutionFiles, []*files.ParsedBepFile) {
+	filesByEvent := make([]actionExecutionFiles, len(batch))
+	allFiles := make([]*files.ParsedBepFile, 0, len(batch)*3)
+	for i, info := range batch {
+		actionExecuted := info.Event.GetAction()
+		actionCompletedID := info.Event.GetId().GetActionCompleted()
+		if actionExecuted == nil || actionCompletedID == nil {
+			continue
+		}
+
+		actionFiles := actionExecutionFiles{
+			primaryOutput: availability.getAvailableFile(actionExecuted.GetPrimaryOutput(), actionCompletedID.GetPrimaryOutput()),
+			stdout:        availability.getAvailableFile(actionExecuted.GetStdout(), "stdout"),
+			stderr:        availability.getAvailableFile(actionExecuted.GetStderr(), "stderr"),
+		}
+		filesByEvent[i] = actionFiles
+		for _, file := range []*files.ParsedBepFile{actionFiles.primaryOutput, actionFiles.stdout, actionFiles.stderr} {
+			if file != nil {
+				allFiles = append(allFiles, file)
+			}
+		}
+	}
+	return filesByEvent, allFiles
+}
+
 // saveActionExecutedBatch persists all ActionExecuted events in a batch. The
 // configuration lookup is also batched, because --build_event_publish_all_actions
 // can cause thousands of these events to be reported for one invocation.
@@ -174,6 +187,7 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 		return nil
 	}
 	actionFileAvailability := r.verifyActionFileAvailability(ctx, batch)
+	actionFilesByEvent, actionFiles := getAvailableActionFiles(actionFileAvailability, batch)
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
@@ -222,8 +236,17 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 		}
 	}
 
+	actionFileIDs, err := saveFilesBatch(ctx, tx, r.InstanceNameDbID, actionFiles)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to save ActionExecuted output files")
+	}
+	actionFileIDByParsedFile := make(map[*files.ParsedBepFile]int64, len(actionFiles))
+	for i, actionFile := range actionFiles {
+		actionFileIDByParsedFile[actionFile] = actionFileIDs[i]
+	}
+
 	creates := make([]*ent.ActionExecutionCreate, 0, len(batch))
-	for _, info := range batch {
+	for i, info := range batch {
 		actionExecuted := info.Event.GetAction()
 		actionCompletedID := info.Event.GetId().GetActionCompleted()
 		if actionExecuted == nil || actionCompletedID == nil {
@@ -250,16 +273,14 @@ func (r *buildEventRecorder) saveActionExecutedBatch(ctx context.Context, batch 
 		if primaryOutput := actionCompletedID.GetPrimaryOutput(); primaryOutput != "" {
 			create.SetPrimaryOutput(primaryOutput)
 		}
-		if primaryOutputURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetPrimaryOutput()); primaryOutputURI != "" {
-			create.SetPrimaryOutputURI(primaryOutputURI)
+		if primaryOutputFile := actionFilesByEvent[i].primaryOutput; primaryOutputFile != nil {
+			create.SetPrimaryOutputFileID(actionFileIDByParsedFile[primaryOutputFile])
 		}
-		if !actionExecuted.Success {
-			if stdoutURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStdout()); stdoutURI != "" {
-				create.SetStdoutURI(stdoutURI)
-			}
-			if stderrURI := actionFileAvailability.getAvailableRemoteFileURI(actionExecuted.GetStderr()); stderrURI != "" {
-				create.SetStderrURI(stderrURI)
-			}
+		if stdoutFile := actionFilesByEvent[i].stdout; stdoutFile != nil {
+			create.SetStdoutID(actionFileIDByParsedFile[stdoutFile])
+		}
+		if stderrFile := actionFilesByEvent[i].stderr; stderrFile != nil {
+			create.SetStderrID(actionFileIDByParsedFile[stderrFile])
 		}
 		if failureMessage := actionExecuted.GetFailureDetail().GetMessage(); failureMessage != "" {
 			create.SetFailureMessage(failureMessage)

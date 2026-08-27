@@ -9,7 +9,7 @@ import type {
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
 import {
   generateActionUrlFromGraphqlDigest,
-  generateFileUrlFromBepURI,
+  generateFileUrlFromGraphqlFile,
 } from "@/utils/urlGenerator";
 import styles from "../../theme/theme.module.css";
 import PortalDuration from "../PortalDuration";
@@ -292,10 +292,9 @@ export const getColumns = (
       }
       const fileName =
         action.primaryOutput.split("/").pop() || action.primaryOutput;
-      const href = generateFileUrlFromBepURI(
-        action.primaryOutputURI,
-        action.primaryOutput,
-      );
+      const href = action.primaryOutputFile
+        ? generateFileUrlFromGraphqlFile(action.primaryOutputFile)
+        : undefined;
       return (
         <Tooltip title={action.primaryOutput}>
           {href ? (

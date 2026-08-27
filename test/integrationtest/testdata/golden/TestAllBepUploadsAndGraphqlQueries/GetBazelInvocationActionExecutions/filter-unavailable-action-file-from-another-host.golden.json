@@ -18,11 +18,11 @@
             "id": "QWN0aW9uRXhlY3V0aW9uOjY=",
             "label": "//example:unavailable",
             "primaryOutput": "bazel-out/k8-fastbuild/bin/example/unavailable.out",
-            "primaryOutputURI": "",
+            "primaryOutputFile": null,
             "runner": "",
             "startTime": "2026-07-31T12:00:04Z",
-            "stderrURI": "",
-            "stdoutURI": "",
+            "stderr": null,
+            "stdout": null,
             "success": true,
             "type": "OtherHostAction"
           }

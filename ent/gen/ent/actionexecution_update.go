@@ -289,66 +289,6 @@ func (_u *ActionExecutionUpdate) ClearPrimaryOutput() *ActionExecutionUpdate {
 	return _u
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (_u *ActionExecutionUpdate) SetPrimaryOutputURI(v string) *ActionExecutionUpdate {
-	_u.mutation.SetPrimaryOutputURI(v)
-	return _u
-}
-
-// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdate) SetNillablePrimaryOutputURI(v *string) *ActionExecutionUpdate {
-	if v != nil {
-		_u.SetPrimaryOutputURI(*v)
-	}
-	return _u
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (_u *ActionExecutionUpdate) ClearPrimaryOutputURI() *ActionExecutionUpdate {
-	_u.mutation.ClearPrimaryOutputURI()
-	return _u
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (_u *ActionExecutionUpdate) SetStdoutURI(v string) *ActionExecutionUpdate {
-	_u.mutation.SetStdoutURI(v)
-	return _u
-}
-
-// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdate) SetNillableStdoutURI(v *string) *ActionExecutionUpdate {
-	if v != nil {
-		_u.SetStdoutURI(*v)
-	}
-	return _u
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (_u *ActionExecutionUpdate) ClearStdoutURI() *ActionExecutionUpdate {
-	_u.mutation.ClearStdoutURI()
-	return _u
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (_u *ActionExecutionUpdate) SetStderrURI(v string) *ActionExecutionUpdate {
-	_u.mutation.SetStderrURI(v)
-	return _u
-}
-
-// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdate) SetNillableStderrURI(v *string) *ActionExecutionUpdate {
-	if v != nil {
-		_u.SetStderrURI(*v)
-	}
-	return _u
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (_u *ActionExecutionUpdate) ClearStderrURI() *ActionExecutionUpdate {
-	_u.mutation.ClearStderrURI()
-	return _u
-}
-
 // SetActionDigest sets the "action_digest" edge to the Digest entity.
 func (_u *ActionExecutionUpdate) SetActionDigest(v *Digest) *ActionExecutionUpdate {
 	return _u.SetActionDigestID(v.ID)
@@ -488,24 +428,6 @@ func (_u *ActionExecutionUpdate) sqlSave(ctx context.Context) (_node int, err er
 	}
 	if _u.mutation.PrimaryOutputCleared() {
 		_spec.ClearField(actionexecution.FieldPrimaryOutput, field.TypeString)
-	}
-	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
-		_spec.SetField(actionexecution.FieldPrimaryOutputURI, field.TypeString, value)
-	}
-	if _u.mutation.PrimaryOutputURICleared() {
-		_spec.ClearField(actionexecution.FieldPrimaryOutputURI, field.TypeString)
-	}
-	if value, ok := _u.mutation.StdoutURI(); ok {
-		_spec.SetField(actionexecution.FieldStdoutURI, field.TypeString, value)
-	}
-	if _u.mutation.StdoutURICleared() {
-		_spec.ClearField(actionexecution.FieldStdoutURI, field.TypeString)
-	}
-	if value, ok := _u.mutation.StderrURI(); ok {
-		_spec.SetField(actionexecution.FieldStderrURI, field.TypeString, value)
-	}
-	if _u.mutation.StderrURICleared() {
-		_spec.ClearField(actionexecution.FieldStderrURI, field.TypeString)
 	}
 	if _u.mutation.ActionDigestCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -815,66 +737,6 @@ func (_u *ActionExecutionUpdateOne) ClearPrimaryOutput() *ActionExecutionUpdateO
 	return _u
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (_u *ActionExecutionUpdateOne) SetPrimaryOutputURI(v string) *ActionExecutionUpdateOne {
-	_u.mutation.SetPrimaryOutputURI(v)
-	return _u
-}
-
-// SetNillablePrimaryOutputURI sets the "primary_output_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdateOne) SetNillablePrimaryOutputURI(v *string) *ActionExecutionUpdateOne {
-	if v != nil {
-		_u.SetPrimaryOutputURI(*v)
-	}
-	return _u
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (_u *ActionExecutionUpdateOne) ClearPrimaryOutputURI() *ActionExecutionUpdateOne {
-	_u.mutation.ClearPrimaryOutputURI()
-	return _u
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (_u *ActionExecutionUpdateOne) SetStdoutURI(v string) *ActionExecutionUpdateOne {
-	_u.mutation.SetStdoutURI(v)
-	return _u
-}
-
-// SetNillableStdoutURI sets the "stdout_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdateOne) SetNillableStdoutURI(v *string) *ActionExecutionUpdateOne {
-	if v != nil {
-		_u.SetStdoutURI(*v)
-	}
-	return _u
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (_u *ActionExecutionUpdateOne) ClearStdoutURI() *ActionExecutionUpdateOne {
-	_u.mutation.ClearStdoutURI()
-	return _u
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (_u *ActionExecutionUpdateOne) SetStderrURI(v string) *ActionExecutionUpdateOne {
-	_u.mutation.SetStderrURI(v)
-	return _u
-}
-
-// SetNillableStderrURI sets the "stderr_uri" field if the given value is not nil.
-func (_u *ActionExecutionUpdateOne) SetNillableStderrURI(v *string) *ActionExecutionUpdateOne {
-	if v != nil {
-		_u.SetStderrURI(*v)
-	}
-	return _u
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (_u *ActionExecutionUpdateOne) ClearStderrURI() *ActionExecutionUpdateOne {
-	_u.mutation.ClearStderrURI()
-	return _u
-}
-
 // SetActionDigest sets the "action_digest" edge to the Digest entity.
 func (_u *ActionExecutionUpdateOne) SetActionDigest(v *Digest) *ActionExecutionUpdateOne {
 	return _u.SetActionDigestID(v.ID)
@@ -1044,24 +906,6 @@ func (_u *ActionExecutionUpdateOne) sqlSave(ctx context.Context) (_node *ActionE
 	}
 	if _u.mutation.PrimaryOutputCleared() {
 		_spec.ClearField(actionexecution.FieldPrimaryOutput, field.TypeString)
-	}
-	if value, ok := _u.mutation.PrimaryOutputURI(); ok {
-		_spec.SetField(actionexecution.FieldPrimaryOutputURI, field.TypeString, value)
-	}
-	if _u.mutation.PrimaryOutputURICleared() {
-		_spec.ClearField(actionexecution.FieldPrimaryOutputURI, field.TypeString)
-	}
-	if value, ok := _u.mutation.StdoutURI(); ok {
-		_spec.SetField(actionexecution.FieldStdoutURI, field.TypeString, value)
-	}
-	if _u.mutation.StdoutURICleared() {
-		_spec.ClearField(actionexecution.FieldStdoutURI, field.TypeString)
-	}
-	if value, ok := _u.mutation.StderrURI(); ok {
-		_spec.SetField(actionexecution.FieldStderrURI, field.TypeString, value)
-	}
-	if _u.mutation.StderrURICleared() {
-		_spec.ClearField(actionexecution.FieldStderrURI, field.TypeString)
 	}
 	if _u.mutation.ActionDigestCleared() {
 		edge := &sqlgraph.EdgeSpec{

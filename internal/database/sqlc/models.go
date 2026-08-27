@@ -36,25 +36,25 @@ type ActionDatum struct {
 }
 
 type ActionExecution struct {
-	ID                int64
-	Label             string
-	Type              sql.NullString
-	Runner            sql.NullString
-	CacheHit          sql.NullBool
-	Success           sql.NullBool
-	ExitCode          sql.NullInt32
-	CommandLine       pqtype.NullRawMessage
-	StartTime         sql.NullTime
-	EndTime           sql.NullTime
-	FailureCode       sql.NullString
-	FailureMessage    sql.NullString
-	PrimaryOutput     sql.NullString
-	PrimaryOutputUri  sql.NullString
-	StdoutUri         sql.NullString
-	StderrUri         sql.NullString
-	ConfigurationID   sql.NullInt64
-	BazelInvocationID int64
-	ActionDigestID    sql.NullInt64
+	ID                  int64
+	Label               string
+	Type                sql.NullString
+	Runner              sql.NullString
+	CacheHit            sql.NullBool
+	Success             sql.NullBool
+	ExitCode            sql.NullInt32
+	CommandLine         pqtype.NullRawMessage
+	StartTime           sql.NullTime
+	EndTime             sql.NullTime
+	FailureCode         sql.NullString
+	FailureMessage      sql.NullString
+	PrimaryOutput       sql.NullString
+	ConfigurationID     sql.NullInt64
+	PrimaryOutputFileID sql.NullInt64
+	StdoutFileID        sql.NullInt64
+	StderrFileID        sql.NullInt64
+	BazelInvocationID   int64
+	ActionDigestID      sql.NullInt64
 }
 
 type ActionSummary struct {

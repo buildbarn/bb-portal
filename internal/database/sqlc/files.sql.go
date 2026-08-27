@@ -93,6 +93,14 @@ WHERE ctid IN (
         AND ctid < format('(%s,0)', $1::bigint + $2::bigint)::tid
         AND (
             NOT EXISTS (
+                SELECT 1 FROM "action_executions"
+                WHERE "primary_output_file_id" = "files"."id"
+                   OR "stdout_file_id" = "files"."id"
+                   OR "stderr_file_id" = "files"."id"
+            )
+        )
+        AND (
+            NOT EXISTS (
                 SELECT 1 FROM "bazel_invocations"
                 WHERE "profile_id" = "files"."id"
             )
@@ -120,6 +128,70 @@ func (q *Queries) DeleteUnusedFilesFromPages(ctx context.Context, arg DeleteUnus
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const getFileIDs = `-- name: GetFileIDs :many
+SELECT f.id
+FROM (
+    SELECT
+        unnest($1::text[]) AS file_path,
+        unnest($2::text[]) AS rev2_instance_name,
+        unnest($3::smallint[]) AS digest_function,
+        unnest($4::bytea[]) AS hash,
+        unnest($5::bigint[]) AS size_bytes,
+        generate_series(1, cardinality($1::text[])) AS ordinality
+) AS input
+JOIN file_paths fp
+    ON fp.bep_instance_name_id = $6::bigint
+    AND fp.path = input.file_path
+JOIN digests d
+    ON d.rev2_instance_name = input.rev2_instance_name
+    AND d.digest_function = input.digest_function
+    AND d.hash = input.hash
+    AND d.size_bytes = input.size_bytes
+JOIN files f
+    ON f.file_path_id = fp.id
+    AND f.digest_id = d.id
+ORDER BY input.ordinality
+`
+
+type GetFileIDsParams struct {
+	FilePaths         []string
+	Rev2InstanceNames []string
+	DigestFunctions   []int16
+	Hashes            [][]byte
+	SizeBytes         []int64
+	BepInstanceNameID int64
+}
+
+func (q *Queries) GetFileIDs(ctx context.Context, arg GetFileIDsParams) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, getFileIDs,
+		pq.Array(arg.FilePaths),
+		pq.Array(arg.Rev2InstanceNames),
+		pq.Array(arg.DigestFunctions),
+		pq.Array(arg.Hashes),
+		pq.Array(arg.SizeBytes),
+		arg.BepInstanceNameID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const insertMissingDigests = `-- name: InsertMissingDigests :exec

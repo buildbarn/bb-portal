@@ -2274,36 +2274,39 @@ func (m *ActionDataMutation) ResetEdge(name string) error {
 // ActionExecutionMutation represents an operation that mutates the ActionExecution nodes in the graph.
 type ActionExecutionMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	label                   *string
-	_type                   *string
-	runner                  *string
-	cache_hit               *bool
-	success                 *bool
-	exit_code               *int32
-	addexit_code            *int32
-	command_line            *[]string
-	appendcommand_line      []string
-	start_time              *time.Time
-	end_time                *time.Time
-	failure_code            *string
-	failure_message         *string
-	primary_output          *string
-	primary_output_uri      *string
-	stdout_uri              *string
-	stderr_uri              *string
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	configuration           *int64
-	clearedconfiguration    bool
-	action_digest           *int64
-	clearedaction_digest    bool
-	done                    bool
-	oldValue                func(context.Context) (*ActionExecution, error)
-	predicates              []predicate.ActionExecution
+	op                         Op
+	typ                        string
+	id                         *int64
+	label                      *string
+	_type                      *string
+	runner                     *string
+	cache_hit                  *bool
+	success                    *bool
+	exit_code                  *int32
+	addexit_code               *int32
+	command_line               *[]string
+	appendcommand_line         []string
+	start_time                 *time.Time
+	end_time                   *time.Time
+	failure_code               *string
+	failure_message            *string
+	primary_output             *string
+	clearedFields              map[string]struct{}
+	bazel_invocation           *int64
+	clearedbazel_invocation    bool
+	configuration              *int64
+	clearedconfiguration       bool
+	action_digest              *int64
+	clearedaction_digest       bool
+	primary_output_file        *int64
+	clearedprimary_output_file bool
+	stdout                     *int64
+	clearedstdout              bool
+	stderr                     *int64
+	clearedstderr              bool
+	done                       bool
+	oldValue                   func(context.Context) (*ActionExecution, error)
+	predicates                 []predicate.ActionExecution
 }
 
 var _ ent.Mutation = (*ActionExecutionMutation)(nil)
@@ -2542,6 +2545,153 @@ func (m *ActionExecutionMutation) ActionDigestIDCleared() bool {
 func (m *ActionExecutionMutation) ResetActionDigestID() {
 	m.action_digest = nil
 	delete(m.clearedFields, actionexecution.FieldActionDigestID)
+}
+
+// SetPrimaryOutputFileID sets the "primary_output_file_id" field.
+func (m *ActionExecutionMutation) SetPrimaryOutputFileID(i int64) {
+	m.primary_output_file = &i
+}
+
+// PrimaryOutputFileID returns the value of the "primary_output_file_id" field in the mutation.
+func (m *ActionExecutionMutation) PrimaryOutputFileID() (r int64, exists bool) {
+	v := m.primary_output_file
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrimaryOutputFileID returns the old "primary_output_file_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldPrimaryOutputFileID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrimaryOutputFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrimaryOutputFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrimaryOutputFileID: %w", err)
+	}
+	return oldValue.PrimaryOutputFileID, nil
+}
+
+// ClearPrimaryOutputFileID clears the value of the "primary_output_file_id" field.
+func (m *ActionExecutionMutation) ClearPrimaryOutputFileID() {
+	m.primary_output_file = nil
+	m.clearedFields[actionexecution.FieldPrimaryOutputFileID] = struct{}{}
+}
+
+// PrimaryOutputFileIDCleared returns if the "primary_output_file_id" field was cleared in this mutation.
+func (m *ActionExecutionMutation) PrimaryOutputFileIDCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldPrimaryOutputFileID]
+	return ok
+}
+
+// ResetPrimaryOutputFileID resets all changes to the "primary_output_file_id" field.
+func (m *ActionExecutionMutation) ResetPrimaryOutputFileID() {
+	m.primary_output_file = nil
+	delete(m.clearedFields, actionexecution.FieldPrimaryOutputFileID)
+}
+
+// SetStdoutFileID sets the "stdout_file_id" field.
+func (m *ActionExecutionMutation) SetStdoutFileID(i int64) {
+	m.stdout = &i
+}
+
+// StdoutFileID returns the value of the "stdout_file_id" field in the mutation.
+func (m *ActionExecutionMutation) StdoutFileID() (r int64, exists bool) {
+	v := m.stdout
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStdoutFileID returns the old "stdout_file_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldStdoutFileID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStdoutFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStdoutFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStdoutFileID: %w", err)
+	}
+	return oldValue.StdoutFileID, nil
+}
+
+// ClearStdoutFileID clears the value of the "stdout_file_id" field.
+func (m *ActionExecutionMutation) ClearStdoutFileID() {
+	m.stdout = nil
+	m.clearedFields[actionexecution.FieldStdoutFileID] = struct{}{}
+}
+
+// StdoutFileIDCleared returns if the "stdout_file_id" field was cleared in this mutation.
+func (m *ActionExecutionMutation) StdoutFileIDCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldStdoutFileID]
+	return ok
+}
+
+// ResetStdoutFileID resets all changes to the "stdout_file_id" field.
+func (m *ActionExecutionMutation) ResetStdoutFileID() {
+	m.stdout = nil
+	delete(m.clearedFields, actionexecution.FieldStdoutFileID)
+}
+
+// SetStderrFileID sets the "stderr_file_id" field.
+func (m *ActionExecutionMutation) SetStderrFileID(i int64) {
+	m.stderr = &i
+}
+
+// StderrFileID returns the value of the "stderr_file_id" field in the mutation.
+func (m *ActionExecutionMutation) StderrFileID() (r int64, exists bool) {
+	v := m.stderr
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStderrFileID returns the old "stderr_file_id" field's value of the ActionExecution entity.
+// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionExecutionMutation) OldStderrFileID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStderrFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStderrFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStderrFileID: %w", err)
+	}
+	return oldValue.StderrFileID, nil
+}
+
+// ClearStderrFileID clears the value of the "stderr_file_id" field.
+func (m *ActionExecutionMutation) ClearStderrFileID() {
+	m.stderr = nil
+	m.clearedFields[actionexecution.FieldStderrFileID] = struct{}{}
+}
+
+// StderrFileIDCleared returns if the "stderr_file_id" field was cleared in this mutation.
+func (m *ActionExecutionMutation) StderrFileIDCleared() bool {
+	_, ok := m.clearedFields[actionexecution.FieldStderrFileID]
+	return ok
+}
+
+// ResetStderrFileID resets all changes to the "stderr_file_id" field.
+func (m *ActionExecutionMutation) ResetStderrFileID() {
+	m.stderr = nil
+	delete(m.clearedFields, actionexecution.FieldStderrFileID)
 }
 
 // SetLabel sets the "label" field.
@@ -3156,153 +3306,6 @@ func (m *ActionExecutionMutation) ResetPrimaryOutput() {
 	delete(m.clearedFields, actionexecution.FieldPrimaryOutput)
 }
 
-// SetPrimaryOutputURI sets the "primary_output_uri" field.
-func (m *ActionExecutionMutation) SetPrimaryOutputURI(s string) {
-	m.primary_output_uri = &s
-}
-
-// PrimaryOutputURI returns the value of the "primary_output_uri" field in the mutation.
-func (m *ActionExecutionMutation) PrimaryOutputURI() (r string, exists bool) {
-	v := m.primary_output_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPrimaryOutputURI returns the old "primary_output_uri" field's value of the ActionExecution entity.
-// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionExecutionMutation) OldPrimaryOutputURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrimaryOutputURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrimaryOutputURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrimaryOutputURI: %w", err)
-	}
-	return oldValue.PrimaryOutputURI, nil
-}
-
-// ClearPrimaryOutputURI clears the value of the "primary_output_uri" field.
-func (m *ActionExecutionMutation) ClearPrimaryOutputURI() {
-	m.primary_output_uri = nil
-	m.clearedFields[actionexecution.FieldPrimaryOutputURI] = struct{}{}
-}
-
-// PrimaryOutputURICleared returns if the "primary_output_uri" field was cleared in this mutation.
-func (m *ActionExecutionMutation) PrimaryOutputURICleared() bool {
-	_, ok := m.clearedFields[actionexecution.FieldPrimaryOutputURI]
-	return ok
-}
-
-// ResetPrimaryOutputURI resets all changes to the "primary_output_uri" field.
-func (m *ActionExecutionMutation) ResetPrimaryOutputURI() {
-	m.primary_output_uri = nil
-	delete(m.clearedFields, actionexecution.FieldPrimaryOutputURI)
-}
-
-// SetStdoutURI sets the "stdout_uri" field.
-func (m *ActionExecutionMutation) SetStdoutURI(s string) {
-	m.stdout_uri = &s
-}
-
-// StdoutURI returns the value of the "stdout_uri" field in the mutation.
-func (m *ActionExecutionMutation) StdoutURI() (r string, exists bool) {
-	v := m.stdout_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStdoutURI returns the old "stdout_uri" field's value of the ActionExecution entity.
-// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionExecutionMutation) OldStdoutURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStdoutURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStdoutURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStdoutURI: %w", err)
-	}
-	return oldValue.StdoutURI, nil
-}
-
-// ClearStdoutURI clears the value of the "stdout_uri" field.
-func (m *ActionExecutionMutation) ClearStdoutURI() {
-	m.stdout_uri = nil
-	m.clearedFields[actionexecution.FieldStdoutURI] = struct{}{}
-}
-
-// StdoutURICleared returns if the "stdout_uri" field was cleared in this mutation.
-func (m *ActionExecutionMutation) StdoutURICleared() bool {
-	_, ok := m.clearedFields[actionexecution.FieldStdoutURI]
-	return ok
-}
-
-// ResetStdoutURI resets all changes to the "stdout_uri" field.
-func (m *ActionExecutionMutation) ResetStdoutURI() {
-	m.stdout_uri = nil
-	delete(m.clearedFields, actionexecution.FieldStdoutURI)
-}
-
-// SetStderrURI sets the "stderr_uri" field.
-func (m *ActionExecutionMutation) SetStderrURI(s string) {
-	m.stderr_uri = &s
-}
-
-// StderrURI returns the value of the "stderr_uri" field in the mutation.
-func (m *ActionExecutionMutation) StderrURI() (r string, exists bool) {
-	v := m.stderr_uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStderrURI returns the old "stderr_uri" field's value of the ActionExecution entity.
-// If the ActionExecution object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionExecutionMutation) OldStderrURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStderrURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStderrURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStderrURI: %w", err)
-	}
-	return oldValue.StderrURI, nil
-}
-
-// ClearStderrURI clears the value of the "stderr_uri" field.
-func (m *ActionExecutionMutation) ClearStderrURI() {
-	m.stderr_uri = nil
-	m.clearedFields[actionexecution.FieldStderrURI] = struct{}{}
-}
-
-// StderrURICleared returns if the "stderr_uri" field was cleared in this mutation.
-func (m *ActionExecutionMutation) StderrURICleared() bool {
-	_, ok := m.clearedFields[actionexecution.FieldStderrURI]
-	return ok
-}
-
-// ResetStderrURI resets all changes to the "stderr_uri" field.
-func (m *ActionExecutionMutation) ResetStderrURI() {
-	m.stderr_uri = nil
-	delete(m.clearedFields, actionexecution.FieldStderrURI)
-}
-
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (m *ActionExecutionMutation) ClearBazelInvocation() {
 	m.clearedbazel_invocation = true
@@ -3384,6 +3387,113 @@ func (m *ActionExecutionMutation) ResetActionDigest() {
 	m.clearedaction_digest = false
 }
 
+// ClearPrimaryOutputFile clears the "primary_output_file" edge to the File entity.
+func (m *ActionExecutionMutation) ClearPrimaryOutputFile() {
+	m.clearedprimary_output_file = true
+	m.clearedFields[actionexecution.FieldPrimaryOutputFileID] = struct{}{}
+}
+
+// PrimaryOutputFileCleared reports if the "primary_output_file" edge to the File entity was cleared.
+func (m *ActionExecutionMutation) PrimaryOutputFileCleared() bool {
+	return m.PrimaryOutputFileIDCleared() || m.clearedprimary_output_file
+}
+
+// PrimaryOutputFileIDs returns the "primary_output_file" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PrimaryOutputFileID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) PrimaryOutputFileIDs() (ids []int64) {
+	if id := m.primary_output_file; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetPrimaryOutputFile resets all changes to the "primary_output_file" edge.
+func (m *ActionExecutionMutation) ResetPrimaryOutputFile() {
+	m.primary_output_file = nil
+	m.clearedprimary_output_file = false
+}
+
+// SetStdoutID sets the "stdout" edge to the File entity by id.
+func (m *ActionExecutionMutation) SetStdoutID(id int64) {
+	m.stdout = &id
+}
+
+// ClearStdout clears the "stdout" edge to the File entity.
+func (m *ActionExecutionMutation) ClearStdout() {
+	m.clearedstdout = true
+	m.clearedFields[actionexecution.FieldStdoutFileID] = struct{}{}
+}
+
+// StdoutCleared reports if the "stdout" edge to the File entity was cleared.
+func (m *ActionExecutionMutation) StdoutCleared() bool {
+	return m.StdoutFileIDCleared() || m.clearedstdout
+}
+
+// StdoutID returns the "stdout" edge ID in the mutation.
+func (m *ActionExecutionMutation) StdoutID() (id int64, exists bool) {
+	if m.stdout != nil {
+		return *m.stdout, true
+	}
+	return
+}
+
+// StdoutIDs returns the "stdout" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StdoutID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) StdoutIDs() (ids []int64) {
+	if id := m.stdout; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStdout resets all changes to the "stdout" edge.
+func (m *ActionExecutionMutation) ResetStdout() {
+	m.stdout = nil
+	m.clearedstdout = false
+}
+
+// SetStderrID sets the "stderr" edge to the File entity by id.
+func (m *ActionExecutionMutation) SetStderrID(id int64) {
+	m.stderr = &id
+}
+
+// ClearStderr clears the "stderr" edge to the File entity.
+func (m *ActionExecutionMutation) ClearStderr() {
+	m.clearedstderr = true
+	m.clearedFields[actionexecution.FieldStderrFileID] = struct{}{}
+}
+
+// StderrCleared reports if the "stderr" edge to the File entity was cleared.
+func (m *ActionExecutionMutation) StderrCleared() bool {
+	return m.StderrFileIDCleared() || m.clearedstderr
+}
+
+// StderrID returns the "stderr" edge ID in the mutation.
+func (m *ActionExecutionMutation) StderrID() (id int64, exists bool) {
+	if m.stderr != nil {
+		return *m.stderr, true
+	}
+	return
+}
+
+// StderrIDs returns the "stderr" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StderrID instead. It exists only for internal usage by the builders.
+func (m *ActionExecutionMutation) StderrIDs() (ids []int64) {
+	if id := m.stderr; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStderr resets all changes to the "stderr" edge.
+func (m *ActionExecutionMutation) ResetStderr() {
+	m.stderr = nil
+	m.clearedstderr = false
+}
+
 // Where appends a list predicates to the ActionExecutionMutation builder.
 func (m *ActionExecutionMutation) Where(ps ...predicate.ActionExecution) {
 	m.predicates = append(m.predicates, ps...)
@@ -3428,6 +3538,15 @@ func (m *ActionExecutionMutation) Fields() []string {
 	if m.action_digest != nil {
 		fields = append(fields, actionexecution.FieldActionDigestID)
 	}
+	if m.primary_output_file != nil {
+		fields = append(fields, actionexecution.FieldPrimaryOutputFileID)
+	}
+	if m.stdout != nil {
+		fields = append(fields, actionexecution.FieldStdoutFileID)
+	}
+	if m.stderr != nil {
+		fields = append(fields, actionexecution.FieldStderrFileID)
+	}
 	if m.label != nil {
 		fields = append(fields, actionexecution.FieldLabel)
 	}
@@ -3464,15 +3583,6 @@ func (m *ActionExecutionMutation) Fields() []string {
 	if m.primary_output != nil {
 		fields = append(fields, actionexecution.FieldPrimaryOutput)
 	}
-	if m.primary_output_uri != nil {
-		fields = append(fields, actionexecution.FieldPrimaryOutputURI)
-	}
-	if m.stdout_uri != nil {
-		fields = append(fields, actionexecution.FieldStdoutURI)
-	}
-	if m.stderr_uri != nil {
-		fields = append(fields, actionexecution.FieldStderrURI)
-	}
 	return fields
 }
 
@@ -3487,6 +3597,12 @@ func (m *ActionExecutionMutation) Field(name string) (ent.Value, bool) {
 		return m.ConfigurationID()
 	case actionexecution.FieldActionDigestID:
 		return m.ActionDigestID()
+	case actionexecution.FieldPrimaryOutputFileID:
+		return m.PrimaryOutputFileID()
+	case actionexecution.FieldStdoutFileID:
+		return m.StdoutFileID()
+	case actionexecution.FieldStderrFileID:
+		return m.StderrFileID()
 	case actionexecution.FieldLabel:
 		return m.Label()
 	case actionexecution.FieldType:
@@ -3511,12 +3627,6 @@ func (m *ActionExecutionMutation) Field(name string) (ent.Value, bool) {
 		return m.FailureMessage()
 	case actionexecution.FieldPrimaryOutput:
 		return m.PrimaryOutput()
-	case actionexecution.FieldPrimaryOutputURI:
-		return m.PrimaryOutputURI()
-	case actionexecution.FieldStdoutURI:
-		return m.StdoutURI()
-	case actionexecution.FieldStderrURI:
-		return m.StderrURI()
 	}
 	return nil, false
 }
@@ -3532,6 +3642,12 @@ func (m *ActionExecutionMutation) OldField(ctx context.Context, name string) (en
 		return m.OldConfigurationID(ctx)
 	case actionexecution.FieldActionDigestID:
 		return m.OldActionDigestID(ctx)
+	case actionexecution.FieldPrimaryOutputFileID:
+		return m.OldPrimaryOutputFileID(ctx)
+	case actionexecution.FieldStdoutFileID:
+		return m.OldStdoutFileID(ctx)
+	case actionexecution.FieldStderrFileID:
+		return m.OldStderrFileID(ctx)
 	case actionexecution.FieldLabel:
 		return m.OldLabel(ctx)
 	case actionexecution.FieldType:
@@ -3556,12 +3672,6 @@ func (m *ActionExecutionMutation) OldField(ctx context.Context, name string) (en
 		return m.OldFailureMessage(ctx)
 	case actionexecution.FieldPrimaryOutput:
 		return m.OldPrimaryOutput(ctx)
-	case actionexecution.FieldPrimaryOutputURI:
-		return m.OldPrimaryOutputURI(ctx)
-	case actionexecution.FieldStdoutURI:
-		return m.OldStdoutURI(ctx)
-	case actionexecution.FieldStderrURI:
-		return m.OldStderrURI(ctx)
 	}
 	return nil, fmt.Errorf("unknown ActionExecution field %s", name)
 }
@@ -3591,6 +3701,27 @@ func (m *ActionExecutionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetActionDigestID(v)
+		return nil
+	case actionexecution.FieldPrimaryOutputFileID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrimaryOutputFileID(v)
+		return nil
+	case actionexecution.FieldStdoutFileID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStdoutFileID(v)
+		return nil
+	case actionexecution.FieldStderrFileID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStderrFileID(v)
 		return nil
 	case actionexecution.FieldLabel:
 		v, ok := value.(string)
@@ -3676,27 +3807,6 @@ func (m *ActionExecutionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPrimaryOutput(v)
 		return nil
-	case actionexecution.FieldPrimaryOutputURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrimaryOutputURI(v)
-		return nil
-	case actionexecution.FieldStdoutURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStdoutURI(v)
-		return nil
-	case actionexecution.FieldStderrURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStderrURI(v)
-		return nil
 	}
 	return fmt.Errorf("unknown ActionExecution field %s", name)
 }
@@ -3748,6 +3858,15 @@ func (m *ActionExecutionMutation) ClearedFields() []string {
 	if m.FieldCleared(actionexecution.FieldActionDigestID) {
 		fields = append(fields, actionexecution.FieldActionDigestID)
 	}
+	if m.FieldCleared(actionexecution.FieldPrimaryOutputFileID) {
+		fields = append(fields, actionexecution.FieldPrimaryOutputFileID)
+	}
+	if m.FieldCleared(actionexecution.FieldStdoutFileID) {
+		fields = append(fields, actionexecution.FieldStdoutFileID)
+	}
+	if m.FieldCleared(actionexecution.FieldStderrFileID) {
+		fields = append(fields, actionexecution.FieldStderrFileID)
+	}
 	if m.FieldCleared(actionexecution.FieldType) {
 		fields = append(fields, actionexecution.FieldType)
 	}
@@ -3781,15 +3900,6 @@ func (m *ActionExecutionMutation) ClearedFields() []string {
 	if m.FieldCleared(actionexecution.FieldPrimaryOutput) {
 		fields = append(fields, actionexecution.FieldPrimaryOutput)
 	}
-	if m.FieldCleared(actionexecution.FieldPrimaryOutputURI) {
-		fields = append(fields, actionexecution.FieldPrimaryOutputURI)
-	}
-	if m.FieldCleared(actionexecution.FieldStdoutURI) {
-		fields = append(fields, actionexecution.FieldStdoutURI)
-	}
-	if m.FieldCleared(actionexecution.FieldStderrURI) {
-		fields = append(fields, actionexecution.FieldStderrURI)
-	}
 	return fields
 }
 
@@ -3809,6 +3919,15 @@ func (m *ActionExecutionMutation) ClearField(name string) error {
 		return nil
 	case actionexecution.FieldActionDigestID:
 		m.ClearActionDigestID()
+		return nil
+	case actionexecution.FieldPrimaryOutputFileID:
+		m.ClearPrimaryOutputFileID()
+		return nil
+	case actionexecution.FieldStdoutFileID:
+		m.ClearStdoutFileID()
+		return nil
+	case actionexecution.FieldStderrFileID:
+		m.ClearStderrFileID()
 		return nil
 	case actionexecution.FieldType:
 		m.ClearType()
@@ -3843,15 +3962,6 @@ func (m *ActionExecutionMutation) ClearField(name string) error {
 	case actionexecution.FieldPrimaryOutput:
 		m.ClearPrimaryOutput()
 		return nil
-	case actionexecution.FieldPrimaryOutputURI:
-		m.ClearPrimaryOutputURI()
-		return nil
-	case actionexecution.FieldStdoutURI:
-		m.ClearStdoutURI()
-		return nil
-	case actionexecution.FieldStderrURI:
-		m.ClearStderrURI()
-		return nil
 	}
 	return fmt.Errorf("unknown ActionExecution nullable field %s", name)
 }
@@ -3868,6 +3978,15 @@ func (m *ActionExecutionMutation) ResetField(name string) error {
 		return nil
 	case actionexecution.FieldActionDigestID:
 		m.ResetActionDigestID()
+		return nil
+	case actionexecution.FieldPrimaryOutputFileID:
+		m.ResetPrimaryOutputFileID()
+		return nil
+	case actionexecution.FieldStdoutFileID:
+		m.ResetStdoutFileID()
+		return nil
+	case actionexecution.FieldStderrFileID:
+		m.ResetStderrFileID()
 		return nil
 	case actionexecution.FieldLabel:
 		m.ResetLabel()
@@ -3905,22 +4024,13 @@ func (m *ActionExecutionMutation) ResetField(name string) error {
 	case actionexecution.FieldPrimaryOutput:
 		m.ResetPrimaryOutput()
 		return nil
-	case actionexecution.FieldPrimaryOutputURI:
-		m.ResetPrimaryOutputURI()
-		return nil
-	case actionexecution.FieldStdoutURI:
-		m.ResetStdoutURI()
-		return nil
-	case actionexecution.FieldStderrURI:
-		m.ResetStderrURI()
-		return nil
 	}
 	return fmt.Errorf("unknown ActionExecution field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ActionExecutionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 6)
 	if m.bazel_invocation != nil {
 		edges = append(edges, actionexecution.EdgeBazelInvocation)
 	}
@@ -3929,6 +4039,15 @@ func (m *ActionExecutionMutation) AddedEdges() []string {
 	}
 	if m.action_digest != nil {
 		edges = append(edges, actionexecution.EdgeActionDigest)
+	}
+	if m.primary_output_file != nil {
+		edges = append(edges, actionexecution.EdgePrimaryOutputFile)
+	}
+	if m.stdout != nil {
+		edges = append(edges, actionexecution.EdgeStdout)
+	}
+	if m.stderr != nil {
+		edges = append(edges, actionexecution.EdgeStderr)
 	}
 	return edges
 }
@@ -3949,13 +4068,25 @@ func (m *ActionExecutionMutation) AddedIDs(name string) []ent.Value {
 		if id := m.action_digest; id != nil {
 			return []ent.Value{*id}
 		}
+	case actionexecution.EdgePrimaryOutputFile:
+		if id := m.primary_output_file; id != nil {
+			return []ent.Value{*id}
+		}
+	case actionexecution.EdgeStdout:
+		if id := m.stdout; id != nil {
+			return []ent.Value{*id}
+		}
+	case actionexecution.EdgeStderr:
+		if id := m.stderr; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ActionExecutionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 6)
 	return edges
 }
 
@@ -3967,7 +4098,7 @@ func (m *ActionExecutionMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ActionExecutionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 6)
 	if m.clearedbazel_invocation {
 		edges = append(edges, actionexecution.EdgeBazelInvocation)
 	}
@@ -3976,6 +4107,15 @@ func (m *ActionExecutionMutation) ClearedEdges() []string {
 	}
 	if m.clearedaction_digest {
 		edges = append(edges, actionexecution.EdgeActionDigest)
+	}
+	if m.clearedprimary_output_file {
+		edges = append(edges, actionexecution.EdgePrimaryOutputFile)
+	}
+	if m.clearedstdout {
+		edges = append(edges, actionexecution.EdgeStdout)
+	}
+	if m.clearedstderr {
+		edges = append(edges, actionexecution.EdgeStderr)
 	}
 	return edges
 }
@@ -3990,6 +4130,12 @@ func (m *ActionExecutionMutation) EdgeCleared(name string) bool {
 		return m.clearedconfiguration
 	case actionexecution.EdgeActionDigest:
 		return m.clearedaction_digest
+	case actionexecution.EdgePrimaryOutputFile:
+		return m.clearedprimary_output_file
+	case actionexecution.EdgeStdout:
+		return m.clearedstdout
+	case actionexecution.EdgeStderr:
+		return m.clearedstderr
 	}
 	return false
 }
@@ -4007,6 +4153,15 @@ func (m *ActionExecutionMutation) ClearEdge(name string) error {
 	case actionexecution.EdgeActionDigest:
 		m.ClearActionDigest()
 		return nil
+	case actionexecution.EdgePrimaryOutputFile:
+		m.ClearPrimaryOutputFile()
+		return nil
+	case actionexecution.EdgeStdout:
+		m.ClearStdout()
+		return nil
+	case actionexecution.EdgeStderr:
+		m.ClearStderr()
+		return nil
 	}
 	return fmt.Errorf("unknown ActionExecution unique edge %s", name)
 }
@@ -4023,6 +4178,15 @@ func (m *ActionExecutionMutation) ResetEdge(name string) error {
 		return nil
 	case actionexecution.EdgeActionDigest:
 		m.ResetActionDigest()
+		return nil
+	case actionexecution.EdgePrimaryOutputFile:
+		m.ResetPrimaryOutputFile()
+		return nil
+	case actionexecution.EdgeStdout:
+		m.ResetStdout()
+		return nil
+	case actionexecution.EdgeStderr:
+		m.ResetStderr()
 		return nil
 	}
 	return fmt.Errorf("unknown ActionExecution edge %s", name)
@@ -19469,26 +19633,35 @@ func (m *EventMetadataMutation) ResetEdge(name string) error {
 // FileMutation represents an operation that mutates the File nodes in the graph.
 type FileMutation struct {
 	config
-	op                              Op
-	typ                             string
-	id                              *int64
-	clearedFields                   map[string]struct{}
-	digest                          *int64
-	cleareddigest                   bool
-	file_path                       *int64
-	clearedfile_path                bool
-	invocation_profile              map[int64]struct{}
-	removedinvocation_profile       map[int64]struct{}
-	clearedinvocation_profile       bool
-	test_action_output              map[int64]struct{}
-	removedtest_action_output       map[int64]struct{}
-	clearedtest_action_output       bool
-	test_action_output_table        map[int64]struct{}
-	removedtest_action_output_table map[int64]struct{}
-	clearedtest_action_output_table bool
-	done                            bool
-	oldValue                        func(context.Context) (*File, error)
-	predicates                      []predicate.File
+	op                                     Op
+	typ                                    string
+	id                                     *int64
+	clearedFields                          map[string]struct{}
+	digest                                 *int64
+	cleareddigest                          bool
+	file_path                              *int64
+	clearedfile_path                       bool
+	action_execution_primary_output        map[int64]struct{}
+	removedaction_execution_primary_output map[int64]struct{}
+	clearedaction_execution_primary_output bool
+	action_execution_stdout                map[int64]struct{}
+	removedaction_execution_stdout         map[int64]struct{}
+	clearedaction_execution_stdout         bool
+	action_execution_stderr                map[int64]struct{}
+	removedaction_execution_stderr         map[int64]struct{}
+	clearedaction_execution_stderr         bool
+	invocation_profile                     map[int64]struct{}
+	removedinvocation_profile              map[int64]struct{}
+	clearedinvocation_profile              bool
+	test_action_output                     map[int64]struct{}
+	removedtest_action_output              map[int64]struct{}
+	clearedtest_action_output              bool
+	test_action_output_table               map[int64]struct{}
+	removedtest_action_output_table        map[int64]struct{}
+	clearedtest_action_output_table        bool
+	done                                   bool
+	oldValue                               func(context.Context) (*File, error)
+	predicates                             []predicate.File
 }
 
 var _ ent.Mutation = (*FileMutation)(nil)
@@ -19719,6 +19892,168 @@ func (m *FileMutation) FilePathIDs() (ids []int64) {
 func (m *FileMutation) ResetFilePath() {
 	m.file_path = nil
 	m.clearedfile_path = false
+}
+
+// AddActionExecutionPrimaryOutputIDs adds the "action_execution_primary_output" edge to the ActionExecution entity by ids.
+func (m *FileMutation) AddActionExecutionPrimaryOutputIDs(ids ...int64) {
+	if m.action_execution_primary_output == nil {
+		m.action_execution_primary_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.action_execution_primary_output[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActionExecutionPrimaryOutput clears the "action_execution_primary_output" edge to the ActionExecution entity.
+func (m *FileMutation) ClearActionExecutionPrimaryOutput() {
+	m.clearedaction_execution_primary_output = true
+}
+
+// ActionExecutionPrimaryOutputCleared reports if the "action_execution_primary_output" edge to the ActionExecution entity was cleared.
+func (m *FileMutation) ActionExecutionPrimaryOutputCleared() bool {
+	return m.clearedaction_execution_primary_output
+}
+
+// RemoveActionExecutionPrimaryOutputIDs removes the "action_execution_primary_output" edge to the ActionExecution entity by IDs.
+func (m *FileMutation) RemoveActionExecutionPrimaryOutputIDs(ids ...int64) {
+	if m.removedaction_execution_primary_output == nil {
+		m.removedaction_execution_primary_output = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.action_execution_primary_output, ids[i])
+		m.removedaction_execution_primary_output[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActionExecutionPrimaryOutput returns the removed IDs of the "action_execution_primary_output" edge to the ActionExecution entity.
+func (m *FileMutation) RemovedActionExecutionPrimaryOutputIDs() (ids []int64) {
+	for id := range m.removedaction_execution_primary_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionExecutionPrimaryOutputIDs returns the "action_execution_primary_output" edge IDs in the mutation.
+func (m *FileMutation) ActionExecutionPrimaryOutputIDs() (ids []int64) {
+	for id := range m.action_execution_primary_output {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActionExecutionPrimaryOutput resets all changes to the "action_execution_primary_output" edge.
+func (m *FileMutation) ResetActionExecutionPrimaryOutput() {
+	m.action_execution_primary_output = nil
+	m.clearedaction_execution_primary_output = false
+	m.removedaction_execution_primary_output = nil
+}
+
+// AddActionExecutionStdoutIDs adds the "action_execution_stdout" edge to the ActionExecution entity by ids.
+func (m *FileMutation) AddActionExecutionStdoutIDs(ids ...int64) {
+	if m.action_execution_stdout == nil {
+		m.action_execution_stdout = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.action_execution_stdout[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActionExecutionStdout clears the "action_execution_stdout" edge to the ActionExecution entity.
+func (m *FileMutation) ClearActionExecutionStdout() {
+	m.clearedaction_execution_stdout = true
+}
+
+// ActionExecutionStdoutCleared reports if the "action_execution_stdout" edge to the ActionExecution entity was cleared.
+func (m *FileMutation) ActionExecutionStdoutCleared() bool {
+	return m.clearedaction_execution_stdout
+}
+
+// RemoveActionExecutionStdoutIDs removes the "action_execution_stdout" edge to the ActionExecution entity by IDs.
+func (m *FileMutation) RemoveActionExecutionStdoutIDs(ids ...int64) {
+	if m.removedaction_execution_stdout == nil {
+		m.removedaction_execution_stdout = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.action_execution_stdout, ids[i])
+		m.removedaction_execution_stdout[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActionExecutionStdout returns the removed IDs of the "action_execution_stdout" edge to the ActionExecution entity.
+func (m *FileMutation) RemovedActionExecutionStdoutIDs() (ids []int64) {
+	for id := range m.removedaction_execution_stdout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionExecutionStdoutIDs returns the "action_execution_stdout" edge IDs in the mutation.
+func (m *FileMutation) ActionExecutionStdoutIDs() (ids []int64) {
+	for id := range m.action_execution_stdout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActionExecutionStdout resets all changes to the "action_execution_stdout" edge.
+func (m *FileMutation) ResetActionExecutionStdout() {
+	m.action_execution_stdout = nil
+	m.clearedaction_execution_stdout = false
+	m.removedaction_execution_stdout = nil
+}
+
+// AddActionExecutionStderrIDs adds the "action_execution_stderr" edge to the ActionExecution entity by ids.
+func (m *FileMutation) AddActionExecutionStderrIDs(ids ...int64) {
+	if m.action_execution_stderr == nil {
+		m.action_execution_stderr = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.action_execution_stderr[ids[i]] = struct{}{}
+	}
+}
+
+// ClearActionExecutionStderr clears the "action_execution_stderr" edge to the ActionExecution entity.
+func (m *FileMutation) ClearActionExecutionStderr() {
+	m.clearedaction_execution_stderr = true
+}
+
+// ActionExecutionStderrCleared reports if the "action_execution_stderr" edge to the ActionExecution entity was cleared.
+func (m *FileMutation) ActionExecutionStderrCleared() bool {
+	return m.clearedaction_execution_stderr
+}
+
+// RemoveActionExecutionStderrIDs removes the "action_execution_stderr" edge to the ActionExecution entity by IDs.
+func (m *FileMutation) RemoveActionExecutionStderrIDs(ids ...int64) {
+	if m.removedaction_execution_stderr == nil {
+		m.removedaction_execution_stderr = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.action_execution_stderr, ids[i])
+		m.removedaction_execution_stderr[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedActionExecutionStderr returns the removed IDs of the "action_execution_stderr" edge to the ActionExecution entity.
+func (m *FileMutation) RemovedActionExecutionStderrIDs() (ids []int64) {
+	for id := range m.removedaction_execution_stderr {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ActionExecutionStderrIDs returns the "action_execution_stderr" edge IDs in the mutation.
+func (m *FileMutation) ActionExecutionStderrIDs() (ids []int64) {
+	for id := range m.action_execution_stderr {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetActionExecutionStderr resets all changes to the "action_execution_stderr" edge.
+func (m *FileMutation) ResetActionExecutionStderr() {
+	m.action_execution_stderr = nil
+	m.clearedaction_execution_stderr = false
+	m.removedaction_execution_stderr = nil
 }
 
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by ids.
@@ -20036,12 +20371,21 @@ func (m *FileMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 8)
 	if m.digest != nil {
 		edges = append(edges, file.EdgeDigest)
 	}
 	if m.file_path != nil {
 		edges = append(edges, file.EdgeFilePath)
+	}
+	if m.action_execution_primary_output != nil {
+		edges = append(edges, file.EdgeActionExecutionPrimaryOutput)
+	}
+	if m.action_execution_stdout != nil {
+		edges = append(edges, file.EdgeActionExecutionStdout)
+	}
+	if m.action_execution_stderr != nil {
+		edges = append(edges, file.EdgeActionExecutionStderr)
 	}
 	if m.invocation_profile != nil {
 		edges = append(edges, file.EdgeInvocationProfile)
@@ -20067,6 +20411,24 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 		if id := m.file_path; id != nil {
 			return []ent.Value{*id}
 		}
+	case file.EdgeActionExecutionPrimaryOutput:
+		ids := make([]ent.Value, 0, len(m.action_execution_primary_output))
+		for id := range m.action_execution_primary_output {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionExecutionStdout:
+		ids := make([]ent.Value, 0, len(m.action_execution_stdout))
+		for id := range m.action_execution_stdout {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionExecutionStderr:
+		ids := make([]ent.Value, 0, len(m.action_execution_stderr))
+		for id := range m.action_execution_stderr {
+			ids = append(ids, id)
+		}
+		return ids
 	case file.EdgeInvocationProfile:
 		ids := make([]ent.Value, 0, len(m.invocation_profile))
 		for id := range m.invocation_profile {
@@ -20091,7 +20453,16 @@ func (m *FileMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 8)
+	if m.removedaction_execution_primary_output != nil {
+		edges = append(edges, file.EdgeActionExecutionPrimaryOutput)
+	}
+	if m.removedaction_execution_stdout != nil {
+		edges = append(edges, file.EdgeActionExecutionStdout)
+	}
+	if m.removedaction_execution_stderr != nil {
+		edges = append(edges, file.EdgeActionExecutionStderr)
+	}
 	if m.removedinvocation_profile != nil {
 		edges = append(edges, file.EdgeInvocationProfile)
 	}
@@ -20108,6 +20479,24 @@ func (m *FileMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case file.EdgeActionExecutionPrimaryOutput:
+		ids := make([]ent.Value, 0, len(m.removedaction_execution_primary_output))
+		for id := range m.removedaction_execution_primary_output {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionExecutionStdout:
+		ids := make([]ent.Value, 0, len(m.removedaction_execution_stdout))
+		for id := range m.removedaction_execution_stdout {
+			ids = append(ids, id)
+		}
+		return ids
+	case file.EdgeActionExecutionStderr:
+		ids := make([]ent.Value, 0, len(m.removedaction_execution_stderr))
+		for id := range m.removedaction_execution_stderr {
+			ids = append(ids, id)
+		}
+		return ids
 	case file.EdgeInvocationProfile:
 		ids := make([]ent.Value, 0, len(m.removedinvocation_profile))
 		for id := range m.removedinvocation_profile {
@@ -20132,12 +20521,21 @@ func (m *FileMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 8)
 	if m.cleareddigest {
 		edges = append(edges, file.EdgeDigest)
 	}
 	if m.clearedfile_path {
 		edges = append(edges, file.EdgeFilePath)
+	}
+	if m.clearedaction_execution_primary_output {
+		edges = append(edges, file.EdgeActionExecutionPrimaryOutput)
+	}
+	if m.clearedaction_execution_stdout {
+		edges = append(edges, file.EdgeActionExecutionStdout)
+	}
+	if m.clearedaction_execution_stderr {
+		edges = append(edges, file.EdgeActionExecutionStderr)
 	}
 	if m.clearedinvocation_profile {
 		edges = append(edges, file.EdgeInvocationProfile)
@@ -20159,6 +20557,12 @@ func (m *FileMutation) EdgeCleared(name string) bool {
 		return m.cleareddigest
 	case file.EdgeFilePath:
 		return m.clearedfile_path
+	case file.EdgeActionExecutionPrimaryOutput:
+		return m.clearedaction_execution_primary_output
+	case file.EdgeActionExecutionStdout:
+		return m.clearedaction_execution_stdout
+	case file.EdgeActionExecutionStderr:
+		return m.clearedaction_execution_stderr
 	case file.EdgeInvocationProfile:
 		return m.clearedinvocation_profile
 	case file.EdgeTestActionOutput:
@@ -20192,6 +20596,15 @@ func (m *FileMutation) ResetEdge(name string) error {
 		return nil
 	case file.EdgeFilePath:
 		m.ResetFilePath()
+		return nil
+	case file.EdgeActionExecutionPrimaryOutput:
+		m.ResetActionExecutionPrimaryOutput()
+		return nil
+	case file.EdgeActionExecutionStdout:
+		m.ResetActionExecutionStdout()
+		return nil
+	case file.EdgeActionExecutionStderr:
+		m.ResetActionExecutionStderr()
 		return nil
 	case file.EdgeInvocationProfile:
 		m.ResetInvocationProfile()

@@ -41,6 +41,24 @@ func (ActionExecution) Fields() []ent.Field {
 				entgql.Skip(),
 			),
 
+		field.Int64("primary_output_file_id").
+			Comment("The normalized CAS-backed primary output file").
+			Optional().
+			Immutable().
+			Annotations(entgql.Skip()),
+
+		field.Int64("stdout_file_id").
+			Comment("The normalized CAS-backed standard output file").
+			Optional().
+			Immutable().
+			Annotations(entgql.Skip()),
+
+		field.Int64("stderr_file_id").
+			Comment("The normalized CAS-backed standard error file").
+			Optional().
+			Immutable().
+			Annotations(entgql.Skip()),
+
 		field.String("label"),
 		field.String("type").Optional(),
 		field.String("runner").
@@ -66,13 +84,6 @@ func (ActionExecution) Fields() []ent.Field {
 		// successful actions even when the primary output's File message only
 		// contains a URI.
 		field.String("primary_output").Optional(),
-
-		// Keep remote references as URIs instead of duplicating CAS metadata in
-		// the files and digests tables. file:// URIs are intentionally ignored,
-		// because they only make sense on the Bazel client that ran the build.
-		field.String("primary_output_uri").Optional(),
-		field.String("stdout_uri").Optional(),
-		field.String("stderr_uri").Optional(),
 	}
 }
 
@@ -97,6 +108,21 @@ func (ActionExecution) Edges() []ent.Edge {
 			Field("action_digest_id").
 			Ref("action_executions").
 			Unique(),
+
+		edge.To("primary_output_file", File.Type).
+			Field("primary_output_file_id").
+			Unique().
+			Immutable(),
+
+		edge.To("stdout", File.Type).
+			Field("stdout_file_id").
+			Unique().
+			Immutable(),
+
+		edge.To("stderr", File.Type).
+			Field("stderr_file_id").
+			Unique().
+			Immutable(),
 	}
 }
 
@@ -108,6 +134,9 @@ func (ActionExecution) Indexes() []ent.Index {
 		index.Fields("type").Edges("bazel_invocation"),
 		index.Edges("configuration"),
 		index.Edges("action_digest"),
+		index.Edges("primary_output_file"),
+		index.Edges("stdout"),
+		index.Edges("stderr"),
 	}
 }
 

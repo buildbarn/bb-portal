@@ -70,6 +70,21 @@ func ActionDigestID(v int64) predicate.ActionExecution {
 	return predicate.ActionExecution(sql.FieldEQ(FieldActionDigestID, v))
 }
 
+// PrimaryOutputFileID applies equality check predicate on the "primary_output_file_id" field. It's identical to PrimaryOutputFileIDEQ.
+func PrimaryOutputFileID(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldPrimaryOutputFileID, v))
+}
+
+// StdoutFileID applies equality check predicate on the "stdout_file_id" field. It's identical to StdoutFileIDEQ.
+func StdoutFileID(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldStdoutFileID, v))
+}
+
+// StderrFileID applies equality check predicate on the "stderr_file_id" field. It's identical to StderrFileIDEQ.
+func StderrFileID(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldStderrFileID, v))
+}
+
 // Type applies equality check predicate on the "type" field. It's identical to TypeEQ.
 func Type(v string) predicate.ActionExecution {
 	return predicate.ActionExecution(sql.FieldEQ(FieldType, v))
@@ -118,21 +133,6 @@ func FailureMessage(v string) predicate.ActionExecution {
 // PrimaryOutput applies equality check predicate on the "primary_output" field. It's identical to PrimaryOutputEQ.
 func PrimaryOutput(v string) predicate.ActionExecution {
 	return predicate.ActionExecution(sql.FieldEQ(FieldPrimaryOutput, v))
-}
-
-// PrimaryOutputURI applies equality check predicate on the "primary_output_uri" field. It's identical to PrimaryOutputURIEQ.
-func PrimaryOutputURI(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldPrimaryOutputURI, v))
-}
-
-// StdoutURI applies equality check predicate on the "stdout_uri" field. It's identical to StdoutURIEQ.
-func StdoutURI(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldStdoutURI, v))
-}
-
-// StderrURI applies equality check predicate on the "stderr_uri" field. It's identical to StderrURIEQ.
-func StderrURI(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldStderrURI, v))
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
@@ -213,6 +213,96 @@ func ActionDigestIDIsNil() predicate.ActionExecution {
 // ActionDigestIDNotNil applies the NotNil predicate on the "action_digest_id" field.
 func ActionDigestIDNotNil() predicate.ActionExecution {
 	return predicate.ActionExecution(sql.FieldNotNull(FieldActionDigestID))
+}
+
+// PrimaryOutputFileIDEQ applies the EQ predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldPrimaryOutputFileID, v))
+}
+
+// PrimaryOutputFileIDNEQ applies the NEQ predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDNEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNEQ(FieldPrimaryOutputFileID, v))
+}
+
+// PrimaryOutputFileIDIn applies the In predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIn(FieldPrimaryOutputFileID, vs...))
+}
+
+// PrimaryOutputFileIDNotIn applies the NotIn predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDNotIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotIn(FieldPrimaryOutputFileID, vs...))
+}
+
+// PrimaryOutputFileIDIsNil applies the IsNil predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDIsNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIsNull(FieldPrimaryOutputFileID))
+}
+
+// PrimaryOutputFileIDNotNil applies the NotNil predicate on the "primary_output_file_id" field.
+func PrimaryOutputFileIDNotNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotNull(FieldPrimaryOutputFileID))
+}
+
+// StdoutFileIDEQ applies the EQ predicate on the "stdout_file_id" field.
+func StdoutFileIDEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldStdoutFileID, v))
+}
+
+// StdoutFileIDNEQ applies the NEQ predicate on the "stdout_file_id" field.
+func StdoutFileIDNEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNEQ(FieldStdoutFileID, v))
+}
+
+// StdoutFileIDIn applies the In predicate on the "stdout_file_id" field.
+func StdoutFileIDIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIn(FieldStdoutFileID, vs...))
+}
+
+// StdoutFileIDNotIn applies the NotIn predicate on the "stdout_file_id" field.
+func StdoutFileIDNotIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotIn(FieldStdoutFileID, vs...))
+}
+
+// StdoutFileIDIsNil applies the IsNil predicate on the "stdout_file_id" field.
+func StdoutFileIDIsNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIsNull(FieldStdoutFileID))
+}
+
+// StdoutFileIDNotNil applies the NotNil predicate on the "stdout_file_id" field.
+func StdoutFileIDNotNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotNull(FieldStdoutFileID))
+}
+
+// StderrFileIDEQ applies the EQ predicate on the "stderr_file_id" field.
+func StderrFileIDEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldEQ(FieldStderrFileID, v))
+}
+
+// StderrFileIDNEQ applies the NEQ predicate on the "stderr_file_id" field.
+func StderrFileIDNEQ(v int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNEQ(FieldStderrFileID, v))
+}
+
+// StderrFileIDIn applies the In predicate on the "stderr_file_id" field.
+func StderrFileIDIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIn(FieldStderrFileID, vs...))
+}
+
+// StderrFileIDNotIn applies the NotIn predicate on the "stderr_file_id" field.
+func StderrFileIDNotIn(vs ...int64) predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotIn(FieldStderrFileID, vs...))
+}
+
+// StderrFileIDIsNil applies the IsNil predicate on the "stderr_file_id" field.
+func StderrFileIDIsNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldIsNull(FieldStderrFileID))
+}
+
+// StderrFileIDNotNil applies the NotNil predicate on the "stderr_file_id" field.
+func StderrFileIDNotNil() predicate.ActionExecution {
+	return predicate.ActionExecution(sql.FieldNotNull(FieldStderrFileID))
 }
 
 // LabelEQ applies the EQ predicate on the "label" field.
@@ -855,231 +945,6 @@ func PrimaryOutputContainsFold(v string) predicate.ActionExecution {
 	return predicate.ActionExecution(sql.FieldContainsFold(FieldPrimaryOutput, v))
 }
 
-// PrimaryOutputURIEQ applies the EQ predicate on the "primary_output_uri" field.
-func PrimaryOutputURIEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURINEQ applies the NEQ predicate on the "primary_output_uri" field.
-func PrimaryOutputURINEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNEQ(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIIn applies the In predicate on the "primary_output_uri" field.
-func PrimaryOutputURIIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIn(FieldPrimaryOutputURI, vs...))
-}
-
-// PrimaryOutputURINotIn applies the NotIn predicate on the "primary_output_uri" field.
-func PrimaryOutputURINotIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotIn(FieldPrimaryOutputURI, vs...))
-}
-
-// PrimaryOutputURIGT applies the GT predicate on the "primary_output_uri" field.
-func PrimaryOutputURIGT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGT(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIGTE applies the GTE predicate on the "primary_output_uri" field.
-func PrimaryOutputURIGTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGTE(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURILT applies the LT predicate on the "primary_output_uri" field.
-func PrimaryOutputURILT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLT(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURILTE applies the LTE predicate on the "primary_output_uri" field.
-func PrimaryOutputURILTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLTE(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIContains applies the Contains predicate on the "primary_output_uri" field.
-func PrimaryOutputURIContains(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContains(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIHasPrefix applies the HasPrefix predicate on the "primary_output_uri" field.
-func PrimaryOutputURIHasPrefix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasPrefix(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIHasSuffix applies the HasSuffix predicate on the "primary_output_uri" field.
-func PrimaryOutputURIHasSuffix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasSuffix(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIIsNil applies the IsNil predicate on the "primary_output_uri" field.
-func PrimaryOutputURIIsNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIsNull(FieldPrimaryOutputURI))
-}
-
-// PrimaryOutputURINotNil applies the NotNil predicate on the "primary_output_uri" field.
-func PrimaryOutputURINotNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotNull(FieldPrimaryOutputURI))
-}
-
-// PrimaryOutputURIEqualFold applies the EqualFold predicate on the "primary_output_uri" field.
-func PrimaryOutputURIEqualFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEqualFold(FieldPrimaryOutputURI, v))
-}
-
-// PrimaryOutputURIContainsFold applies the ContainsFold predicate on the "primary_output_uri" field.
-func PrimaryOutputURIContainsFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContainsFold(FieldPrimaryOutputURI, v))
-}
-
-// StdoutURIEQ applies the EQ predicate on the "stdout_uri" field.
-func StdoutURIEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldStdoutURI, v))
-}
-
-// StdoutURINEQ applies the NEQ predicate on the "stdout_uri" field.
-func StdoutURINEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNEQ(FieldStdoutURI, v))
-}
-
-// StdoutURIIn applies the In predicate on the "stdout_uri" field.
-func StdoutURIIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIn(FieldStdoutURI, vs...))
-}
-
-// StdoutURINotIn applies the NotIn predicate on the "stdout_uri" field.
-func StdoutURINotIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotIn(FieldStdoutURI, vs...))
-}
-
-// StdoutURIGT applies the GT predicate on the "stdout_uri" field.
-func StdoutURIGT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGT(FieldStdoutURI, v))
-}
-
-// StdoutURIGTE applies the GTE predicate on the "stdout_uri" field.
-func StdoutURIGTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGTE(FieldStdoutURI, v))
-}
-
-// StdoutURILT applies the LT predicate on the "stdout_uri" field.
-func StdoutURILT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLT(FieldStdoutURI, v))
-}
-
-// StdoutURILTE applies the LTE predicate on the "stdout_uri" field.
-func StdoutURILTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLTE(FieldStdoutURI, v))
-}
-
-// StdoutURIContains applies the Contains predicate on the "stdout_uri" field.
-func StdoutURIContains(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContains(FieldStdoutURI, v))
-}
-
-// StdoutURIHasPrefix applies the HasPrefix predicate on the "stdout_uri" field.
-func StdoutURIHasPrefix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasPrefix(FieldStdoutURI, v))
-}
-
-// StdoutURIHasSuffix applies the HasSuffix predicate on the "stdout_uri" field.
-func StdoutURIHasSuffix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasSuffix(FieldStdoutURI, v))
-}
-
-// StdoutURIIsNil applies the IsNil predicate on the "stdout_uri" field.
-func StdoutURIIsNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIsNull(FieldStdoutURI))
-}
-
-// StdoutURINotNil applies the NotNil predicate on the "stdout_uri" field.
-func StdoutURINotNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotNull(FieldStdoutURI))
-}
-
-// StdoutURIEqualFold applies the EqualFold predicate on the "stdout_uri" field.
-func StdoutURIEqualFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEqualFold(FieldStdoutURI, v))
-}
-
-// StdoutURIContainsFold applies the ContainsFold predicate on the "stdout_uri" field.
-func StdoutURIContainsFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContainsFold(FieldStdoutURI, v))
-}
-
-// StderrURIEQ applies the EQ predicate on the "stderr_uri" field.
-func StderrURIEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEQ(FieldStderrURI, v))
-}
-
-// StderrURINEQ applies the NEQ predicate on the "stderr_uri" field.
-func StderrURINEQ(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNEQ(FieldStderrURI, v))
-}
-
-// StderrURIIn applies the In predicate on the "stderr_uri" field.
-func StderrURIIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIn(FieldStderrURI, vs...))
-}
-
-// StderrURINotIn applies the NotIn predicate on the "stderr_uri" field.
-func StderrURINotIn(vs ...string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotIn(FieldStderrURI, vs...))
-}
-
-// StderrURIGT applies the GT predicate on the "stderr_uri" field.
-func StderrURIGT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGT(FieldStderrURI, v))
-}
-
-// StderrURIGTE applies the GTE predicate on the "stderr_uri" field.
-func StderrURIGTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldGTE(FieldStderrURI, v))
-}
-
-// StderrURILT applies the LT predicate on the "stderr_uri" field.
-func StderrURILT(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLT(FieldStderrURI, v))
-}
-
-// StderrURILTE applies the LTE predicate on the "stderr_uri" field.
-func StderrURILTE(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldLTE(FieldStderrURI, v))
-}
-
-// StderrURIContains applies the Contains predicate on the "stderr_uri" field.
-func StderrURIContains(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContains(FieldStderrURI, v))
-}
-
-// StderrURIHasPrefix applies the HasPrefix predicate on the "stderr_uri" field.
-func StderrURIHasPrefix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasPrefix(FieldStderrURI, v))
-}
-
-// StderrURIHasSuffix applies the HasSuffix predicate on the "stderr_uri" field.
-func StderrURIHasSuffix(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldHasSuffix(FieldStderrURI, v))
-}
-
-// StderrURIIsNil applies the IsNil predicate on the "stderr_uri" field.
-func StderrURIIsNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldIsNull(FieldStderrURI))
-}
-
-// StderrURINotNil applies the NotNil predicate on the "stderr_uri" field.
-func StderrURINotNil() predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldNotNull(FieldStderrURI))
-}
-
-// StderrURIEqualFold applies the EqualFold predicate on the "stderr_uri" field.
-func StderrURIEqualFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldEqualFold(FieldStderrURI, v))
-}
-
-// StderrURIContainsFold applies the ContainsFold predicate on the "stderr_uri" field.
-func StderrURIContainsFold(v string) predicate.ActionExecution {
-	return predicate.ActionExecution(sql.FieldContainsFold(FieldStderrURI, v))
-}
-
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.
 func HasBazelInvocation() predicate.ActionExecution {
 	return predicate.ActionExecution(func(s *sql.Selector) {
@@ -1141,6 +1006,75 @@ func HasActionDigest() predicate.ActionExecution {
 func HasActionDigestWith(preds ...predicate.Digest) predicate.ActionExecution {
 	return predicate.ActionExecution(func(s *sql.Selector) {
 		step := newActionDigestStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPrimaryOutputFile applies the HasEdge predicate on the "primary_output_file" edge.
+func HasPrimaryOutputFile() predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, PrimaryOutputFileTable, PrimaryOutputFileColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPrimaryOutputFileWith applies the HasEdge predicate on the "primary_output_file" edge with a given conditions (other predicates).
+func HasPrimaryOutputFileWith(preds ...predicate.File) predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := newPrimaryOutputFileStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStdout applies the HasEdge predicate on the "stdout" edge.
+func HasStdout() predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, StdoutTable, StdoutColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStdoutWith applies the HasEdge predicate on the "stdout" edge with a given conditions (other predicates).
+func HasStdoutWith(preds ...predicate.File) predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := newStdoutStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStderr applies the HasEdge predicate on the "stderr" edge.
+func HasStderr() predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, StderrTable, StderrColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStderrWith applies the HasEdge predicate on the "stderr" edge with a given conditions (other predicates).
+func HasStderrWith(preds ...predicate.File) predicate.ActionExecution {
+	return predicate.ActionExecution(func(s *sql.Selector) {
+		step := newStderrStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

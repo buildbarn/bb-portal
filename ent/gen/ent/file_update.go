@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -28,6 +29,51 @@ type FileUpdate struct {
 func (_u *FileUpdate) Where(ps ...predicate.File) *FileUpdate {
 	_u.mutation.Where(ps...)
 	return _u
+}
+
+// AddActionExecutionPrimaryOutputIDs adds the "action_execution_primary_output" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdate) AddActionExecutionPrimaryOutputIDs(ids ...int64) *FileUpdate {
+	_u.mutation.AddActionExecutionPrimaryOutputIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionPrimaryOutput adds the "action_execution_primary_output" edges to the ActionExecution entity.
+func (_u *FileUpdate) AddActionExecutionPrimaryOutput(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionPrimaryOutputIDs(ids...)
+}
+
+// AddActionExecutionStdoutIDs adds the "action_execution_stdout" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdate) AddActionExecutionStdoutIDs(ids ...int64) *FileUpdate {
+	_u.mutation.AddActionExecutionStdoutIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionStdout adds the "action_execution_stdout" edges to the ActionExecution entity.
+func (_u *FileUpdate) AddActionExecutionStdout(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionStdoutIDs(ids...)
+}
+
+// AddActionExecutionStderrIDs adds the "action_execution_stderr" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdate) AddActionExecutionStderrIDs(ids ...int64) *FileUpdate {
+	_u.mutation.AddActionExecutionStderrIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionStderr adds the "action_execution_stderr" edges to the ActionExecution entity.
+func (_u *FileUpdate) AddActionExecutionStderr(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionStderrIDs(ids...)
 }
 
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
@@ -78,6 +124,69 @@ func (_u *FileUpdate) AddTestActionOutputTable(v ...*TestActionOutput) *FileUpda
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdate) Mutation() *FileMutation {
 	return _u.mutation
+}
+
+// ClearActionExecutionPrimaryOutput clears all "action_execution_primary_output" edges to the ActionExecution entity.
+func (_u *FileUpdate) ClearActionExecutionPrimaryOutput() *FileUpdate {
+	_u.mutation.ClearActionExecutionPrimaryOutput()
+	return _u
+}
+
+// RemoveActionExecutionPrimaryOutputIDs removes the "action_execution_primary_output" edge to ActionExecution entities by IDs.
+func (_u *FileUpdate) RemoveActionExecutionPrimaryOutputIDs(ids ...int64) *FileUpdate {
+	_u.mutation.RemoveActionExecutionPrimaryOutputIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionPrimaryOutput removes "action_execution_primary_output" edges to ActionExecution entities.
+func (_u *FileUpdate) RemoveActionExecutionPrimaryOutput(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionPrimaryOutputIDs(ids...)
+}
+
+// ClearActionExecutionStdout clears all "action_execution_stdout" edges to the ActionExecution entity.
+func (_u *FileUpdate) ClearActionExecutionStdout() *FileUpdate {
+	_u.mutation.ClearActionExecutionStdout()
+	return _u
+}
+
+// RemoveActionExecutionStdoutIDs removes the "action_execution_stdout" edge to ActionExecution entities by IDs.
+func (_u *FileUpdate) RemoveActionExecutionStdoutIDs(ids ...int64) *FileUpdate {
+	_u.mutation.RemoveActionExecutionStdoutIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionStdout removes "action_execution_stdout" edges to ActionExecution entities.
+func (_u *FileUpdate) RemoveActionExecutionStdout(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionStdoutIDs(ids...)
+}
+
+// ClearActionExecutionStderr clears all "action_execution_stderr" edges to the ActionExecution entity.
+func (_u *FileUpdate) ClearActionExecutionStderr() *FileUpdate {
+	_u.mutation.ClearActionExecutionStderr()
+	return _u
+}
+
+// RemoveActionExecutionStderrIDs removes the "action_execution_stderr" edge to ActionExecution entities by IDs.
+func (_u *FileUpdate) RemoveActionExecutionStderrIDs(ids ...int64) *FileUpdate {
+	_u.mutation.RemoveActionExecutionStderrIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionStderr removes "action_execution_stderr" edges to ActionExecution entities.
+func (_u *FileUpdate) RemoveActionExecutionStderr(v ...*ActionExecution) *FileUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionStderrIDs(ids...)
 }
 
 // ClearInvocationProfile clears all "invocation_profile" edges to the BazelInvocation entity.
@@ -192,6 +301,141 @@ func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if _u.mutation.ActionExecutionPrimaryOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionPrimaryOutputIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionPrimaryOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionPrimaryOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ActionExecutionStdoutCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionStdoutIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionStdoutCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionStdoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ActionExecutionStderrCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionStderrIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionStderrCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionStderrIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.InvocationProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -348,6 +592,51 @@ type FileUpdateOne struct {
 	mutation *FileMutation
 }
 
+// AddActionExecutionPrimaryOutputIDs adds the "action_execution_primary_output" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdateOne) AddActionExecutionPrimaryOutputIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.AddActionExecutionPrimaryOutputIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionPrimaryOutput adds the "action_execution_primary_output" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) AddActionExecutionPrimaryOutput(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionPrimaryOutputIDs(ids...)
+}
+
+// AddActionExecutionStdoutIDs adds the "action_execution_stdout" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdateOne) AddActionExecutionStdoutIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.AddActionExecutionStdoutIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionStdout adds the "action_execution_stdout" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) AddActionExecutionStdout(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionStdoutIDs(ids...)
+}
+
+// AddActionExecutionStderrIDs adds the "action_execution_stderr" edge to the ActionExecution entity by IDs.
+func (_u *FileUpdateOne) AddActionExecutionStderrIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.AddActionExecutionStderrIDs(ids...)
+	return _u
+}
+
+// AddActionExecutionStderr adds the "action_execution_stderr" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) AddActionExecutionStderr(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddActionExecutionStderrIDs(ids...)
+}
+
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
 func (_u *FileUpdateOne) AddInvocationProfileIDs(ids ...int64) *FileUpdateOne {
 	_u.mutation.AddInvocationProfileIDs(ids...)
@@ -396,6 +685,69 @@ func (_u *FileUpdateOne) AddTestActionOutputTable(v ...*TestActionOutput) *FileU
 // Mutation returns the FileMutation object of the builder.
 func (_u *FileUpdateOne) Mutation() *FileMutation {
 	return _u.mutation
+}
+
+// ClearActionExecutionPrimaryOutput clears all "action_execution_primary_output" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) ClearActionExecutionPrimaryOutput() *FileUpdateOne {
+	_u.mutation.ClearActionExecutionPrimaryOutput()
+	return _u
+}
+
+// RemoveActionExecutionPrimaryOutputIDs removes the "action_execution_primary_output" edge to ActionExecution entities by IDs.
+func (_u *FileUpdateOne) RemoveActionExecutionPrimaryOutputIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.RemoveActionExecutionPrimaryOutputIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionPrimaryOutput removes "action_execution_primary_output" edges to ActionExecution entities.
+func (_u *FileUpdateOne) RemoveActionExecutionPrimaryOutput(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionPrimaryOutputIDs(ids...)
+}
+
+// ClearActionExecutionStdout clears all "action_execution_stdout" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) ClearActionExecutionStdout() *FileUpdateOne {
+	_u.mutation.ClearActionExecutionStdout()
+	return _u
+}
+
+// RemoveActionExecutionStdoutIDs removes the "action_execution_stdout" edge to ActionExecution entities by IDs.
+func (_u *FileUpdateOne) RemoveActionExecutionStdoutIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.RemoveActionExecutionStdoutIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionStdout removes "action_execution_stdout" edges to ActionExecution entities.
+func (_u *FileUpdateOne) RemoveActionExecutionStdout(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionStdoutIDs(ids...)
+}
+
+// ClearActionExecutionStderr clears all "action_execution_stderr" edges to the ActionExecution entity.
+func (_u *FileUpdateOne) ClearActionExecutionStderr() *FileUpdateOne {
+	_u.mutation.ClearActionExecutionStderr()
+	return _u
+}
+
+// RemoveActionExecutionStderrIDs removes the "action_execution_stderr" edge to ActionExecution entities by IDs.
+func (_u *FileUpdateOne) RemoveActionExecutionStderrIDs(ids ...int64) *FileUpdateOne {
+	_u.mutation.RemoveActionExecutionStderrIDs(ids...)
+	return _u
+}
+
+// RemoveActionExecutionStderr removes "action_execution_stderr" edges to ActionExecution entities.
+func (_u *FileUpdateOne) RemoveActionExecutionStderr(v ...*ActionExecution) *FileUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveActionExecutionStderrIDs(ids...)
 }
 
 // ClearInvocationProfile clears all "invocation_profile" edges to the BazelInvocation entity.
@@ -540,6 +892,141 @@ func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if _u.mutation.ActionExecutionPrimaryOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionPrimaryOutputIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionPrimaryOutputCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionPrimaryOutputIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ActionExecutionStdoutCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionStdoutIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionStdoutCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionStdoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ActionExecutionStderrCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedActionExecutionStderrIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionStderrCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ActionExecutionStderrIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.InvocationProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{

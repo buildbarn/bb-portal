@@ -85,15 +85,45 @@ export const BAZEL_INVOCATION_ACTION_EXECUTION_FRAGMENT = gql(/* GraphQL */ `
     failureCode
     failureMessage
     primaryOutput
-    primaryOutputURI
+    primaryOutputFile {
+      filePath {
+        path
+      }
+      digest {
+        rev2InstanceName
+        digestFunction
+        hash
+        sizeBytes
+      }
+    }
     actionDigest {
       rev2InstanceName
       digestFunction
       hash
       sizeBytes
     }
-    stdoutURI
-    stderrURI
+    stdout {
+      filePath {
+        path
+      }
+      digest {
+        rev2InstanceName
+        digestFunction
+        hash
+        sizeBytes
+      }
+    }
+    stderr {
+      filePath {
+        path
+      }
+      digest {
+        rev2InstanceName
+        digestFunction
+        hash
+        sizeBytes
+      }
+    }
     configuration {
       id
       configurationID

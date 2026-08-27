@@ -1,8 +1,9 @@
 import { Descriptions, Flex, Space, Typography } from "antd";
 import type { BazelInvocationActionExecutionFragment } from "@/graphql/__generated__/graphql";
 import {
+  type GraphqlFile,
   generateActionUrlFromGraphqlDigest,
-  generateFileUrlFromBepURI,
+  generateFileUrlFromGraphqlFile,
 } from "@/utils/urlGenerator";
 import { getActionCacheStatus } from "./cache";
 import { getActionExecutionKind } from "./execution";
@@ -12,18 +13,15 @@ interface Props {
 }
 
 interface OutputLinkProps {
-  uri?: string | null;
-  fileName: string;
+  file?: GraphqlFile | null;
   children: React.ReactNode;
 }
 
-const OutputLink: React.FC<OutputLinkProps> = ({ uri, fileName, children }) => {
-  const href = generateFileUrlFromBepURI(uri, fileName);
-  if (href) {
-    return <Typography.Link href={href}>{children}</Typography.Link>;
-  }
-  return uri ? (
-    <Typography.Text copyable={{ text: uri }}>{children}</Typography.Text>
+const OutputLink: React.FC<OutputLinkProps> = ({ file, children }) => {
+  return file ? (
+    <Typography.Link href={generateFileUrlFromGraphqlFile(file)}>
+      {children}
+    </Typography.Link>
   ) : (
     children
   );
@@ -82,24 +80,21 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
         )}
         {action.primaryOutput && (
           <Descriptions.Item label="Primary output">
-            <OutputLink
-              uri={action.primaryOutputURI}
-              fileName={action.primaryOutput}
-            >
+            <OutputLink file={action.primaryOutputFile}>
               {action.primaryOutput}
             </OutputLink>
           </Descriptions.Item>
         )}
-        {action.stdoutURI && (
+        {action.stdout && (
           <Descriptions.Item label="Standard output">
-            <OutputLink uri={action.stdoutURI} fileName="standard_output.txt">
+            <OutputLink file={action.stdout}>
               Download standard output
             </OutputLink>
           </Descriptions.Item>
         )}
-        {action.stderrURI && (
+        {action.stderr && (
           <Descriptions.Item label="Standard error">
-            <OutputLink uri={action.stderrURI} fileName="standard_error.txt">
+            <OutputLink file={action.stderr}>
               Download standard error
             </OutputLink>
           </Descriptions.Item>

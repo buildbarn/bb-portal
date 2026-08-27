@@ -1095,6 +1095,54 @@ func (c *ActionExecutionClient) QueryActionDigest(_m *ActionExecution) *DigestQu
 	return query
 }
 
+// QueryPrimaryOutputFile queries the primary_output_file edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryPrimaryOutputFile(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.PrimaryOutputFileTable, actionexecution.PrimaryOutputFileColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStdout queries the stdout edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryStdout(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StdoutTable, actionexecution.StdoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStderr queries the stderr edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryStderr(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StderrTable, actionexecution.StderrColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ActionExecutionClient) Hooks() []Hook {
 	hooks := c.hooks.ActionExecution
@@ -4355,6 +4403,54 @@ func (c *FileClient) QueryFilePath(_m *File) *FilePathQuery {
 			sqlgraph.From(file.Table, file.FieldID, id),
 			sqlgraph.To(filepath.Table, filepath.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, file.FilePathTable, file.FilePathColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionExecutionPrimaryOutput queries the action_execution_primary_output edge of a File.
+func (c *FileClient) QueryActionExecutionPrimaryOutput(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionPrimaryOutputTable, file.ActionExecutionPrimaryOutputColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionExecutionStdout queries the action_execution_stdout edge of a File.
+func (c *FileClient) QueryActionExecutionStdout(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStdoutTable, file.ActionExecutionStdoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionExecutionStderr queries the action_execution_stderr edge of a File.
+func (c *FileClient) QueryActionExecutionStderr(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStderrTable, file.ActionExecutionStderrColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

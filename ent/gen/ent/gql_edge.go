@@ -60,6 +60,30 @@ func (_m *ActionExecution) ActionDigest(ctx context.Context) (*Digest, error) {
 	return result, MaskNotFound(err)
 }
 
+func (_m *ActionExecution) PrimaryOutputFile(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.PrimaryOutputFileOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryPrimaryOutputFile().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *ActionExecution) Stdout(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.StdoutOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryStdout().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *ActionExecution) Stderr(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.StderrOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryStderr().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *ActionSummary) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := _m.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {

@@ -343,6 +343,51 @@ func (_q *ActionExecutionQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, actionexecution.FieldActionDigestID)
 				fieldSeen[actionexecution.FieldActionDigestID] = struct{}{}
 			}
+
+		case "primaryOutputFile":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withPrimaryOutputFile = query
+			if _, ok := fieldSeen[actionexecution.FieldPrimaryOutputFileID]; !ok {
+				selectedFields = append(selectedFields, actionexecution.FieldPrimaryOutputFileID)
+				fieldSeen[actionexecution.FieldPrimaryOutputFileID] = struct{}{}
+			}
+
+		case "stdout":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withStdout = query
+			if _, ok := fieldSeen[actionexecution.FieldStdoutFileID]; !ok {
+				selectedFields = append(selectedFields, actionexecution.FieldStdoutFileID)
+				fieldSeen[actionexecution.FieldStdoutFileID] = struct{}{}
+			}
+
+		case "stderr":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
+				return err
+			}
+			_q.withStderr = query
+			if _, ok := fieldSeen[actionexecution.FieldStderrFileID]; !ok {
+				selectedFields = append(selectedFields, actionexecution.FieldStderrFileID)
+				fieldSeen[actionexecution.FieldStderrFileID] = struct{}{}
+			}
 		case "label":
 			if _, ok := fieldSeen[actionexecution.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, actionexecution.FieldLabel)
@@ -402,21 +447,6 @@ func (_q *ActionExecutionQuery) collectField(ctx context.Context, oneNode bool, 
 			if _, ok := fieldSeen[actionexecution.FieldPrimaryOutput]; !ok {
 				selectedFields = append(selectedFields, actionexecution.FieldPrimaryOutput)
 				fieldSeen[actionexecution.FieldPrimaryOutput] = struct{}{}
-			}
-		case "primaryOutputURI":
-			if _, ok := fieldSeen[actionexecution.FieldPrimaryOutputURI]; !ok {
-				selectedFields = append(selectedFields, actionexecution.FieldPrimaryOutputURI)
-				fieldSeen[actionexecution.FieldPrimaryOutputURI] = struct{}{}
-			}
-		case "stdoutURI":
-			if _, ok := fieldSeen[actionexecution.FieldStdoutURI]; !ok {
-				selectedFields = append(selectedFields, actionexecution.FieldStdoutURI)
-				fieldSeen[actionexecution.FieldStdoutURI] = struct{}{}
-			}
-		case "stderrURI":
-			if _, ok := fieldSeen[actionexecution.FieldStderrURI]; !ok {
-				selectedFields = append(selectedFields, actionexecution.FieldStderrURI)
-				fieldSeen[actionexecution.FieldStderrURI] = struct{}{}
 			}
 		case "id":
 		case "__typename":

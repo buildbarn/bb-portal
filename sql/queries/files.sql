@@ -55,6 +55,30 @@ ORDER BY d.id, fp.id
 ON CONFLICT (digest_id, file_path_id)
 DO NOTHING;
 
+-- name: GetFileIDs :many
+SELECT f.id
+FROM (
+    SELECT
+        unnest(sqlc.arg(file_paths)::text[]) AS file_path,
+        unnest(sqlc.arg(rev2_instance_names)::text[]) AS rev2_instance_name,
+        unnest(sqlc.arg(digest_functions)::smallint[]) AS digest_function,
+        unnest(sqlc.arg(hashes)::bytea[]) AS hash,
+        unnest(sqlc.arg(size_bytes)::bigint[]) AS size_bytes,
+        generate_series(1, cardinality(sqlc.arg(file_paths)::text[])) AS ordinality
+) AS input
+JOIN file_paths fp
+    ON fp.bep_instance_name_id = sqlc.arg(bep_instance_name_id)::bigint
+    AND fp.path = input.file_path
+JOIN digests d
+    ON d.rev2_instance_name = input.rev2_instance_name
+    AND d.digest_function = input.digest_function
+    AND d.hash = input.hash
+    AND d.size_bytes = input.size_bytes
+JOIN files f
+    ON f.file_path_id = fp.id
+    AND f.digest_id = d.id
+ORDER BY input.ordinality;
+
 -- name: DeleteUnusedFilePathsFromPages :execrows
 DELETE FROM file_paths
 WHERE ctid IN (
@@ -105,6 +129,14 @@ WHERE ctid IN (
     WHERE
         ctid >= format('(%s,0)', sqlc.arg(from_page)::bigint)::tid
         AND ctid < format('(%s,0)', sqlc.arg(from_page)::bigint + sqlc.arg(pages)::bigint)::tid
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "action_executions"
+                WHERE "primary_output_file_id" = "files"."id"
+                   OR "stdout_file_id" = "files"."id"
+                   OR "stderr_file_id" = "files"."id"
+            )
+        )
         AND (
             NOT EXISTS (
                 SELECT 1 FROM "bazel_invocations"

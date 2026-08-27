@@ -30,11 +30,11 @@
             "id": "QWN0aW9uRXhlY3V0aW9uOjI=",
             "label": "//test/integrationtest:integrationtest_test",
             "primaryOutput": "bazel-out/k8-fastbuild/testlogs/test/integrationtest/integrationtest_test/test.log",
-            "primaryOutputURI": "",
+            "primaryOutputFile": null,
             "runner": "",
             "startTime": null,
-            "stderrURI": "",
-            "stdoutURI": "",
+            "stderr": null,
+            "stdout": null,
             "success": false,
             "type": "TestRunner"
           }

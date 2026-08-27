@@ -60,8 +60,10 @@ func TestVerifyActionFileAvailability(t *testing.T) {
 	)
 
 	require.Equal(t, 2, blobAccess.queriedDigests.Length())
-	require.Equal(t, availableFileURI, availability.getAvailableRemoteFileURI(actionFile(availableFileURI)))
-	require.Empty(t, availability.getAvailableRemoteFileURI(actionFile(missingFileURI)))
+	availableFile := availability.getAvailableFile(actionFile(availableFileURI), "bazel-out/bin/output")
+	require.NotNil(t, availableFile)
+	require.Equal(t, "bazel-out/bin/output", availableFile.Path)
+	require.Nil(t, availability.getAvailableFile(actionFile(missingFileURI), "bazel-out/bin/missing"))
 }
 
 func TestActionFileAvailabilityDropsBytestreamLinksWhenVerificationFails(t *testing.T) {
@@ -73,16 +75,20 @@ func TestActionFileAvailabilityDropsBytestreamLinksWhenVerificationFails(t *test
 		[]BuildEventWithInfo{actionEvent(availableFileURI, "")},
 	)
 
-	require.Empty(t, availability.getAvailableRemoteFileURI(actionFile(availableFileURI)))
-	require.Equal(t, "https://example.com/output", availability.getAvailableRemoteFileURI(actionFile("https://example.com/output")))
+	require.Nil(t, availability.getAvailableFile(actionFile(availableFileURI), "output"))
+	require.Nil(t, availability.getAvailableFile(actionFile("https://example.com/output"), "output"))
 }
 
-func TestActionFileAvailabilityWithoutCASPreservesValidBytestreamURI(t *testing.T) {
+func TestActionFileAvailabilityWithoutCASPreservesValidBytestreamFile(t *testing.T) {
 	availability := (&buildEventRecorder{}).verifyActionFileAvailability(
 		context.Background(),
 		[]BuildEventWithInfo{actionEvent(availableFileURI, "")},
 	)
 
-	require.Equal(t, availableFileURI, availability.getAvailableRemoteFileURI(actionFile(availableFileURI)))
-	require.Empty(t, availability.getAvailableRemoteFileURI(actionFile("bytestream://cache.example.com/blobs/not-a-digest/42")))
+	availableFile := availability.getAvailableFile(actionFile(availableFileURI), "output")
+	require.NotNil(t, availableFile)
+	require.Equal(t, "output", availableFile.Path)
+	require.Nil(t, availability.getAvailableFile(actionFile("bytestream://cache.example.com/blobs/not-a-digest/42"), "output"))
+	require.Nil(t, availability.getAvailableFile(actionFile("file:///tmp/output"), "output"))
+	require.Nil(t, availability.getAvailableFile(actionFile("https://example.com/output"), "output"))
 }

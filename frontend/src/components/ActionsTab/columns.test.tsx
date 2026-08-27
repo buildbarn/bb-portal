@@ -189,8 +189,17 @@ describe("ActionsTab selectable filters", () => {
         sizeBytes: 145,
       },
       primaryOutput: "bazel-out/bin/output.txt",
-      primaryOutputURI:
-        "bytestream://cache.example.com/projects/example/blobs/output-hash/42",
+      primaryOutputFile: {
+        filePath: {
+          path: "bazel-out/bin/output.txt",
+        },
+        digest: {
+          rev2InstanceName: "projects/example",
+          digestFunction: "SHA256",
+          hash: "output-hash",
+          sizeBytes: 42,
+        },
+      },
     } as BazelInvocationActionExecutionFragment;
 
     const actionColumn = columns.find(({ key }) => key === "action");

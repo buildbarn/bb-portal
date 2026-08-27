@@ -38,11 +38,11 @@
             "id": "QWN0aW9uRXhlY3V0aW9uOjE=",
             "label": "//next.js/pages:pages",
             "primaryOutput": "bazel-out/darwin_arm64-fastbuild/bin/next.js/pages/_app.js",
-            "primaryOutputURI": "",
+            "primaryOutputFile": null,
             "runner": "",
             "startTime": null,
-            "stderrURI": "",
-            "stdoutURI": "",
+            "stderr": null,
+            "stdout": null,
             "success": false,
             "type": "TsProject"
           }
