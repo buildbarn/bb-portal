@@ -1,7 +1,9 @@
+import type { ThemeConfig } from "antd";
+
 // The hexadecimal string to be used as the A of RGBA values in configuring Application Bar backgrounds
 export const HEADER_OPACITY_HEX = "BB";
 
-const shared = {
+const shared: ThemeConfig = {
   components: {
     Alert: {
       withDescriptionIconSize: 24,
@@ -21,9 +23,16 @@ const shared = {
     Table: {
       cellPaddingBlockSM: 2,
     },
+    Layout: {
+      headerHeight: 64,
+      headerPadding: "0 32px",
+    },
   },
   token: {
-    fontFamily: "-apple-system, system-ui, BlinkMacSystemFont;",
+    fontFamily:
+      "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;",
+    fontFamilyCode:
+      "'SF Mono', 'Cascadia Code', Consolas, 'Roboto Mono', 'Liberation Mono', monospace;",
   },
 };
 
