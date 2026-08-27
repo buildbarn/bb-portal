@@ -3,44 +3,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { ConfigProvider } from "antd";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
 import { PageWrapper } from "@/components/PageWrapper";
 import MessageProvider from "@/context/MessageProvider";
+import { ThemeProvider } from "@/context/ThemeProvider";
 import { Status } from "@/lib/grpc-client/google/rpc/status";
-import dark from "@/theme/dark";
-import light from "@/theme/light";
 import { isRetryableGrpcError } from "@/utils/grpcStatus";
 
-const PREFERS_DARK_KEY = "prefers-dark";
-
-function getTheme(): "dark" | "light" {
-  return document.documentElement.getAttribute("data-theme") === "dark"
-    ? "dark"
-    : "light";
-}
-
-function setTheme(theme: "dark" | "light") {
-  window.localStorage.setItem(
-    PREFERS_DARK_KEY,
-    theme === "dark" ? "true" : "false",
-  );
-  document.documentElement.setAttribute("data-theme", theme);
-}
-
 export const RootLayout = () => {
-  // Inner theme is a meaningless state used to force rerender when we modify the html tag.
-  const [innerTheme, setInnerTheme] = useState(() => getTheme());
-
   useLayoutEffect(() => {
     document.getElementById("splash")?.remove();
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    const opposite = getTheme() === "dark" ? "light" : "dark";
-    setTheme(opposite);
-    setInnerTheme(opposite);
   }, []);
 
   const [queryClient] = useState(
@@ -61,13 +34,10 @@ export const RootLayout = () => {
 
   return (
     <ApolloWrapper>
-      <ConfigProvider theme={innerTheme === "dark" ? dark : light}>
+      <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <MessageProvider>
-            <PageWrapper
-              toggleTheme={toggleTheme}
-              prefersDark={innerTheme === "dark"}
-            >
+            <PageWrapper>
               <Outlet />
             </PageWrapper>
           </MessageProvider>
@@ -85,7 +55,7 @@ export const RootLayout = () => {
             ]}
           />
         </QueryClientProvider>
-      </ConfigProvider>
+      </ThemeProvider>
     </ApolloWrapper>
   );
 };
