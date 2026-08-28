@@ -19,7 +19,21 @@ const fetchProfileFile = async (
   return res.arrayBuffer();
 };
 
-const waitForPerfettoToLoad = async (handle: Window) => {
+export function createPerfettoTraceMessage(
+  buffer: ArrayBuffer,
+  profile: FileDetailsFragment,
+  invocationID: string,
+) {
+  return {
+    perfetto: {
+      buffer,
+      title: invocationID,
+      fileName: profile.filePath.path,
+    },
+  };
+}
+
+export const waitForPerfettoToLoad = async (handle: Window) => {
   const timer = setInterval(
     () => handle.postMessage("PING", PERFETTO_URL),
     100,
@@ -28,7 +42,7 @@ const waitForPerfettoToLoad = async (handle: Window) => {
   // Wait for the Perfetto UI to respond with 'PONG'
   await new Promise<void>((resolve) => {
     const listener = (evt: MessageEvent) => {
-      if (evt.data !== "PONG") return;
+      if (evt.data !== "PONG" || evt.source !== handle) return;
       window.removeEventListener("message", listener);
       resolve();
     };
@@ -48,13 +62,7 @@ function openPerfetto(profile: FileDetailsFragment, invocationID: string) {
   Promise.all([fetchProfileFile(profile), waitForPerfettoToLoad(handle)])
     .then((values) => {
       handle.postMessage(
-        {
-          perfetto: {
-            buffer: values[0],
-            title: invocationID,
-            fileName: profile.filePath,
-          },
-        },
+        createPerfettoTraceMessage(values[0], profile, invocationID),
         PERFETTO_URL,
       );
     })
