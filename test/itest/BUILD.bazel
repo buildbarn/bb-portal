@@ -1,22 +1,84 @@
-load("@rules_itest//:itest.bzl", "itest_service")
+load("@bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@rules_docker_compose//docker_compose:defs.bzl", "docker_compose_binary", "docker_compose_yaml")
+load("@rules_itest//:itest.bzl", "itest_service", "itest_service_group")
+
+copy_to_bin(
+    name = "buildbarn_compose_file",
+    srcs = ["buildbarn/docker-compose.yml"],
+)
+
+copy_to_bin(
+    name = "buildbarn_config_files",
+    srcs = glob(["buildbarn/config/**"]),
+)
+
+docker_compose_yaml(
+    name = "buildbarn_compose_yaml",
+    data = [":buildbarn_config_files"],
+    yamls = [":buildbarn_compose_file"],
+)
+
+docker_compose_binary(
+    name = "buildbarn_compose",
+    visibility = ["//visibility:public"],
+    yaml = ":buildbarn_compose_yaml",
+)
+
+platform(
+    name = "local_rbe_linux_amd64",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    exec_properties = {
+        "OSFamily": "linux",
+        "container-image": "docker://ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b",
+    },
+    visibility = ["//visibility:public"],
+)
 
 # These services use fixed ports so a separate Bazel invocation can publish
 # its BEP. Disable generated hygiene tests, which may run concurrently and
 # contend for those ports.
 itest_service(
-    name = "postgres_service",
-    exe = "//test/itest/postgres",
-    expected_start_duration = "3s",
-    health_check = "//test/itest/postgres_healthcheck",
-    health_check_args = ["postgresql://app:password@127.0.0.1:15432/postgres?sslmode=disable"],
-    health_check_timeout = "30s",
+    name = "buildbarn_service",
+    args = [
+        "--ansi=never",
+        "up",
+        "--force-recreate",
+        "--remove-orphans",
+    ],
+    exe = ":buildbarn_compose",
+    expected_start_duration = "20s",
+    health_check = "//test/itest/stack_healthcheck",
+    health_check_args = [
+        "postgresql://app:password@127.0.0.1:15432/postgres?sslmode=disable",
+        "127.0.0.1:8980",
+        "127.0.0.1:8984",
+        "http://127.0.0.1:16686/api/services",
+    ],
+    health_check_timeout = "10m",
+    hygienic = False,
+    shutdown_timeout = "45s",
+    tags = [
+        "requires-docker",
+        "requires-network",
+    ],
+)
+
+itest_service(
+    name = "bb_portal_frontend",
+    exe = "//frontend:vite_dev_server",
+    # The first Vite dependency optimization pass takes longer than restarts.
+    expected_start_duration = "15s",
+    http_health_check_address = "http://127.0.0.1:5173/",
     hygienic = False,
     shutdown_timeout = "15s",
     tags = ["requires-network"],
 )
 
 itest_service(
-    name = "bb_portal",
+    name = "bb_portal_backend",
     args = ["$(location :portal.jsonnet)"],
     data = [":portal.jsonnet"],
     exe = "//cmd/bb_portal",
@@ -25,6 +87,32 @@ itest_service(
     hygienic = False,
     shutdown_timeout = "15s",
     tags = ["requires-network"],
+    deps = [
+        ":bb_portal_frontend",
+        ":buildbarn_service",
+    ],
+)
+
+itest_service_group(
+    name = "bb_portal",
+    hygienic = False,
+    services = [":bb_portal_backend"],
+    tags = [
+        "requires-docker",
+        "requires-network",
+    ],
     visibility = ["//visibility:public"],
-    deps = [":postgres_service"],
+)
+
+# A tool-free action that can be executed on the Linux runner even when the
+# repository has no remote C/C++ or Go toolchains configured.
+genrule(
+    name = "rbe_smoke",
+    outs = ["rbe-smoke.txt"],
+    cmd = "printf 'Executed by the local Buildbarn worker.\\n' > $@",
+    exec_properties = {
+        "OSFamily": "linux",
+        "container-image": "docker://ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b",
+    },
+    visibility = ["//visibility:public"],
 )

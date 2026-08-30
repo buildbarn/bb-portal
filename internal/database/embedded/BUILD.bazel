@@ -21,7 +21,6 @@ go_library(
 unpack(
     name = "extraced_embedded_postgres",
     src = ":embedded_postgres",
-    visibility = ["//test/itest/postgres:__pkg__"],
 )
 
 alias(

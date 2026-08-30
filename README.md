@@ -61,19 +61,22 @@ to avoid having the rebuild the frontend every time you start the backend.
 
 ### Hermetic Local Stack
 
-For an isolated PostgreSQL, backend, and embedded production frontend, run:
+For an isolated PostgreSQL, independently reloadable Vite frontend and Go
+backend, and a local Buildbarn remote-execution cluster, run:
 
 ```
-bazel run //test/itest:bb_portal
+~/.local/bin/ibazel run --config=enable_reload //test/itest:bb_portal
 ```
 
-Then send an invocation to its fixed local BES endpoint from another terminal:
+Then execute a smoke action on the local worker and publish its invocation to
+the portal from another terminal:
 
 ```
-bazel build --config=bb_portal_itest //test/itest/postgres_healthcheck
+bazel build --config=local_rbe --config=bb_portal_itest --noremote_accept_cached //test/itest:rbe_smoke
 ```
 
-The UI is available at <http://127.0.0.1:18081>. See
+The UI is available at <http://127.0.0.1:18081>, and Jaeger is available at
+<http://127.0.0.1:16686>. See
 [`test/itest/README.md`](test/itest/README.md) for the ports and complete
 workflow.
 

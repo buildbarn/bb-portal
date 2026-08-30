@@ -3,10 +3,31 @@
 // The fixed loopback ports intentionally make it easy for a separate Bazel
 // invocation to stream its BEP to this service:
 //   PostgreSQL: 127.0.0.1:15432
+//   Vite:       http://127.0.0.1:5173
+//   Buildbarn:  grpc://127.0.0.1:8980
+//   Jaeger:     http://127.0.0.1:16686
 //   Frontend:   http://127.0.0.1:18081
 //   BES:        grpc://127.0.0.1:18082
 {
-  global: {},
+  global: {
+    tracing: {
+      backends: [{
+        otlpSpanExporter: {
+          address: '127.0.0.1:4317',
+        },
+        batchSpanProcessor: {},
+      }],
+      resourceAttributes: [{
+        key: 'service.name',
+        value: {
+          stringValue: 'bb-portal',
+        },
+      }],
+      sampler: {
+        always: {},
+      },
+    },
+  },
 
   httpServers: [{
     listenAddresses: ['127.0.0.1:18081'],
@@ -15,6 +36,10 @@
 
   instanceNameAuthorizer: { allow: {} },
   maximumMessageSizeBytes: 16 * 1024 * 1024,
+
+  contentAddressableStorage: { grpc: { client: { address: '127.0.0.1:8980' } } },
+  actionCache: { grpc: { client: { address: '127.0.0.1:8980' } } },
+  fileSystemAccessCache: { grpc: { client: { address: '127.0.0.1:8980' } } },
 
   besServiceConfiguration: {
     grpcServers: [{
@@ -44,8 +69,16 @@
     minEventBatchDuration: '0s',
   },
 
+  schedulerServiceConfiguration: {
+    buildQueueStateClient: {
+      address: '127.0.0.1:8984',
+    },
+    killOperationsAuthorizer: { allow: {} },
+    listOperationsPageSize: 500,
+  },
+
   frontendServiceConfiguration: {
-    frontendSource: { embedded: {} },
+    frontendSource: { proxy: 'http://127.0.0.1:5173' },
     frontendConfig: {
       companyName: 'bb-portal integration test',
       grpcBackendUrl: 'grpc://127.0.0.1:18082',
@@ -61,6 +94,8 @@
           pageTests: {},
           pageTrends: {},
         },
+        browser: {},
+        scheduler: {},
       },
     },
   },

@@ -1,0 +1,189 @@
+services:
+  volume-initializer:
+    image: docker.io/library/postgres@sha256:d3e1620b530c944afa6e887d22eb899824da68e19c52024bf98f5220c88a65b2
+    entrypoint: [sh, -c]
+    command:
+      - >-
+        mkdir -p
+        /volumes/storage-ac-0/persistent_state
+        /volumes/storage-ac-1/persistent_state
+        /volumes/storage-cas-0/persistent_state
+        /volumes/storage-cas-1/persistent_state
+        /volumes/storage-fsac-0/persistent_state
+        /volumes/storage-fsac-1/persistent_state
+        /volumes/worker/build
+        /volumes/worker/cache &&
+        chmod 0777
+        /volumes/storage-ac-0/persistent_state
+        /volumes/storage-ac-1/persistent_state
+        /volumes/storage-cas-0/persistent_state
+        /volumes/storage-cas-1/persistent_state
+        /volumes/storage-fsac-0/persistent_state
+        /volumes/storage-fsac-1/persistent_state
+        /volumes/worker/build
+        /volumes/worker/cache
+    volumes:
+      - storage-ac-0:/volumes/storage-ac-0
+      - storage-ac-1:/volumes/storage-ac-1
+      - storage-cas-0:/volumes/storage-cas-0
+      - storage-cas-1:/volumes/storage-cas-1
+      - storage-fsac-0:/volumes/storage-fsac-0
+      - storage-fsac-1:/volumes/storage-fsac-1
+      - worker-hardlinking:/volumes/worker
+
+  postgres:
+    image: docker.io/library/postgres@sha256:d3e1620b530c944afa6e887d22eb899824da68e19c52024bf98f5220c88a65b2
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: app
+      PGDATA: /var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U app -d postgres]
+      interval: 1s
+      retries: 30
+      start_period: 5s
+      timeout: 5s
+    ports:
+      - 15432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  jaeger:
+    image: docker.io/jaegertracing/jaeger@sha256:46a886260e04002d8f45e213fc39063fa11a50446048fdaa64786fc0840cb9f8
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 16686:16686
+    networks:
+      - default
+      - tracing
+
+  frontend:
+    image: ghcr.io/buildbarn/bb-storage@sha256:36201141f924865ddbea1bc518c4f98dd0dbb744181ef34f9f5e864d3dcf43f8
+    command: [/config/frontend.jsonnet]
+    ports:
+      - 8980:8980
+    volumes: &config-volumes
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/frontend.jsonnet:/config/frontend.jsonnet:ro
+      - ./config/runner-ubuntu22-04.jsonnet:/config/runner-ubuntu22-04.jsonnet:ro
+      - ./config/scheduler.jsonnet:/config/scheduler.jsonnet:ro
+      - ./config/storage.jsonnet:/config/storage.jsonnet:ro
+      - ./config/worker-hardlinking-ubuntu22-04.jsonnet:/config/worker-hardlinking-ubuntu22-04.jsonnet:ro
+    depends_on:
+      jaeger:
+        condition: service_started
+      scheduler:
+        condition: service_started
+      storage-0:
+        condition: service_started
+      storage-1:
+        condition: service_started
+
+  storage-0:
+    image: ghcr.io/buildbarn/bb-storage@sha256:36201141f924865ddbea1bc518c4f98dd0dbb744181ef34f9f5e864d3dcf43f8
+    command: [/config/storage.jsonnet]
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/storage.jsonnet:/config/storage.jsonnet:ro
+      - storage-ac-0:/storage-ac
+      - storage-cas-0:/storage-cas
+      - storage-fsac-0:/storage-fsac
+    depends_on:
+      jaeger:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  storage-1:
+    image: ghcr.io/buildbarn/bb-storage@sha256:36201141f924865ddbea1bc518c4f98dd0dbb744181ef34f9f5e864d3dcf43f8
+    command: [/config/storage.jsonnet]
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/storage.jsonnet:/config/storage.jsonnet:ro
+      - storage-ac-1:/storage-ac
+      - storage-cas-1:/storage-cas
+      - storage-fsac-1:/storage-fsac
+    depends_on:
+      jaeger:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  scheduler:
+    image: ghcr.io/buildbarn/bb-scheduler@sha256:95417d159b5b9f17a6c915fec43603be51c553f68de439a9affcfe811bd0c6da
+    command: [/config/scheduler.jsonnet]
+    ports:
+      - 7982:7982
+      - 8984:8984
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/scheduler.jsonnet:/config/scheduler.jsonnet:ro
+    depends_on:
+      jaeger:
+        condition: service_started
+      storage-0:
+        condition: service_started
+      storage-1:
+        condition: service_started
+
+  runner-installer:
+    image: ghcr.io/buildbarn/bb-runner-installer@sha256:0f719066773c365ba902edebb9f7ea8e23b3b4a82002c6dbdbb0c74965bcc34d
+    platform: linux/amd64
+    volumes:
+      - bb-runner:/bb
+
+  worker-hardlinking-ubuntu22-04:
+    image: ghcr.io/buildbarn/bb-worker@sha256:4cc65f0dd716fd0942ccc0fdd770421065b7f3bf55062a184c4376e4c0a4a13e
+    command: [/config/worker-hardlinking-ubuntu22-04.jsonnet]
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/worker-hardlinking-ubuntu22-04.jsonnet:/config/worker-hardlinking-ubuntu22-04.jsonnet:ro
+      - worker-hardlinking:/worker
+    depends_on:
+      jaeger:
+        condition: service_started
+      scheduler:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  runner-hardlinking-ubuntu22-04:
+    image: ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b
+    platform: linux/amd64
+    command:
+      - sh
+      - -c
+      - while ! test -f /bb/installed; do sleep 1; done; exec /bb/bb_runner /config/runner-ubuntu22-04.jsonnet
+    # Give the action runner access only to Jaeger's OTLP receiver. The
+    # internal network has no route to the host or the internet.
+    networks:
+      - tracing
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/runner-ubuntu22-04.jsonnet:/config/runner-ubuntu22-04.jsonnet:ro
+      - bb-runner:/bb
+      - worker-hardlinking:/worker
+    depends_on:
+      jaeger:
+        condition: service_started
+      runner-installer:
+        condition: service_completed_successfully
+      volume-initializer:
+        condition: service_completed_successfully
+
+networks:
+  tracing:
+    internal: true
+
+volumes:
+  bb-runner:
+  postgres-data:
+  storage-ac-0:
+  storage-ac-1:
+  storage-cas-0:
+  storage-cas-1:
+  storage-fsac-0:
+  storage-fsac-1:
+  worker-hardlinking:
