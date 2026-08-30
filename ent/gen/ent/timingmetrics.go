@@ -27,6 +27,8 @@ type TimingMetrics struct {
 	ExecutionPhaseTimeInMs int64 `json:"execution_phase_time_in_ms,omitempty"`
 	// ActionsExecutionStartInMs holds the value of the "actions_execution_start_in_ms" field.
 	ActionsExecutionStartInMs int64 `json:"actions_execution_start_in_ms,omitempty"`
+	// CriticalPathTimeInMs holds the value of the "critical_path_time_in_ms" field.
+	CriticalPathTimeInMs int64 `json:"critical_path_time_in_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingMetricsQuery when eager-loading is set.
 	Edges                  TimingMetricsEdges `json:"edges"`
@@ -61,7 +63,7 @@ func (*TimingMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case timingmetrics.FieldID, timingmetrics.FieldCPUTimeInMs, timingmetrics.FieldWallTimeInMs, timingmetrics.FieldAnalysisPhaseTimeInMs, timingmetrics.FieldExecutionPhaseTimeInMs, timingmetrics.FieldActionsExecutionStartInMs:
+		case timingmetrics.FieldID, timingmetrics.FieldCPUTimeInMs, timingmetrics.FieldWallTimeInMs, timingmetrics.FieldAnalysisPhaseTimeInMs, timingmetrics.FieldExecutionPhaseTimeInMs, timingmetrics.FieldActionsExecutionStartInMs, timingmetrics.FieldCriticalPathTimeInMs:
 			values[i] = new(sql.NullInt64)
 		case timingmetrics.ForeignKeys[0]: // metrics_timing_metrics
 			values[i] = new(sql.NullInt64)
@@ -115,6 +117,12 @@ func (_m *TimingMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field actions_execution_start_in_ms", values[i])
 			} else if value.Valid {
 				_m.ActionsExecutionStartInMs = value.Int64
+			}
+		case timingmetrics.FieldCriticalPathTimeInMs:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field critical_path_time_in_ms", values[i])
+			} else if value.Valid {
+				_m.CriticalPathTimeInMs = value.Int64
 			}
 		case timingmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -178,6 +186,9 @@ func (_m *TimingMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("actions_execution_start_in_ms=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ActionsExecutionStartInMs))
+	builder.WriteString(", ")
+	builder.WriteString("critical_path_time_in_ms=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CriticalPathTimeInMs))
 	builder.WriteByte(')')
 	return builder.String()
 }

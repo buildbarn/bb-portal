@@ -28,6 +28,10 @@ func (ActionCacheStatistics) Fields() []ent.Field {
 		// action cache has not been loaded in this invocation.
 		field.Int64("load_time_in_ms").Optional(),
 
+		// Time spent waiting for the cache-hit semaphore. Reported as 0 if the
+		// semaphore was not used.
+		field.Uint64("cache_check_semaphore_wait_time_in_ms").Optional(),
+
 		// Cache counters.
 		field.Int32("hits").Optional(),
 		field.Int32("misses").Optional(),
