@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 load(":unpack.bzl", "unpack")
 
 go_library(
@@ -61,4 +61,10 @@ alias(
         "@platforms//cpu:x86_64": ["@platforms//os:macos"],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
+)
+
+go_test(
+    name = "embedded_test",
+    srcs = ["embedded_test.go"],
+    embed = [":embedded"],
 )

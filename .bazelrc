@@ -3,5 +3,26 @@ run --workspace_status_command="bash tools/workspace-status.sh"
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc
 common --@rules_go//go/config:pure
 
+# Let iBazel restart only services whose inputs changed. Disabling the
+# embedded frontend keeps frontend source files out of the backend binary.
+common:enable_reload --@rules_itest//:enable_per_service_reload
+build:enable_reload --//pkg/frontend:embed_frontend=False
+
+# Send a local Bazel invocation to //test/itest:bb_portal.
+build:bb_portal_itest --bes_backend=grpc://127.0.0.1:18082
+build:bb_portal_itest --bes_results_url=http://127.0.0.1:18081/bazel-invocations/
+build:bb_portal_itest --bes_upload_mode=wait_for_upload_complete
+build:bb_portal_itest --build_event_publish_all_actions
+
+# Execute actions on the local Buildbarn worker started by
+# //test/itest:bb_portal. The Linux execution platform makes toolchain
+# resolution select binaries that can run inside the worker container.
+build:local_rbe --remote_executor=grpc://127.0.0.1:8980
+build:local_rbe --remote_instance_name=hardlinking
+build:local_rbe --extra_execution_platforms=//test/itest:local_rbe_linux_amd64
+build:local_rbe --host_platform=//test/itest:local_rbe_linux_amd64
+build:local_rbe --remote_default_exec_properties=OSFamily=linux
+build:local_rbe --remote_default_exec_properties=container-image=docker://ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b
+
 import %workspace%/.common.bazelrc
 try-import %workspace%/.user.bazelrc

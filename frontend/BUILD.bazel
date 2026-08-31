@@ -69,6 +69,31 @@ vite_bin.vite_binary(
     name = "vite_binary",
 )
 
+vite_bin.vite_binary(
+    name = "vite_dev_server",
+    chdir = package_name(),
+    data = glob(
+        [
+            "src/**",
+            "public/**",
+        ],
+        allow_empty = True,
+        exclude = ["node_modules/**"],
+    ) + [
+        "index.html",
+        "package.json",
+        "tsconfig.json",
+        "vite.config.ts",
+        ":node_modules",
+    ],
+    fixed_args = [
+        "--host=127.0.0.1",
+        "--port=5173",
+        "--strictPort",
+    ],
+    visibility = ["//test/itest:__pkg__"],
+)
+
 vite_build(
     name = "dist",
     srcs = glob(
