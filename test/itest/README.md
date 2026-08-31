@@ -49,20 +49,23 @@ bazel build \
 Linux/amd64 execution platform matching the worker. This lets Bazel select
 Linux-compatible execution tools, including host-configured bootstrap tools,
 while leaving the build's target platform unchanged. Jaeger receives traces
-from bb-portal and every
-Buildbarn runtime component; use the service selector in its UI to distinguish
-the portal, storage frontend, storage, scheduler, worker, and runner.
-Repositories that need additional remote toolchains can combine the same config
-with their normal platform settings.
+from bb-portal and every Buildbarn runtime component. It stores them in its
+embedded Badger database with a one-year retention period. The `jaeger-data`
+named volume preserves the database across Jaeger restarts and normal Compose
+shutdowns. Use the service selector in its UI to distinguish the portal,
+storage frontend, storage, scheduler, worker, and runner. Repositories that
+need additional remote toolchains can combine the same config with their
+normal platform settings.
 
 Stop iBazel with Ctrl-C, then remove the Compose containers while retaining
-PostgreSQL and Buildbarn's named volumes for the next run:
+PostgreSQL, Jaeger, and Buildbarn's named volumes for the next run:
 
 ```sh
 bazel run //test/itest:buildbarn_compose -- down
 ```
 
-To also delete PostgreSQL data, the local CAS, and the action cache, run:
+To also delete PostgreSQL data, Jaeger traces, the local CAS, and the action
+cache, run:
 
 ```sh
 bazel run //test/itest:buildbarn_compose -- down --volumes

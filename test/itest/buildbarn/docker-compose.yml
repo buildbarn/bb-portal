@@ -11,6 +11,7 @@ services:
         /volumes/storage-cas-1/persistent_state
         /volumes/storage-fsac-0/persistent_state
         /volumes/storage-fsac-1/persistent_state
+        /volumes/jaeger/data
         /volumes/worker/build
         /volumes/worker/cache &&
         chmod 0777
@@ -21,7 +22,8 @@ services:
         /volumes/storage-fsac-0/persistent_state
         /volumes/storage-fsac-1/persistent_state
         /volumes/worker/build
-        /volumes/worker/cache
+        /volumes/worker/cache &&
+        chown -R 10001:10001 /volumes/jaeger/data
     volumes:
       - storage-ac-0:/volumes/storage-ac-0
       - storage-ac-1:/volumes/storage-ac-1
@@ -29,6 +31,7 @@ services:
       - storage-cas-1:/volumes/storage-cas-1
       - storage-fsac-0:/volumes/storage-fsac-0
       - storage-fsac-1:/volumes/storage-fsac-1
+      - jaeger-data:/volumes/jaeger
       - worker-hardlinking:/volumes/worker
 
   postgres:
@@ -51,6 +54,7 @@ services:
 
   jaeger:
     image: docker.io/jaegertracing/jaeger@sha256:46a886260e04002d8f45e213fc39063fa11a50446048fdaa64786fc0840cb9f8
+    command: [--config, /etc/jaeger/config.yaml]
     ports:
       - 4317:4317
       - 4318:4318
@@ -58,6 +62,12 @@ services:
     networks:
       - default
       - tracing
+    volumes:
+      - ./config/jaeger.yaml:/etc/jaeger/config.yaml:ro
+      - jaeger-data:/badger
+    depends_on:
+      volume-initializer:
+        condition: service_completed_successfully
 
   frontend:
     image: ghcr.io/buildbarn/bb-storage@sha256:36201141f924865ddbea1bc518c4f98dd0dbb744181ef34f9f5e864d3dcf43f8
@@ -179,6 +189,7 @@ networks:
 
 volumes:
   bb-runner:
+  jaeger-data:
   postgres-data:
   storage-ac-0:
   storage-ac-1:
