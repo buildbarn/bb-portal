@@ -12,11 +12,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
 )
 
 // Metrics is the model entity for the Metrics schema.
@@ -49,11 +53,23 @@ type MetricsEdges struct {
 	NetworkMetrics *NetworkMetrics `json:"network_metrics,omitempty"`
 	// BuildGraphMetrics holds the value of the build_graph_metrics edge.
 	BuildGraphMetrics *BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
+	// PackageMetrics holds the value of the package_metrics edge.
+	PackageMetrics *PackageMetrics `json:"package_metrics,omitempty"`
+	// CumulativeMetrics holds the value of the cumulative_metrics edge.
+	CumulativeMetrics *CumulativeMetrics `json:"cumulative_metrics,omitempty"`
+	// WorkerMetrics holds the value of the worker_metrics edge.
+	WorkerMetrics []*WorkerMetrics `json:"worker_metrics,omitempty"`
+	// WorkerPoolMetrics holds the value of the worker_pool_metrics edge.
+	WorkerPoolMetrics *WorkerPoolMetrics `json:"worker_pool_metrics,omitempty"`
+	// DynamicExecutionMetrics holds the value of the dynamic_execution_metrics edge.
+	DynamicExecutionMetrics *DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [13]bool
 	// totalCount holds the count of the edges above.
-	totalCount [8]map[string]int
+	totalCount [13]map[string]int
+
+	namedWorkerMetrics map[string][]*WorkerMetrics
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -142,6 +158,59 @@ func (e MetricsEdges) BuildGraphMetricsOrErr() (*BuildGraphMetrics, error) {
 		return nil, &NotFoundError{label: buildgraphmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "build_graph_metrics"}
+}
+
+// PackageMetricsOrErr returns the PackageMetrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) PackageMetricsOrErr() (*PackageMetrics, error) {
+	if e.PackageMetrics != nil {
+		return e.PackageMetrics, nil
+	} else if e.loadedTypes[8] {
+		return nil, &NotFoundError{label: packagemetrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "package_metrics"}
+}
+
+// CumulativeMetricsOrErr returns the CumulativeMetrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) CumulativeMetricsOrErr() (*CumulativeMetrics, error) {
+	if e.CumulativeMetrics != nil {
+		return e.CumulativeMetrics, nil
+	} else if e.loadedTypes[9] {
+		return nil, &NotFoundError{label: cumulativemetrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "cumulative_metrics"}
+}
+
+// WorkerMetricsOrErr returns the WorkerMetrics value or an error if the edge
+// was not loaded in eager-loading.
+func (e MetricsEdges) WorkerMetricsOrErr() ([]*WorkerMetrics, error) {
+	if e.loadedTypes[10] {
+		return e.WorkerMetrics, nil
+	}
+	return nil, &NotLoadedError{edge: "worker_metrics"}
+}
+
+// WorkerPoolMetricsOrErr returns the WorkerPoolMetrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) WorkerPoolMetricsOrErr() (*WorkerPoolMetrics, error) {
+	if e.WorkerPoolMetrics != nil {
+		return e.WorkerPoolMetrics, nil
+	} else if e.loadedTypes[11] {
+		return nil, &NotFoundError{label: workerpoolmetrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "worker_pool_metrics"}
+}
+
+// DynamicExecutionMetricsOrErr returns the DynamicExecutionMetrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) DynamicExecutionMetricsOrErr() (*DynamicExecutionMetrics, error) {
+	if e.DynamicExecutionMetrics != nil {
+		return e.DynamicExecutionMetrics, nil
+	} else if e.loadedTypes[12] {
+		return nil, &NotFoundError{label: dynamicexecutionmetrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "dynamic_execution_metrics"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -234,6 +303,31 @@ func (_m *Metrics) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 	return NewMetricsClient(_m.config).QueryBuildGraphMetrics(_m)
 }
 
+// QueryPackageMetrics queries the "package_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryPackageMetrics() *PackageMetricsQuery {
+	return NewMetricsClient(_m.config).QueryPackageMetrics(_m)
+}
+
+// QueryCumulativeMetrics queries the "cumulative_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryCumulativeMetrics() *CumulativeMetricsQuery {
+	return NewMetricsClient(_m.config).QueryCumulativeMetrics(_m)
+}
+
+// QueryWorkerMetrics queries the "worker_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryWorkerMetrics() *WorkerMetricsQuery {
+	return NewMetricsClient(_m.config).QueryWorkerMetrics(_m)
+}
+
+// QueryWorkerPoolMetrics queries the "worker_pool_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryWorkerPoolMetrics() *WorkerPoolMetricsQuery {
+	return NewMetricsClient(_m.config).QueryWorkerPoolMetrics(_m)
+}
+
+// QueryDynamicExecutionMetrics queries the "dynamic_execution_metrics" edge of the Metrics entity.
+func (_m *Metrics) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQuery {
+	return NewMetricsClient(_m.config).QueryDynamicExecutionMetrics(_m)
+}
+
 // Update returns a builder for updating this Metrics.
 // Note that you need to call Metrics.Unwrap() before calling this method if this Metrics
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -259,6 +353,30 @@ func (_m *Metrics) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", _m.ID))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedWorkerMetrics returns the WorkerMetrics named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Metrics) NamedWorkerMetrics(name string) ([]*WorkerMetrics, error) {
+	if _m.Edges.namedWorkerMetrics == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedWorkerMetrics[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Metrics) appendNamedWorkerMetrics(name string, edges ...*WorkerMetrics) {
+	if _m.Edges.namedWorkerMetrics == nil {
+		_m.Edges.namedWorkerMetrics = make(map[string][]*WorkerMetrics)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedWorkerMetrics[name] = []*WorkerMetrics{}
+	} else {
+		_m.Edges.namedWorkerMetrics[name] = append(_m.Edges.namedWorkerMetrics[name], edges...)
+	}
 }
 
 // MetricsSlice is a parsable slice of Metrics.

@@ -40,6 +40,7 @@ export const columns: TableColumnTypeWithFilter<
   {
     key: "instanceName",
     title: "Instance Name",
+    render: (_, record) => record.instanceName.name,
     filterDropdown: (filterProps) => (
       <SearchWidget placeholder="Instance Name Pattern..." {...filterProps} />
     ),

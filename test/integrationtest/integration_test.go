@@ -85,6 +85,10 @@ var (
 		filename:     "remote_execution_tests.bep.ndjson",
 		invocationID: "eb510b31-a9cc-441f-8898-5104ef0025fd",
 	}
+	extendedMetrics = bepFile{
+		filename:     "extended_metrics.bep.ndjson",
+		invocationID: "11111111-2222-4333-8444-555555555555",
+	}
 	authenticatedUserExternalID = authmetadataextraction.ExampleExternalID()
 	authenticatedUserUUID       = uuid.NewSHA1(uuid.NameSpaceURL, []byte(authenticatedUserExternalID)).String()
 
@@ -107,6 +111,26 @@ var (
 				{
 					bepFile: bepFile{
 						filename: "query_proto.bep.ndjson",
+					},
+				},
+			},
+		},
+		{
+			name: "ExtendedMetrics",
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_Basic{
+					Basic: &emptypb.Empty{},
+				},
+			},
+			bepFileTestCases: []bepFileTestCase{
+				{bepFile: extendedMetrics},
+			},
+			graphqlTestCases: graphqlTestTable{
+				"GetBazelInvocationMetrics": {
+					"get extended metrics": {
+						variables: testkit.Variables{
+							"invocationID": extendedMetrics.invocationID,
+						},
 					},
 				},
 			},
@@ -619,22 +643,62 @@ var (
 				"GetTestsForInvocation": {
 					"get tests for successful tests": {
 						variables: testkit.Variables{
-							"invocationID": successfulBazelTest.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": successfulBazelTest.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for failed tests": {
 						variables: testkit.Variables{
-							"invocationID": failedBazelTest.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": failedBazelTest.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for aborted tests": {
 						variables: testkit.Variables{
-							"invocationID": abortedTests.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": abortedTests.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"get tests for remote execution": {
 						variables: testkit.Variables{
-							"invocationID": remoteExecutionTests.invocationID,
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasBazelInvocationWith": []interface{}{
+											map[string]interface{}{
+												"invocationID": remoteExecutionTests.invocationID,
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -661,6 +725,59 @@ var (
 						variables: testkit.Variables{
 							"invocationID":  remoteExecutionTests.invocationID,
 							"testSummaryID": "VGVzdFN1bW1hcnk6NzQ=",
+						},
+					},
+				},
+				"GetTests": {
+					"get tests": {
+						variables: testkit.Variables{
+							"first": 10,
+							"where": map[string]interface{}{
+								"hasTestTarget": true,
+							},
+						},
+					},
+				},
+				"FindBazelInvocations": {
+					"find bazel invocations": {},
+				},
+				"FindBuildTimes": {
+					"find build times": {
+						variables: testkit.Variables{
+							"first": 10,
+						},
+					},
+				},
+				"CheckIfInvocationExists": {
+					"exists": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"not exists": {
+						variables: testkit.Variables{
+							"invocationID": invocationIDNotFound,
+						},
+						wantErr: errInvocationNotFound,
+					},
+				},
+				"GetTestsForTarget": {
+					"get tests for target": {
+						variables: testkit.Variables{
+							"where": map[string]interface{}{
+								"hasInvocationTargetWith": map[string]interface{}{
+									"hasTargetWith": map[string]interface{}{
+										"id": "VGFyZ2V0OjI5",
+									},
+								},
+							},
+						},
+					},
+				},
+				"GetTestDetails": {
+					"get tests details": {
+						variables: testkit.Variables{
+							"targetID": "VGFyZ2V0OjI5",
 						},
 					},
 				},
@@ -808,7 +925,6 @@ func TestFromBesToGraphql(t *testing.T) {
 	}
 
 	t.Run("No Unused Operations", func(t *testing.T) {
-		t.Skip("WIP: Will add tests for other operations in future commits / PRs")
 		require.Empty(t, queryRegistry.UnusedOperations())
 	})
 }

@@ -4,6 +4,7 @@
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
+          "cacheCheckSemaphoreWaitTimeInMs": 0,
           "hits": 2,
           "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjc=",
           "loadTimeInMs": 0,
@@ -245,12 +246,271 @@
         "actionCountNotIncludingAspects": 0,
         "actionLookupValueCount": 0,
         "actionLookupValueCountNotIncludingAspects": 0,
+        "aspectCounts": [],
+        "evaluationStats": [
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3NQ==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "DIRECTORY_LISTING"
+          },
+          {
+            "count": 9,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3Ng==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3Nw==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "TARGET_PATTERN"
+          },
+          {
+            "count": 216,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3OA==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "BUILD_DRIVER"
+          },
+          {
+            "count": 36,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE3OQ==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "ARTIFACT"
+          },
+          {
+            "count": 4,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4MA==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "TARGET_COMPLETION"
+          },
+          {
+            "count": 9,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4MQ==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "ARTIFACT_NESTED_SET"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4Mg==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "RECURSIVE_PKG"
+          },
+          {
+            "count": 30,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4Mw==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4NA==",
+            "operation": "DIRTIED",
+            "skyfunctionName": "TARGET_PATTERN_PHASE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4NQ==",
+            "operation": "CHANGED",
+            "skyfunctionName": "PRECOMPUTED"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4Ng==",
+            "operation": "CHANGED",
+            "skyfunctionName": "ERROR_TRANSIENCE"
+          },
+          {
+            "count": 30,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4Nw==",
+            "operation": "CHANGED",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4OA==",
+            "operation": "CHANGED",
+            "skyfunctionName": "DIRECTORY_LISTING_STATE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE4OQ==",
+            "operation": "BUILT",
+            "skyfunctionName": "DIRECTORY_LISTING"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5MA==",
+            "operation": "BUILT",
+            "skyfunctionName": "TARGET_PATTERN"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5MQ==",
+            "operation": "BUILT",
+            "skyfunctionName": "ARTIFACT_NESTED_SET"
+          },
+          {
+            "count": 5,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5Mg==",
+            "operation": "BUILT",
+            "skyfunctionName": "RECURSIVE_PKG"
+          },
+          {
+            "count": 32,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5Mw==",
+            "operation": "BUILT",
+            "skyfunctionName": "ARTIFACT"
+          },
+          {
+            "count": 37,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5NA==",
+            "operation": "BUILT",
+            "skyfunctionName": "TEST_COMPLETION"
+          },
+          {
+            "count": 42,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5NQ==",
+            "operation": "BUILT",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 39,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5Ng==",
+            "operation": "BUILT",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 213,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5Nw==",
+            "operation": "BUILT",
+            "skyfunctionName": "BUILD_DRIVER"
+          },
+          {
+            "count": 40,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5OA==",
+            "operation": "BUILT",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjE5OQ==",
+            "operation": "BUILT",
+            "skyfunctionName": "TEST_SUITE_EXPANSION"
+          },
+          {
+            "count": 40,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwMA==",
+            "operation": "BUILT",
+            "skyfunctionName": "TARGET_COMPLETION"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwMQ==",
+            "operation": "BUILT",
+            "skyfunctionName": "TARGET_PATTERN_PHASE"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwMg==",
+            "operation": "CLEANED",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwMw==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "DIRECTORY_LISTING"
+          },
+          {
+            "count": 3,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwNA==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TARGET_PATTERN"
+          },
+          {
+            "count": 2,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwNQ==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ARTIFACT_NESTED_SET"
+          },
+          {
+            "count": 10,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwNg==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "RECURSIVE_PKG"
+          },
+          {
+            "count": 34,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwNw==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ARTIFACT"
+          },
+          {
+            "count": 117,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwOA==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TEST_COMPLETION"
+          },
+          {
+            "count": 42,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIwOQ==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "FILE_STATE"
+          },
+          {
+            "count": 70,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxMA==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "ACTION_EXECUTION"
+          },
+          {
+            "count": 257,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxMQ==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "BUILD_DRIVER"
+          },
+          {
+            "count": 60,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxMg==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "FILE"
+          },
+          {
+            "count": 1,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxMw==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TEST_SUITE_EXPANSION"
+          },
+          {
+            "count": 40,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxNA==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TARGET_COMPLETION"
+          },
+          {
+            "count": 3,
+            "id": "QnVpbGRHcmFwaEV2YWx1YXRpb25TdGF0OjIxNQ==",
+            "operation": "EVALUATED",
+            "skyfunctionName": "TARGET_PATTERN_PHASE"
+          }
+        ],
         "id": "QnVpbGRHcmFwaE1ldHJpY3M6OA==",
         "inputFileConfiguredTargetCount": 0,
         "otherConfiguredTargetCount": 0,
         "outputArtifactCount": 0,
         "outputFileConfiguredTargetCount": 0,
-        "postInvocationSkyframeNodeCount": 190856
+        "postInvocationSkyframeNodeCount": 190856,
+        "ruleClassCounts": []
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6OA==",
+        "numAnalyses": 14,
+        "numBuilds": 13
+      },
+      "dynamicExecutionMetrics": {
+        "id": "RHluYW1pY0V4ZWN1dGlvbk1ldHJpY3M6Mw==",
+        "raceStatistics": []
       },
       "id": "TWV0cmljczo4",
       "memoryMetrics": {
@@ -274,13 +534,24 @@
           "peakPacketsSentPerSec": 19205
         }
       },
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6OA==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
       "timingMetrics": {
         "actionsExecutionStartInMs": 323,
         "analysisPhaseTimeInMs": 48,
         "cpuTimeInMs": 3290,
+        "criticalPathTimeInMs": 0,
         "executionPhaseTimeInMs": 1652,
         "id": "VGltaW5nTWV0cmljczo4",
         "wallTimeInMs": 1982
+      },
+      "workerMetrics": [],
+      "workerPoolMetrics": {
+        "id": "V29ya2VyUG9vbE1ldHJpY3M6OA==",
+        "workerPoolStats": []
       }
     }
   }

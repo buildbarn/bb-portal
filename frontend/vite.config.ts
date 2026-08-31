@@ -14,6 +14,7 @@ export default defineConfig({
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
+      routesDirectory: path.resolve(__dirname, "./src/routes"),
     }),
     react(),
     babel({ presets: [reactCompilerPreset({ target: "19" })] }),

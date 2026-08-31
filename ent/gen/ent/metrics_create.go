@@ -14,11 +14,16 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workermetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/workerpoolmetrics"
 )
 
 // MetricsCreate is the builder for creating a Metrics entity.
@@ -185,6 +190,97 @@ func (_c *MetricsCreate) SetNillableBuildGraphMetricsID(id *int64) *MetricsCreat
 // SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (_c *MetricsCreate) SetBuildGraphMetrics(v *BuildGraphMetrics) *MetricsCreate {
 	return _c.SetBuildGraphMetricsID(v.ID)
+}
+
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (_c *MetricsCreate) SetPackageMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetPackageMetricsID(id)
+	return _c
+}
+
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (_c *MetricsCreate) SetNillablePackageMetricsID(id *int64) *MetricsCreate {
+	if id != nil {
+		_c = _c.SetPackageMetricsID(*id)
+	}
+	return _c
+}
+
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (_c *MetricsCreate) SetPackageMetrics(v *PackageMetrics) *MetricsCreate {
+	return _c.SetPackageMetricsID(v.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (_c *MetricsCreate) SetCumulativeMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetCumulativeMetricsID(id)
+	return _c
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (_c *MetricsCreate) SetNillableCumulativeMetricsID(id *int64) *MetricsCreate {
+	if id != nil {
+		_c = _c.SetCumulativeMetricsID(*id)
+	}
+	return _c
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (_c *MetricsCreate) SetCumulativeMetrics(v *CumulativeMetrics) *MetricsCreate {
+	return _c.SetCumulativeMetricsID(v.ID)
+}
+
+// AddWorkerMetricIDs adds the "worker_metrics" edge to the WorkerMetrics entity by IDs.
+func (_c *MetricsCreate) AddWorkerMetricIDs(ids ...int64) *MetricsCreate {
+	_c.mutation.AddWorkerMetricIDs(ids...)
+	return _c
+}
+
+// AddWorkerMetrics adds the "worker_metrics" edges to the WorkerMetrics entity.
+func (_c *MetricsCreate) AddWorkerMetrics(v ...*WorkerMetrics) *MetricsCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddWorkerMetricIDs(ids...)
+}
+
+// SetWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID.
+func (_c *MetricsCreate) SetWorkerPoolMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetWorkerPoolMetricsID(id)
+	return _c
+}
+
+// SetNillableWorkerPoolMetricsID sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity by ID if the given value is not nil.
+func (_c *MetricsCreate) SetNillableWorkerPoolMetricsID(id *int64) *MetricsCreate {
+	if id != nil {
+		_c = _c.SetWorkerPoolMetricsID(*id)
+	}
+	return _c
+}
+
+// SetWorkerPoolMetrics sets the "worker_pool_metrics" edge to the WorkerPoolMetrics entity.
+func (_c *MetricsCreate) SetWorkerPoolMetrics(v *WorkerPoolMetrics) *MetricsCreate {
+	return _c.SetWorkerPoolMetricsID(v.ID)
+}
+
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (_c *MetricsCreate) SetDynamicExecutionMetricsID(id int64) *MetricsCreate {
+	_c.mutation.SetDynamicExecutionMetricsID(id)
+	return _c
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (_c *MetricsCreate) SetNillableDynamicExecutionMetricsID(id *int64) *MetricsCreate {
+	if id != nil {
+		_c = _c.SetDynamicExecutionMetricsID(*id)
+	}
+	return _c
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (_c *MetricsCreate) SetDynamicExecutionMetrics(v *DynamicExecutionMetrics) *MetricsCreate {
+	return _c.SetDynamicExecutionMetricsID(v.ID)
 }
 
 // Mutation returns the MetricsMutation object of the builder.
@@ -376,6 +472,86 @@ func (_c *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PackageMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.PackageMetricsTable,
+			Columns: []string{metrics.PackageMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.CumulativeMetricsTable,
+			Columns: []string{metrics.CumulativeMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.WorkerMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   metrics.WorkerMetricsTable,
+			Columns: []string{metrics.WorkerMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workermetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.WorkerPoolMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.WorkerPoolMetricsTable,
+			Columns: []string{metrics.WorkerPoolMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   metrics.DynamicExecutionMetricsTable,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

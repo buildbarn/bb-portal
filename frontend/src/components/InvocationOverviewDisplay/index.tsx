@@ -1,7 +1,10 @@
 import { Descriptions } from "antd";
 import type React from "react";
+import { getFragmentData } from "@/graphql/__generated__";
 import type { BazelInvocationOverviewFragment } from "@/graphql/__generated__/graphql";
+import { FILE_DETAILS_FRAGMENT } from "@/types/GraphqlFileFragment";
 import { commandLineDataToString } from "@/utils/commandLineDataToString";
+import { CriticalPathDisplay } from "../CriticalPath";
 import { InvocationResultTag } from "../InvocationResultTag";
 import PortalDuration from "../PortalDuration";
 
@@ -17,6 +20,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
     exitCodeName,
     configurations,
     instanceName,
+    profile,
     connectionMetadata,
     originalCommandLine,
     numFetches,
@@ -45,6 +49,8 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
   )
     .sort()
     .join(", ");
+
+  const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
 
   return (
     <Descriptions column={1} bordered style={{ width: "max-content" }}>
@@ -78,6 +84,14 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({ invocation }) => {
           formatConfig={{ smallestUnit: "s" }}
         />
       </Descriptions.Item>
+      {parsedProfile && (
+        <Descriptions.Item label="Critical Path">
+          <CriticalPathDisplay
+            profile={parsedProfile}
+            hideTinyActions={false}
+          />
+        </Descriptions.Item>
+      )}
       {command !== "" && (
         <Descriptions.Item label="Command">
           <code>{command}</code>

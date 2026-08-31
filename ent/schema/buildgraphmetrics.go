@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -77,6 +78,24 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 		edge.From("metrics", Metrics.Type).
 			Ref("build_graph_metrics").
 			Unique(),
+
+		// Counts of Skyframe operations grouped by Skyfunction.
+		edge.To("evaluation_stats", BuildGraphEvaluationStat.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Configured targets and actions grouped by rule class.
+		edge.To("rule_class_counts", BuildGraphRuleClassCount.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Configured targets and actions grouped by aspect.
+		edge.To("aspect_counts", BuildGraphAspectCount.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 
