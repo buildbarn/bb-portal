@@ -44,8 +44,8 @@ type ConfigurationEdges struct {
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// InvocationTargets holds the value of the invocation_targets edge.
 	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
-	// Actions holds the value of the actions edge.
-	Actions []*Action `json:"actions,omitempty"`
+	// ActionExecutions holds the value of the action_executions edge.
+	ActionExecutions []*ActionExecution `json:"action_executions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
@@ -53,7 +53,7 @@ type ConfigurationEdges struct {
 	totalCount [3]map[string]int
 
 	namedInvocationTargets map[string][]*InvocationTarget
-	namedActions           map[string][]*Action
+	namedActionExecutions  map[string][]*ActionExecution
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -76,13 +76,13 @@ func (e ConfigurationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error
 	return nil, &NotLoadedError{edge: "invocation_targets"}
 }
 
-// ActionsOrErr returns the Actions value or an error if the edge
+// ActionExecutionsOrErr returns the ActionExecutions value or an error if the edge
 // was not loaded in eager-loading.
-func (e ConfigurationEdges) ActionsOrErr() ([]*Action, error) {
+func (e ConfigurationEdges) ActionExecutionsOrErr() ([]*ActionExecution, error) {
 	if e.loadedTypes[2] {
-		return e.Actions, nil
+		return e.ActionExecutions, nil
 	}
-	return nil, &NotLoadedError{edge: "actions"}
+	return nil, &NotLoadedError{edge: "action_executions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -186,9 +186,9 @@ func (_m *Configuration) QueryInvocationTargets() *InvocationTargetQuery {
 	return NewConfigurationClient(_m.config).QueryInvocationTargets(_m)
 }
 
-// QueryActions queries the "actions" edge of the Configuration entity.
-func (_m *Configuration) QueryActions() *ActionQuery {
-	return NewConfigurationClient(_m.config).QueryActions(_m)
+// QueryActionExecutions queries the "action_executions" edge of the Configuration entity.
+func (_m *Configuration) QueryActionExecutions() *ActionExecutionQuery {
+	return NewConfigurationClient(_m.config).QueryActionExecutions(_m)
 }
 
 // Update returns a builder for updating this Configuration.
@@ -262,27 +262,27 @@ func (_m *Configuration) appendNamedInvocationTargets(name string, edges ...*Inv
 	}
 }
 
-// NamedActions returns the Actions named value or an error if the edge was not
+// NamedActionExecutions returns the ActionExecutions named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (_m *Configuration) NamedActions(name string) ([]*Action, error) {
-	if _m.Edges.namedActions == nil {
+func (_m *Configuration) NamedActionExecutions(name string) ([]*ActionExecution, error) {
+	if _m.Edges.namedActionExecutions == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := _m.Edges.namedActions[name]
+	nodes, ok := _m.Edges.namedActionExecutions[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (_m *Configuration) appendNamedActions(name string, edges ...*Action) {
-	if _m.Edges.namedActions == nil {
-		_m.Edges.namedActions = make(map[string][]*Action)
+func (_m *Configuration) appendNamedActionExecutions(name string, edges ...*ActionExecution) {
+	if _m.Edges.namedActionExecutions == nil {
+		_m.Edges.namedActionExecutions = make(map[string][]*ActionExecution)
 	}
 	if len(edges) == 0 {
-		_m.Edges.namedActions[name] = []*Action{}
+		_m.Edges.namedActionExecutions[name] = []*ActionExecution{}
 	} else {
-		_m.Edges.namedActions[name] = append(_m.Edges.namedActions[name], edges...)
+		_m.Edges.namedActionExecutions[name] = append(_m.Edges.namedActionExecutions[name], edges...)
 	}
 }
 

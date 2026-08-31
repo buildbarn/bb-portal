@@ -5,8 +5,8 @@ import (
 )
 
 type (
-	// Action reexport with auth policy added
-	Action struct{ schema.Action }
+	// ActionExecution reexport with auth policy added
+	ActionExecution struct{ schema.ActionExecution }
 	// ActionCacheStatistics reexport with auth policy added
 	ActionCacheStatistics struct{ schema.ActionCacheStatistics }
 	// ActionData reexport with auth policy added

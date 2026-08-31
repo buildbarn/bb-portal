@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 )
@@ -65,6 +66,21 @@ func (_c *DigestCreate) AddFiles(v ...*File) *DigestCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddFileIDs(ids...)
+}
+
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_c *DigestCreate) AddActionExecutionIDs(ids ...int64) *DigestCreate {
+	_c.mutation.AddActionExecutionIDs(ids...)
+	return _c
+}
+
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_c *DigestCreate) AddActionExecutions(v ...*ActionExecution) *DigestCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddActionExecutionIDs(ids...)
 }
 
 // Mutation returns the DigestMutation object of the builder.
@@ -171,6 +187,22 @@ func (_c *DigestCreate) createSpec() (*Digest, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   digest.ActionExecutionsTable,
+			Columns: []string{digest.ActionExecutionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

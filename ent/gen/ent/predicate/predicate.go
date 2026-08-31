@@ -6,14 +6,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Action is the predicate function for action builders.
-type Action func(*sql.Selector)
-
 // ActionCacheStatistics is the predicate function for actioncachestatistics builders.
 type ActionCacheStatistics func(*sql.Selector)
 
 // ActionData is the predicate function for actiondata builders.
 type ActionData func(*sql.Selector)
+
+// ActionExecution is the predicate function for actionexecution builders.
+type ActionExecution func(*sql.Selector)
 
 // ActionSummary is the predicate function for actionsummary builders.
 type ActionSummary func(*sql.Selector)

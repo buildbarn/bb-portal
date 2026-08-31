@@ -22,6 +22,8 @@ const (
 	FieldSizeBytes = "size_bytes"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
 	EdgeFiles = "files"
+	// EdgeActionExecutions holds the string denoting the action_executions edge name in mutations.
+	EdgeActionExecutions = "action_executions"
 	// Table holds the table name of the digest in the database.
 	Table = "digests"
 	// FilesTable is the table that holds the files relation/edge.
@@ -31,6 +33,13 @@ const (
 	FilesInverseTable = "files"
 	// FilesColumn is the table column denoting the files relation/edge.
 	FilesColumn = "digest_id"
+	// ActionExecutionsTable is the table that holds the action_executions relation/edge.
+	ActionExecutionsTable = "action_executions"
+	// ActionExecutionsInverseTable is the table name for the ActionExecution entity.
+	// It exists in this package in order to avoid circular dependency with the "actionexecution" package.
+	ActionExecutionsInverseTable = "action_executions"
+	// ActionExecutionsColumn is the table column denoting the action_executions relation/edge.
+	ActionExecutionsColumn = "action_digest_id"
 )
 
 // Columns holds all SQL columns for digest fields.
@@ -88,10 +97,31 @@ func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByActionExecutionsCount orders the results by action_executions count.
+func ByActionExecutionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newActionExecutionsStep(), opts...)
+	}
+}
+
+// ByActionExecutions orders the results by action_executions terms.
+func ByActionExecutions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionExecutionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newFilesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FilesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+	)
+}
+func newActionExecutionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionExecutionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ActionExecutionsTable, ActionExecutionsColumn),
 	)
 }

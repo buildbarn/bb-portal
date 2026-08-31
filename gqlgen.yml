@@ -70,3 +70,6 @@ models:
   Duration:
     model:
       - github.com/99designs/gqlgen/graphql.Duration
+  ActionTimingMetrics:
+    model:
+      - github.com/buildbarn/bb-portal/internal/database/sqlc.GetActionTimingMetricsRow

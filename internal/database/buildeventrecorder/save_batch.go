@@ -33,6 +33,11 @@ func (r *buildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 		return util.StatusWrap(err, "Failed to save batch configuration events")
 	}
 
+	batch, rest = filterActionCompletedBatch(rest)
+	if err = r.saveActionExecutedBatch(ctx, batch); err != nil {
+		return util.StatusWrap(err, "Failed to save batch action completed events")
+	}
+
 	batch, rest = filterTargetConfiguredBatch(rest)
 	if err = r.saveTargetConfiguredBatch(ctx, batch); err != nil {
 		return util.StatusWrap(err, "Failed to save batch target configured events")
@@ -140,6 +145,18 @@ func filterConfigurationBatch(batch []BuildEventWithInfo) (filtered, rest []Buil
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
 		case *bes.BuildEventId_Configuration:
+			filtered = append(filtered, x)
+		default:
+			rest = append(rest, x)
+		}
+	}
+	return filtered, rest
+}
+
+func filterActionCompletedBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo) {
+	for _, x := range batch {
+		switch x.Event.GetId().GetId().(type) {
+		case *bes.BuildEventId_ActionCompleted:
 			filtered = append(filtered, x)
 		default:
 			rest = append(rest, x)

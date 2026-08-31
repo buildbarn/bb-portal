@@ -64,6 +64,10 @@ func main() {
 			return util.StatusWrap(err, "Failed to create database client from connection")
 		}
 
+		if err = database.RenameLegacyActionsTable(ctx, connection); err != nil {
+			return util.StatusWrap(err, "Could not rename legacy actions table")
+		}
+
 		if err = db.Ent().Schema.Create(ctx, migrate.WithDropIndex(true)); err != nil {
 			return util.StatusWrap(err, "Could not automatically migrate to desired schema")
 		}

@@ -227,6 +227,8 @@ const BrowserActionGrid: React.FC<Params> = ({
             inputRootDigest={data.action.inputRootDigest}
             fileSystemAccessProfile={data.fileSystemAccessProfile}
             fileSystemAccessProfileReference={fileSystemAccessProfileReference}
+            notFoundMessage="Input tree not uploaded"
+            notFoundDescription="The input root is not available in the CAS. Bazel does not upload the complete input Merkle tree when it uploads the result of a locally executed action."
           />
         </Space>
       )}

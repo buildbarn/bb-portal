@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -394,19 +394,19 @@ func (_c *BazelInvocationCreate) AddConfigurations(v ...*Configuration) *BazelIn
 	return _c.AddConfigurationIDs(ids...)
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (_c *BazelInvocationCreate) AddActionIDs(ids ...int64) *BazelInvocationCreate {
-	_c.mutation.AddActionIDs(ids...)
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_c *BazelInvocationCreate) AddActionExecutionIDs(ids ...int64) *BazelInvocationCreate {
+	_c.mutation.AddActionExecutionIDs(ids...)
 	return _c
 }
 
-// AddActions adds the "actions" edges to the Action entity.
-func (_c *BazelInvocationCreate) AddActions(v ...*Action) *BazelInvocationCreate {
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_c *BazelInvocationCreate) AddActionExecutions(v ...*ActionExecution) *BazelInvocationCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddActionIDs(ids...)
+	return _c.AddActionExecutionIDs(ids...)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -818,15 +818,15 @@ func (_c *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Creat
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.ActionsTable,
-			Columns: []string{bazelinvocation.ActionsColumn},
+			Table:   bazelinvocation.ActionExecutionsTable,
+			Columns: []string{bazelinvocation.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

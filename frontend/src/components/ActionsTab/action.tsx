@@ -1,16 +1,35 @@
-import { Descriptions, Flex, Space } from "antd";
-import { getFragmentData } from "@/graphql/__generated__";
-import type { BazelInvocationActionsFragment } from "@/graphql/__generated__/graphql";
-import { FILE_DETAILS_FRAGMENT } from "@/types/GraphqlFileFragment";
-import { CasGqlFileViewer } from "../LogViewer/casGqlFileViewer";
+import { Descriptions, Flex, Space, Typography } from "antd";
+import type { BazelInvocationActionExecutionFragment } from "@/graphql/__generated__/graphql";
+import {
+  type GraphqlFile,
+  generateActionUrlFromGraphqlDigest,
+  generateFileUrlFromGraphqlFile,
+} from "@/utils/urlGenerator";
+import { getActionCacheStatus } from "./cache";
+import { getActionExecutionKind } from "./execution";
 
 interface Props {
-  action: BazelInvocationActionsFragment;
+  action: BazelInvocationActionExecutionFragment;
 }
 
+interface OutputLinkProps {
+  file?: GraphqlFile | null;
+  children: React.ReactNode;
+}
+
+const OutputLink: React.FC<OutputLinkProps> = ({ file, children }) => {
+  return file ? (
+    <Typography.Link href={generateFileUrlFromGraphqlFile(file)}>
+      {children}
+    </Typography.Link>
+  ) : (
+    children
+  );
+};
+
 export const ActionDetails: React.FC<Props> = ({ action }) => {
-  const stdoutFile = getFragmentData(FILE_DETAILS_FRAGMENT, action.stdout);
-  const stderrFile = getFragmentData(FILE_DETAILS_FRAGMENT, action.stderr);
+  const actionHref = generateActionUrlFromGraphqlDigest(action.actionDigest);
+  const cacheStatus = getActionCacheStatus(action.cacheHit, action.runner);
 
   return (
     <Space direction="vertical" size="middle" style={{ width: "100%" }}>
@@ -21,7 +40,23 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
         styles={{ label: { width: "20%" }, content: { width: "90%" } }}
       >
         {action.type && (
-          <Descriptions.Item label="Type">{action.type}</Descriptions.Item>
+          <Descriptions.Item label="Action mnemonic">
+            {action.type}
+          </Descriptions.Item>
+        )}
+        <Descriptions.Item label="Execution">
+          {getActionExecutionKind(action.runner)}
+          {action.runner && ` (${action.runner})`}
+        </Descriptions.Item>
+        <Descriptions.Item label="Cache result">
+          {cacheStatus.label}
+        </Descriptions.Item>
+        {actionHref && (
+          <Descriptions.Item label="Action">
+            <Typography.Link href={actionHref}>
+              View action in bb-browser
+            </Typography.Link>
+          </Descriptions.Item>
         )}
         {action.success !== null && action.success !== undefined && (
           <Descriptions.Item label="Success">
@@ -29,26 +64,47 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
           </Descriptions.Item>
         )}
         {action.exitCode !== null && action.exitCode !== undefined && (
-          <Descriptions.Item label="Exit Code">
+          <Descriptions.Item label="Exit code">
             {action.exitCode}
           </Descriptions.Item>
         )}
         {action.failureCode && (
-          <Descriptions.Item label="Failure Code">
+          <Descriptions.Item label="Failure code">
             {action.failureCode}
           </Descriptions.Item>
         )}
         {action.failureMessage && (
-          <Descriptions.Item label="Failure Message">
+          <Descriptions.Item label="Failure message">
             {action.failureMessage}
           </Descriptions.Item>
         )}
+        {action.primaryOutput && (
+          <Descriptions.Item label="Primary output">
+            <OutputLink file={action.primaryOutputFile}>
+              {action.primaryOutput}
+            </OutputLink>
+          </Descriptions.Item>
+        )}
+        {action.stdout && (
+          <Descriptions.Item label="Standard output">
+            <OutputLink file={action.stdout}>
+              Download standard output
+            </OutputLink>
+          </Descriptions.Item>
+        )}
+        {action.stderr && (
+          <Descriptions.Item label="Standard error">
+            <OutputLink file={action.stderr}>
+              Download standard error
+            </OutputLink>
+          </Descriptions.Item>
+        )}
         {action.commandLine && (
-          <Descriptions.Item label="Command Line">
+          <Descriptions.Item label="Command line">
             <Flex wrap>
               {action.commandLine.map((arg, index) => (
                 <pre
-                  // biome-ignore lint/suspicious/noArrayIndexKey: Since there are dupliate args, we need to use index
+                  // biome-ignore lint/suspicious/noArrayIndexKey: duplicate arguments require the index
                   key={`${arg}-${index}`}
                   style={{ textWrap: "wrap", paddingRight: "0.7em" }}
                 >
@@ -64,18 +120,18 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
           </Descriptions.Item>
         )}
         {action.configuration?.platformName && (
-          <Descriptions.Item label="Configuration Platform Name">
+          <Descriptions.Item label="Configuration platform">
             {action.configuration.platformName}
           </Descriptions.Item>
         )}
         {action.configuration?.mnemonic && (
-          <Descriptions.Item label="Configuration Mnemonic">
+          <Descriptions.Item label="Configuration mnemonic">
             {action.configuration.mnemonic}
           </Descriptions.Item>
         )}
         {action.configuration?.makeVariables &&
           Object.keys(action.configuration.makeVariables).length > 0 && (
-            <Descriptions.Item label="Configuration Make Variables">
+            <Descriptions.Item label="Configuration make variables">
               <Space direction="vertical" size="small">
                 {Object.entries(action.configuration.makeVariables).map(
                   ([key, value]) => (
@@ -89,20 +145,6 @@ export const ActionDetails: React.FC<Props> = ({ action }) => {
             </Descriptions.Item>
           )}
       </Descriptions>
-      {stdoutFile && (
-        <CasGqlFileViewer
-          file={stdoutFile}
-          title="Standard output"
-          fileName="standard_output.txt"
-        />
-      )}
-      {stderrFile && (
-        <CasGqlFileViewer
-          file={stderrFile}
-          title="Standard error"
-          fileName="standard_error.txt"
-        />
-      )}
     </Space>
   );
 };

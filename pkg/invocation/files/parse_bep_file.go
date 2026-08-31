@@ -22,7 +22,8 @@ type ParsedBepFile struct {
 	SizeBytes         int64  `json:"sizeBytes"`
 }
 
-func getDigestFromURI(uri string) digest.Digest {
+// GetDigestFromURI extracts a CAS digest from a ByteStream URI.
+func GetDigestFromURI(uri string) digest.Digest {
 	// Remove nested protocols if they exist
 	if idx := strings.LastIndex(uri, "://"); idx != -1 {
 		uri = uri[idx+3:]
@@ -42,8 +43,16 @@ func getDigestFromURI(uri string) digest.Digest {
 	return d
 }
 
-// ParseBepFile parses a BEP file
+// ParseBepFile parses a BEP file.
 func ParseBepFile(file *proto.File) *ParsedBepFile {
+	return ParseBepFileWithFallbackPath(file, "")
+}
+
+// ParseBepFileWithFallbackPath parses a BEP file, using fallbackPath when the
+// File message does not contain a name or path prefix. ActionExecuted primary
+// outputs commonly omit those fields because their path is carried by the
+// ActionCompleted event ID instead.
+func ParseBepFileWithFallbackPath(file *proto.File, fallbackPath string) *ParsedBepFile {
 	if file == nil {
 		return nil
 	}
@@ -51,7 +60,10 @@ func ParseBepFile(file *proto.File) *ParsedBepFile {
 	filePath := path.Join(file.PathPrefix...)
 	filePath = path.Join(filePath, file.Name)
 	if filePath == "" {
-		return nil
+		filePath = fallbackPath
+		if filePath == "" {
+			return nil
+		}
 	}
 
 	var (
@@ -62,7 +74,7 @@ func ParseBepFile(file *proto.File) *ParsedBepFile {
 	)
 
 	if uri := file.GetUri(); uri != "" {
-		if d := getDigestFromURI(uri); d != digest.BadDigest {
+		if d := GetDigestFromURI(uri); d != digest.BadDigest {
 			instanceNameStr = d.GetInstanceName().String()
 			rawDigestFunction = d.GetDigestFunction().GetEnumValue()
 

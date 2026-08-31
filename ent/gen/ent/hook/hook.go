@@ -9,18 +9,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 )
 
-// The ActionFunc type is an adapter to allow the use of ordinary
-// function as Action mutator.
-type ActionFunc func(context.Context, *ent.ActionMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ActionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ActionMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActionMutation", m)
-}
-
 // The ActionCacheStatisticsFunc type is an adapter to allow the use of ordinary
 // function as ActionCacheStatistics mutator.
 type ActionCacheStatisticsFunc func(context.Context, *ent.ActionCacheStatisticsMutation) (ent.Value, error)
@@ -43,6 +31,18 @@ func (f ActionDataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActionDataMutation", m)
+}
+
+// The ActionExecutionFunc type is an adapter to allow the use of ordinary
+// function as ActionExecution mutator.
+type ActionExecutionFunc func(context.Context, *ent.ActionExecutionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ActionExecutionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ActionExecutionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActionExecutionMutation", m)
 }
 
 // The ActionSummaryFunc type is an adapter to allow the use of ordinary

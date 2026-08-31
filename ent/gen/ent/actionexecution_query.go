@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 
@@ -11,64 +12,67 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
-// ActionQuery is the builder for querying Action entities.
-type ActionQuery struct {
+// ActionExecutionQuery is the builder for querying ActionExecution entities.
+type ActionExecutionQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []action.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.Action
-	withBazelInvocation *BazelInvocationQuery
-	withConfiguration   *ConfigurationQuery
-	withStdout          *FileQuery
-	withStderr          *FileQuery
-	modifiers           []func(*sql.Selector)
-	loadTotal           []func(context.Context, []*Action) error
+	ctx                   *QueryContext
+	order                 []actionexecution.OrderOption
+	inters                []Interceptor
+	predicates            []predicate.ActionExecution
+	withBazelInvocation   *BazelInvocationQuery
+	withConfiguration     *ConfigurationQuery
+	withActionDigest      *DigestQuery
+	withPrimaryOutputFile *FileQuery
+	withStdout            *FileQuery
+	withStderr            *FileQuery
+	modifiers             []func(*sql.Selector)
+	loadTotal             []func(context.Context, []*ActionExecution) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the ActionQuery builder.
-func (_q *ActionQuery) Where(ps ...predicate.Action) *ActionQuery {
+// Where adds a new predicate for the ActionExecutionQuery builder.
+func (_q *ActionExecutionQuery) Where(ps ...predicate.ActionExecution) *ActionExecutionQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *ActionQuery) Limit(limit int) *ActionQuery {
+func (_q *ActionExecutionQuery) Limit(limit int) *ActionExecutionQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *ActionQuery) Offset(offset int) *ActionQuery {
+func (_q *ActionExecutionQuery) Offset(offset int) *ActionExecutionQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *ActionQuery) Unique(unique bool) *ActionQuery {
+func (_q *ActionExecutionQuery) Unique(unique bool) *ActionExecutionQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *ActionQuery) Order(o ...action.OrderOption) *ActionQuery {
+func (_q *ActionExecutionQuery) Order(o ...actionexecution.OrderOption) *ActionExecutionQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
 // QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (_q *ActionQuery) QueryBazelInvocation() *BazelInvocationQuery {
+func (_q *ActionExecutionQuery) QueryBazelInvocation() *BazelInvocationQuery {
 	query := (&BazelInvocationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -79,9 +83,9 @@ func (_q *ActionQuery) QueryBazelInvocation() *BazelInvocationQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, selector),
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, action.BazelInvocationTable, action.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, actionexecution.BazelInvocationTable, actionexecution.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -90,7 +94,7 @@ func (_q *ActionQuery) QueryBazelInvocation() *BazelInvocationQuery {
 }
 
 // QueryConfiguration chains the current query on the "configuration" edge.
-func (_q *ActionQuery) QueryConfiguration() *ConfigurationQuery {
+func (_q *ActionExecutionQuery) QueryConfiguration() *ConfigurationQuery {
 	query := (&ConfigurationClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -101,9 +105,53 @@ func (_q *ActionQuery) QueryConfiguration() *ConfigurationQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, selector),
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
 			sqlgraph.To(configuration.Table, configuration.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.ConfigurationTable, action.ConfigurationColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.ConfigurationTable, actionexecution.ConfigurationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryActionDigest chains the current query on the "action_digest" edge.
+func (_q *ActionExecutionQuery) QueryActionDigest() *DigestQuery {
+	query := (&DigestClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
+			sqlgraph.To(digest.Table, digest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, actionexecution.ActionDigestTable, actionexecution.ActionDigestColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPrimaryOutputFile chains the current query on the "primary_output_file" edge.
+func (_q *ActionExecutionQuery) QueryPrimaryOutputFile() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.PrimaryOutputFileTable, actionexecution.PrimaryOutputFileColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -112,7 +160,7 @@ func (_q *ActionQuery) QueryConfiguration() *ConfigurationQuery {
 }
 
 // QueryStdout chains the current query on the "stdout" edge.
-func (_q *ActionQuery) QueryStdout() *FileQuery {
+func (_q *ActionExecutionQuery) QueryStdout() *FileQuery {
 	query := (&FileClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -123,9 +171,9 @@ func (_q *ActionQuery) QueryStdout() *FileQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, selector),
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
 			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StdoutTable, action.StdoutColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StdoutTable, actionexecution.StdoutColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -134,7 +182,7 @@ func (_q *ActionQuery) QueryStdout() *FileQuery {
 }
 
 // QueryStderr chains the current query on the "stderr" edge.
-func (_q *ActionQuery) QueryStderr() *FileQuery {
+func (_q *ActionExecutionQuery) QueryStderr() *FileQuery {
 	query := (&FileClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -145,9 +193,9 @@ func (_q *ActionQuery) QueryStderr() *FileQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, selector),
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, selector),
 			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StderrTable, action.StderrColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StderrTable, actionexecution.StderrColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -155,21 +203,21 @@ func (_q *ActionQuery) QueryStderr() *FileQuery {
 	return query
 }
 
-// First returns the first Action entity from the query.
-// Returns a *NotFoundError when no Action was found.
-func (_q *ActionQuery) First(ctx context.Context) (*Action, error) {
+// First returns the first ActionExecution entity from the query.
+// Returns a *NotFoundError when no ActionExecution was found.
+func (_q *ActionExecutionQuery) First(ctx context.Context) (*ActionExecution, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{action.Label}
+		return nil, &NotFoundError{actionexecution.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *ActionQuery) FirstX(ctx context.Context) *Action {
+func (_q *ActionExecutionQuery) FirstX(ctx context.Context) *ActionExecution {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -177,22 +225,22 @@ func (_q *ActionQuery) FirstX(ctx context.Context) *Action {
 	return node
 }
 
-// FirstID returns the first Action ID from the query.
-// Returns a *NotFoundError when no Action ID was found.
-func (_q *ActionQuery) FirstID(ctx context.Context) (id int64, err error) {
+// FirstID returns the first ActionExecution ID from the query.
+// Returns a *NotFoundError when no ActionExecution ID was found.
+func (_q *ActionExecutionQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{action.Label}
+		err = &NotFoundError{actionexecution.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *ActionQuery) FirstIDX(ctx context.Context) int64 {
+func (_q *ActionExecutionQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -200,10 +248,10 @@ func (_q *ActionQuery) FirstIDX(ctx context.Context) int64 {
 	return id
 }
 
-// Only returns a single Action entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Action entity is found.
-// Returns a *NotFoundError when no Action entities are found.
-func (_q *ActionQuery) Only(ctx context.Context) (*Action, error) {
+// Only returns a single ActionExecution entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one ActionExecution entity is found.
+// Returns a *NotFoundError when no ActionExecution entities are found.
+func (_q *ActionExecutionQuery) Only(ctx context.Context) (*ActionExecution, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -212,14 +260,14 @@ func (_q *ActionQuery) Only(ctx context.Context) (*Action, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{action.Label}
+		return nil, &NotFoundError{actionexecution.Label}
 	default:
-		return nil, &NotSingularError{action.Label}
+		return nil, &NotSingularError{actionexecution.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *ActionQuery) OnlyX(ctx context.Context) *Action {
+func (_q *ActionExecutionQuery) OnlyX(ctx context.Context) *ActionExecution {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -227,10 +275,10 @@ func (_q *ActionQuery) OnlyX(ctx context.Context) *Action {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Action ID in the query.
-// Returns a *NotSingularError when more than one Action ID is found.
+// OnlyID is like Only, but returns the only ActionExecution ID in the query.
+// Returns a *NotSingularError when more than one ActionExecution ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *ActionQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *ActionExecutionQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -239,15 +287,15 @@ func (_q *ActionQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{action.Label}
+		err = &NotFoundError{actionexecution.Label}
 	default:
-		err = &NotSingularError{action.Label}
+		err = &NotSingularError{actionexecution.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *ActionQuery) OnlyIDX(ctx context.Context) int64 {
+func (_q *ActionExecutionQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -255,18 +303,18 @@ func (_q *ActionQuery) OnlyIDX(ctx context.Context) int64 {
 	return id
 }
 
-// All executes the query and returns a list of Actions.
-func (_q *ActionQuery) All(ctx context.Context) ([]*Action, error) {
+// All executes the query and returns a list of ActionExecutions.
+func (_q *ActionExecutionQuery) All(ctx context.Context) ([]*ActionExecution, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*Action, *ActionQuery]()
-	return withInterceptors[[]*Action](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*ActionExecution, *ActionExecutionQuery]()
+	return withInterceptors[[]*ActionExecution](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *ActionQuery) AllX(ctx context.Context) []*Action {
+func (_q *ActionExecutionQuery) AllX(ctx context.Context) []*ActionExecution {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -274,20 +322,20 @@ func (_q *ActionQuery) AllX(ctx context.Context) []*Action {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Action IDs.
-func (_q *ActionQuery) IDs(ctx context.Context) (ids []int64, err error) {
+// IDs executes the query and returns a list of ActionExecution IDs.
+func (_q *ActionExecutionQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(action.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(actionexecution.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *ActionQuery) IDsX(ctx context.Context) []int64 {
+func (_q *ActionExecutionQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -296,16 +344,16 @@ func (_q *ActionQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (_q *ActionQuery) Count(ctx context.Context) (int, error) {
+func (_q *ActionExecutionQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*ActionQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ActionExecutionQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *ActionQuery) CountX(ctx context.Context) int {
+func (_q *ActionExecutionQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -314,7 +362,7 @@ func (_q *ActionQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *ActionQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *ActionExecutionQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -327,7 +375,7 @@ func (_q *ActionQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *ActionQuery) ExistX(ctx context.Context) bool {
+func (_q *ActionExecutionQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -335,22 +383,24 @@ func (_q *ActionQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the ActionQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the ActionExecutionQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *ActionQuery) Clone() *ActionQuery {
+func (_q *ActionExecutionQuery) Clone() *ActionExecutionQuery {
 	if _q == nil {
 		return nil
 	}
-	return &ActionQuery{
-		config:              _q.config,
-		ctx:                 _q.ctx.Clone(),
-		order:               append([]action.OrderOption{}, _q.order...),
-		inters:              append([]Interceptor{}, _q.inters...),
-		predicates:          append([]predicate.Action{}, _q.predicates...),
-		withBazelInvocation: _q.withBazelInvocation.Clone(),
-		withConfiguration:   _q.withConfiguration.Clone(),
-		withStdout:          _q.withStdout.Clone(),
-		withStderr:          _q.withStderr.Clone(),
+	return &ActionExecutionQuery{
+		config:                _q.config,
+		ctx:                   _q.ctx.Clone(),
+		order:                 append([]actionexecution.OrderOption{}, _q.order...),
+		inters:                append([]Interceptor{}, _q.inters...),
+		predicates:            append([]predicate.ActionExecution{}, _q.predicates...),
+		withBazelInvocation:   _q.withBazelInvocation.Clone(),
+		withConfiguration:     _q.withConfiguration.Clone(),
+		withActionDigest:      _q.withActionDigest.Clone(),
+		withPrimaryOutputFile: _q.withPrimaryOutputFile.Clone(),
+		withStdout:            _q.withStdout.Clone(),
+		withStderr:            _q.withStderr.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -359,7 +409,7 @@ func (_q *ActionQuery) Clone() *ActionQuery {
 
 // WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
 // the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *ActionQuery {
+func (_q *ActionExecutionQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *ActionExecutionQuery {
 	query := (&BazelInvocationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -370,7 +420,7 @@ func (_q *ActionQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) 
 
 // WithConfiguration tells the query-builder to eager-load the nodes that are connected to
 // the "configuration" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *ActionQuery {
+func (_q *ActionExecutionQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *ActionExecutionQuery {
 	query := (&ConfigurationClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -379,9 +429,31 @@ func (_q *ActionQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *Act
 	return _q
 }
 
+// WithActionDigest tells the query-builder to eager-load the nodes that are connected to
+// the "action_digest" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionExecutionQuery) WithActionDigest(opts ...func(*DigestQuery)) *ActionExecutionQuery {
+	query := (&DigestClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withActionDigest = query
+	return _q
+}
+
+// WithPrimaryOutputFile tells the query-builder to eager-load the nodes that are connected to
+// the "primary_output_file" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *ActionExecutionQuery) WithPrimaryOutputFile(opts ...func(*FileQuery)) *ActionExecutionQuery {
+	query := (&FileClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPrimaryOutputFile = query
+	return _q
+}
+
 // WithStdout tells the query-builder to eager-load the nodes that are connected to
 // the "stdout" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithStdout(opts ...func(*FileQuery)) *ActionQuery {
+func (_q *ActionExecutionQuery) WithStdout(opts ...func(*FileQuery)) *ActionExecutionQuery {
 	query := (&FileClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -392,7 +464,7 @@ func (_q *ActionQuery) WithStdout(opts ...func(*FileQuery)) *ActionQuery {
 
 // WithStderr tells the query-builder to eager-load the nodes that are connected to
 // the "stderr" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *ActionQuery) WithStderr(opts ...func(*FileQuery)) *ActionQuery {
+func (_q *ActionExecutionQuery) WithStderr(opts ...func(*FileQuery)) *ActionExecutionQuery {
 	query := (&FileClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
@@ -411,15 +483,15 @@ func (_q *ActionQuery) WithStderr(opts ...func(*FileQuery)) *ActionQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Action.Query().
-//		GroupBy(action.FieldBazelInvocationID).
+//	client.ActionExecution.Query().
+//		GroupBy(actionexecution.FieldBazelInvocationID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *ActionQuery) GroupBy(field string, fields ...string) *ActionGroupBy {
+func (_q *ActionExecutionQuery) GroupBy(field string, fields ...string) *ActionExecutionGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ActionGroupBy{build: _q}
+	grbuild := &ActionExecutionGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = action.Label
+	grbuild.label = actionexecution.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -433,23 +505,23 @@ func (_q *ActionQuery) GroupBy(field string, fields ...string) *ActionGroupBy {
 //		BazelInvocationID int64 `json:"bazel_invocation_id,omitempty"`
 //	}
 //
-//	client.Action.Query().
-//		Select(action.FieldBazelInvocationID).
+//	client.ActionExecution.Query().
+//		Select(actionexecution.FieldBazelInvocationID).
 //		Scan(ctx, &v)
-func (_q *ActionQuery) Select(fields ...string) *ActionSelect {
+func (_q *ActionExecutionQuery) Select(fields ...string) *ActionExecutionSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &ActionSelect{ActionQuery: _q}
-	sbuild.label = action.Label
+	sbuild := &ActionExecutionSelect{ActionExecutionQuery: _q}
+	sbuild.label = actionexecution.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a ActionSelect configured with the given aggregations.
-func (_q *ActionQuery) Aggregate(fns ...AggregateFunc) *ActionSelect {
+// Aggregate returns a ActionExecutionSelect configured with the given aggregations.
+func (_q *ActionExecutionQuery) Aggregate(fns ...AggregateFunc) *ActionExecutionSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *ActionQuery) prepareQuery(ctx context.Context) error {
+func (_q *ActionExecutionQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -461,7 +533,7 @@ func (_q *ActionQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !action.ValidColumn(f) {
+		if !actionexecution.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -472,25 +544,33 @@ func (_q *ActionQuery) prepareQuery(ctx context.Context) error {
 		}
 		_q.sql = prev
 	}
+	if actionexecution.Policy == nil {
+		return errors.New("ent: uninitialized actionexecution.Policy (forgotten import ent/runtime?)")
+	}
+	if err := actionexecution.Policy.EvalQuery(ctx, _q); err != nil {
+		return err
+	}
 	return nil
 }
 
-func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Action, error) {
+func (_q *ActionExecutionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionExecution, error) {
 	var (
-		nodes       = []*Action{}
+		nodes       = []*ActionExecution{}
 		_spec       = _q.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [6]bool{
 			_q.withBazelInvocation != nil,
 			_q.withConfiguration != nil,
+			_q.withActionDigest != nil,
+			_q.withPrimaryOutputFile != nil,
 			_q.withStdout != nil,
 			_q.withStderr != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Action).scanValues(nil, columns)
+		return (*ActionExecution).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Action{config: _q.config}
+		node := &ActionExecution{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -509,25 +589,37 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 	}
 	if query := _q.withBazelInvocation; query != nil {
 		if err := _q.loadBazelInvocation(ctx, query, nodes, nil,
-			func(n *Action, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
+			func(n *ActionExecution, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := _q.withConfiguration; query != nil {
 		if err := _q.loadConfiguration(ctx, query, nodes, nil,
-			func(n *Action, e *Configuration) { n.Edges.Configuration = e }); err != nil {
+			func(n *ActionExecution, e *Configuration) { n.Edges.Configuration = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withActionDigest; query != nil {
+		if err := _q.loadActionDigest(ctx, query, nodes, nil,
+			func(n *ActionExecution, e *Digest) { n.Edges.ActionDigest = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPrimaryOutputFile; query != nil {
+		if err := _q.loadPrimaryOutputFile(ctx, query, nodes, nil,
+			func(n *ActionExecution, e *File) { n.Edges.PrimaryOutputFile = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := _q.withStdout; query != nil {
 		if err := _q.loadStdout(ctx, query, nodes, nil,
-			func(n *Action, e *File) { n.Edges.Stdout = e }); err != nil {
+			func(n *ActionExecution, e *File) { n.Edges.Stdout = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := _q.withStderr; query != nil {
 		if err := _q.loadStderr(ctx, query, nodes, nil,
-			func(n *Action, e *File) { n.Edges.Stderr = e }); err != nil {
+			func(n *ActionExecution, e *File) { n.Edges.Stderr = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -539,9 +631,9 @@ func (_q *ActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Actio
 	return nodes, nil
 }
 
-func (_q *ActionQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*Action, init func(*Action), assign func(*Action, *BazelInvocation)) error {
+func (_q *ActionExecutionQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *BazelInvocation)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Action)
+	nodeids := make(map[int64][]*ActionExecution)
 	for i := range nodes {
 		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
@@ -568,9 +660,9 @@ func (_q *ActionQuery) loadBazelInvocation(ctx context.Context, query *BazelInvo
 	}
 	return nil
 }
-func (_q *ActionQuery) loadConfiguration(ctx context.Context, query *ConfigurationQuery, nodes []*Action, init func(*Action), assign func(*Action, *Configuration)) error {
+func (_q *ActionExecutionQuery) loadConfiguration(ctx context.Context, query *ConfigurationQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *Configuration)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Action)
+	nodeids := make(map[int64][]*ActionExecution)
 	for i := range nodes {
 		fk := nodes[i].ConfigurationID
 		if _, ok := nodeids[fk]; !ok {
@@ -597,9 +689,67 @@ func (_q *ActionQuery) loadConfiguration(ctx context.Context, query *Configurati
 	}
 	return nil
 }
-func (_q *ActionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes []*Action, init func(*Action), assign func(*Action, *File)) error {
+func (_q *ActionExecutionQuery) loadActionDigest(ctx context.Context, query *DigestQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *Digest)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Action)
+	nodeids := make(map[int64][]*ActionExecution)
+	for i := range nodes {
+		fk := nodes[i].ActionDigestID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(digest.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "action_digest_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *ActionExecutionQuery) loadPrimaryOutputFile(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionExecution)
+	for i := range nodes {
+		fk := nodes[i].PrimaryOutputFileID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(file.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "primary_output_file_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *ActionExecutionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*ActionExecution)
 	for i := range nodes {
 		fk := nodes[i].StdoutFileID
 		if _, ok := nodeids[fk]; !ok {
@@ -626,9 +776,9 @@ func (_q *ActionQuery) loadStdout(ctx context.Context, query *FileQuery, nodes [
 	}
 	return nil
 }
-func (_q *ActionQuery) loadStderr(ctx context.Context, query *FileQuery, nodes []*Action, init func(*Action), assign func(*Action, *File)) error {
+func (_q *ActionExecutionQuery) loadStderr(ctx context.Context, query *FileQuery, nodes []*ActionExecution, init func(*ActionExecution), assign func(*ActionExecution, *File)) error {
 	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Action)
+	nodeids := make(map[int64][]*ActionExecution)
 	for i := range nodes {
 		fk := nodes[i].StderrFileID
 		if _, ok := nodeids[fk]; !ok {
@@ -656,7 +806,7 @@ func (_q *ActionQuery) loadStderr(ctx context.Context, query *FileQuery, nodes [
 	return nil
 }
 
-func (_q *ActionQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *ActionExecutionQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	if len(_q.modifiers) > 0 {
 		_spec.Modifiers = _q.modifiers
@@ -668,8 +818,8 @@ func (_q *ActionQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *ActionQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(action.Table, action.Columns, sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64))
+func (_q *ActionExecutionQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(actionexecution.Table, actionexecution.Columns, sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -678,23 +828,29 @@ func (_q *ActionQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, action.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, actionexecution.FieldID)
 		for i := range fields {
-			if fields[i] != action.FieldID {
+			if fields[i] != actionexecution.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
 		if _q.withBazelInvocation != nil {
-			_spec.Node.AddColumnOnce(action.FieldBazelInvocationID)
+			_spec.Node.AddColumnOnce(actionexecution.FieldBazelInvocationID)
 		}
 		if _q.withConfiguration != nil {
-			_spec.Node.AddColumnOnce(action.FieldConfigurationID)
+			_spec.Node.AddColumnOnce(actionexecution.FieldConfigurationID)
+		}
+		if _q.withActionDigest != nil {
+			_spec.Node.AddColumnOnce(actionexecution.FieldActionDigestID)
+		}
+		if _q.withPrimaryOutputFile != nil {
+			_spec.Node.AddColumnOnce(actionexecution.FieldPrimaryOutputFileID)
 		}
 		if _q.withStdout != nil {
-			_spec.Node.AddColumnOnce(action.FieldStdoutFileID)
+			_spec.Node.AddColumnOnce(actionexecution.FieldStdoutFileID)
 		}
 		if _q.withStderr != nil {
-			_spec.Node.AddColumnOnce(action.FieldStderrFileID)
+			_spec.Node.AddColumnOnce(actionexecution.FieldStderrFileID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {
@@ -720,12 +876,12 @@ func (_q *ActionQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *ActionQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *ActionExecutionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(action.Table)
+	t1 := builder.Table(actionexecution.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = action.Columns
+		columns = actionexecution.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -752,28 +908,28 @@ func (_q *ActionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// ActionGroupBy is the group-by builder for Action entities.
-type ActionGroupBy struct {
+// ActionExecutionGroupBy is the group-by builder for ActionExecution entities.
+type ActionExecutionGroupBy struct {
 	selector
-	build *ActionQuery
+	build *ActionExecutionQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *ActionGroupBy) Aggregate(fns ...AggregateFunc) *ActionGroupBy {
+func (_g *ActionExecutionGroupBy) Aggregate(fns ...AggregateFunc) *ActionExecutionGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *ActionGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *ActionExecutionGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionQuery, *ActionGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*ActionExecutionQuery, *ActionExecutionGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *ActionGroupBy) sqlScan(ctx context.Context, root *ActionQuery, v any) error {
+func (_g *ActionExecutionGroupBy) sqlScan(ctx context.Context, root *ActionExecutionQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -800,28 +956,28 @@ func (_g *ActionGroupBy) sqlScan(ctx context.Context, root *ActionQuery, v any) 
 	return sql.ScanSlice(rows, v)
 }
 
-// ActionSelect is the builder for selecting fields of Action entities.
-type ActionSelect struct {
-	*ActionQuery
+// ActionExecutionSelect is the builder for selecting fields of ActionExecution entities.
+type ActionExecutionSelect struct {
+	*ActionExecutionQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *ActionSelect) Aggregate(fns ...AggregateFunc) *ActionSelect {
+func (_s *ActionExecutionSelect) Aggregate(fns ...AggregateFunc) *ActionExecutionSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *ActionSelect) Scan(ctx context.Context, v any) error {
+func (_s *ActionExecutionSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ActionQuery, *ActionSelect](ctx, _s.ActionQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*ActionExecutionQuery, *ActionExecutionSelect](ctx, _s.ActionExecutionQuery, _s, _s.inters, v)
 }
 
-func (_s *ActionSelect) sqlScan(ctx context.Context, root *ActionQuery, v any) error {
+func (_s *ActionExecutionSelect) sqlScan(ctx context.Context, root *ActionExecutionQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

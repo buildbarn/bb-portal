@@ -1,4 +1,3 @@
-import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import type {
   Digest,
   DigestFunction_Value,
@@ -8,6 +7,20 @@ import {
   digestFunctionValueFromString,
   digestFunctionValueToString,
 } from "./digestFunctionUtils";
+
+export interface GraphqlDigest {
+  rev2InstanceName: string;
+  digestFunction: string;
+  hash: string;
+  sizeBytes: number;
+}
+
+export interface GraphqlFile {
+  filePath: {
+    path: string;
+  };
+  digest: GraphqlDigest;
+}
 
 /////////////////////////////////////////////////////////////
 // Frontend internal URLs
@@ -45,6 +58,27 @@ export function generateDirectoryUrl(
   )}/directory/${digest.hash}-${digest.sizeBytes}`;
 }
 
+export function generateActionUrl(
+  instanceName: string | undefined,
+  digestFunction: DigestFunction_Value,
+  digest: Digest,
+): string {
+  return `/browser/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.Action)}`;
+}
+
+export function generateActionUrlFromGraphqlDigest(
+  digest: GraphqlDigest | null | undefined,
+): string | undefined {
+  if (!digest) {
+    return undefined;
+  }
+  return generateActionUrl(
+    digest.rev2InstanceName,
+    digestFunctionValueFromString(digest.digestFunction),
+    { hash: digest.hash, sizeBytes: digest.sizeBytes.toString() },
+  );
+}
+
 /////////////////////////////////////////////////////////////
 // Backend URLs
 /////////////////////////////////////////////////////////////
@@ -63,9 +97,7 @@ export function generateFileUrl(
   return `${BACKEND_SERVE_FILE_URL}/${generateBrowserSplat(instanceName, digestFunction, digest, BrowserPageType.File)}/${lastFileNameSegment}`;
 }
 
-export function generateFileUrlFromGraphqlFile(
-  file: FileDetailsFragment,
-): string {
+export function generateFileUrlFromGraphqlFile(file: GraphqlFile): string {
   return generateFileUrl(
     file.digest.rev2InstanceName,
     digestFunctionValueFromString(file.digest.digestFunction),

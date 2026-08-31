@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
@@ -55,34 +55,49 @@ func (_c *FileCreate) SetFilePath(v *FilePath) *FileCreate {
 	return _c.SetFilePathID(v.ID)
 }
 
-// AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by IDs.
-func (_c *FileCreate) AddActionStdoutIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddActionStdoutIDs(ids...)
+// AddActionExecutionPrimaryOutputIDs adds the "action_execution_primary_output" edge to the ActionExecution entity by IDs.
+func (_c *FileCreate) AddActionExecutionPrimaryOutputIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddActionExecutionPrimaryOutputIDs(ids...)
 	return _c
 }
 
-// AddActionStdout adds the "action_stdout" edges to the Action entity.
-func (_c *FileCreate) AddActionStdout(v ...*Action) *FileCreate {
+// AddActionExecutionPrimaryOutput adds the "action_execution_primary_output" edges to the ActionExecution entity.
+func (_c *FileCreate) AddActionExecutionPrimaryOutput(v ...*ActionExecution) *FileCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddActionStdoutIDs(ids...)
+	return _c.AddActionExecutionPrimaryOutputIDs(ids...)
 }
 
-// AddActionStderrIDs adds the "action_stderr" edge to the Action entity by IDs.
-func (_c *FileCreate) AddActionStderrIDs(ids ...int64) *FileCreate {
-	_c.mutation.AddActionStderrIDs(ids...)
+// AddActionExecutionStdoutIDs adds the "action_execution_stdout" edge to the ActionExecution entity by IDs.
+func (_c *FileCreate) AddActionExecutionStdoutIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddActionExecutionStdoutIDs(ids...)
 	return _c
 }
 
-// AddActionStderr adds the "action_stderr" edges to the Action entity.
-func (_c *FileCreate) AddActionStderr(v ...*Action) *FileCreate {
+// AddActionExecutionStdout adds the "action_execution_stdout" edges to the ActionExecution entity.
+func (_c *FileCreate) AddActionExecutionStdout(v ...*ActionExecution) *FileCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddActionStderrIDs(ids...)
+	return _c.AddActionExecutionStdoutIDs(ids...)
+}
+
+// AddActionExecutionStderrIDs adds the "action_execution_stderr" edge to the ActionExecution entity by IDs.
+func (_c *FileCreate) AddActionExecutionStderrIDs(ids ...int64) *FileCreate {
+	_c.mutation.AddActionExecutionStderrIDs(ids...)
+	return _c
+}
+
+// AddActionExecutionStderr adds the "action_execution_stderr" edges to the ActionExecution entity.
+func (_c *FileCreate) AddActionExecutionStderr(v ...*ActionExecution) *FileCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddActionExecutionStderrIDs(ids...)
 }
 
 // AddInvocationProfileIDs adds the "invocation_profile" edge to the BazelInvocation entity by IDs.
@@ -243,15 +258,15 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 		_node.FilePathID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.ActionStdoutIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionExecutionPrimaryOutputIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   file.ActionStdoutTable,
-			Columns: []string{file.ActionStdoutColumn},
+			Table:   file.ActionExecutionPrimaryOutputTable,
+			Columns: []string{file.ActionExecutionPrimaryOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -259,15 +274,31 @@ func (_c *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.ActionStderrIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ActionExecutionStdoutIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   file.ActionStderrTable,
-			Columns: []string{file.ActionStderrColumn},
+			Table:   file.ActionExecutionStdoutTable,
+			Columns: []string{file.ActionExecutionStdoutColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ActionExecutionStderrIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   file.ActionExecutionStderrTable,
+			Columns: []string{file.ActionExecutionStderrColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

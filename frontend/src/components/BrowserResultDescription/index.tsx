@@ -1,9 +1,13 @@
 import { Descriptions, Space, Tag } from "antd";
 import type React from "react";
-import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import type {
+  Digest,
+  ExecuteResponse,
+} from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
+import { LogViewerCard } from "../LogViewer";
 import { CasViewer } from "../LogViewer/casViewer";
 
 interface Params {
@@ -11,6 +15,65 @@ interface Params {
   executeResponse: ExecuteResponse;
   posixResourceUsage: POSIXResourceUsage | undefined;
 }
+
+interface ConsoleOutputParams {
+  browserPageParams: BrowserPageParams;
+  digest: Digest | undefined;
+  rawOutput: Uint8Array;
+  title: string;
+  streamName: string;
+  fileName: string;
+}
+
+const ConsoleOutput: React.FC<ConsoleOutputParams> = ({
+  browserPageParams,
+  digest,
+  rawOutput,
+  title,
+  streamName,
+  fileName,
+}) => {
+  const sizeBytes = Number.parseInt(digest?.sizeBytes ?? "0", 10);
+
+  if (digest?.hash && Number.isFinite(sizeBytes) && sizeBytes > 0) {
+    return (
+      <CasViewer
+        instanceName={browserPageParams.instanceName}
+        digestFunction={digestFunctionValueToString(
+          browserPageParams.digestFunction,
+        )}
+        hash={digest.hash}
+        sizeBytes={sizeBytes}
+        title={title}
+        fileName={fileName}
+      />
+    );
+  }
+
+  if (rawOutput.length > 0) {
+    return (
+      <LogViewerCard
+        log={new TextDecoder().decode(rawOutput)}
+        logSizeBytes={rawOutput.length}
+        title={title}
+        fileName={fileName}
+      />
+    );
+  }
+
+  return (
+    <LogViewerCard
+      log={undefined}
+      title={title}
+      fileName={fileName}
+      emptyMessage={
+        digest?.hash
+          ? `The action produced no ${streamName}. No log file is available for download.`
+          : `No ${streamName} log was uploaded.`
+      }
+    />
+  );
+};
 
 const BrowserResultDescription: React.FC<Params> = ({
   browserPageParams,
@@ -59,38 +122,26 @@ const BrowserResultDescription: React.FC<Params> = ({
       >
         {renderResult()}
       </Descriptions>
-      {executeResponse.result?.stdoutDigest?.hash &&
-        executeResponse.result?.stdoutDigest?.sizeBytes && (
-          <CasViewer
-            instanceName={browserPageParams.instanceName}
-            digestFunction={digestFunctionValueToString(
-              browserPageParams.digestFunction,
-            )}
-            hash={executeResponse.result.stdoutDigest.hash}
-            sizeBytes={Number.parseInt(
-              executeResponse.result.stdoutDigest.sizeBytes,
-              10,
-            )}
-            title="Standard Output"
-            fileName="standard_output.txt"
-          />
-        )}
-      {executeResponse.result?.stderrDigest?.hash &&
-        executeResponse.result?.stderrDigest?.sizeBytes && (
-          <CasViewer
-            instanceName={browserPageParams.instanceName}
-            digestFunction={digestFunctionValueToString(
-              browserPageParams.digestFunction,
-            )}
-            hash={executeResponse.result?.stderrDigest?.hash}
-            sizeBytes={Number.parseInt(
-              executeResponse.result?.stderrDigest?.sizeBytes,
-              10,
-            )}
-            title="Standard Error"
-            fileName="standard_error.txt"
-          />
-        )}
+      {executeResponse.result && (
+        <ConsoleOutput
+          browserPageParams={browserPageParams}
+          digest={executeResponse.result.stdoutDigest}
+          rawOutput={executeResponse.result.stdoutRaw}
+          title="Standard Output"
+          streamName="standard output"
+          fileName="standard_output.txt"
+        />
+      )}
+      {executeResponse.result && (
+        <ConsoleOutput
+          browserPageParams={browserPageParams}
+          digest={executeResponse.result.stderrDigest}
+          rawOutput={executeResponse.result.stderrRaw}
+          title="Standard Error"
+          streamName="standard error"
+          fileName="standard_error.txt"
+        />
+      )}
     </Space>
   );
 };

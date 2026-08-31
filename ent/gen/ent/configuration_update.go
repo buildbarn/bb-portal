@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -136,19 +136,19 @@ func (_u *ConfigurationUpdate) AddInvocationTargets(v ...*InvocationTarget) *Con
 	return _u.AddInvocationTargetIDs(ids...)
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (_u *ConfigurationUpdate) AddActionIDs(ids ...int64) *ConfigurationUpdate {
-	_u.mutation.AddActionIDs(ids...)
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_u *ConfigurationUpdate) AddActionExecutionIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.AddActionExecutionIDs(ids...)
 	return _u
 }
 
-// AddActions adds the "actions" edges to the Action entity.
-func (_u *ConfigurationUpdate) AddActions(v ...*Action) *ConfigurationUpdate {
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_u *ConfigurationUpdate) AddActionExecutions(v ...*ActionExecution) *ConfigurationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddActionIDs(ids...)
+	return _u.AddActionExecutionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
@@ -177,25 +177,25 @@ func (_u *ConfigurationUpdate) RemoveInvocationTargets(v ...*InvocationTarget) *
 	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
-// ClearActions clears all "actions" edges to the Action entity.
-func (_u *ConfigurationUpdate) ClearActions() *ConfigurationUpdate {
-	_u.mutation.ClearActions()
+// ClearActionExecutions clears all "action_executions" edges to the ActionExecution entity.
+func (_u *ConfigurationUpdate) ClearActionExecutions() *ConfigurationUpdate {
+	_u.mutation.ClearActionExecutions()
 	return _u
 }
 
-// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (_u *ConfigurationUpdate) RemoveActionIDs(ids ...int64) *ConfigurationUpdate {
-	_u.mutation.RemoveActionIDs(ids...)
+// RemoveActionExecutionIDs removes the "action_executions" edge to ActionExecution entities by IDs.
+func (_u *ConfigurationUpdate) RemoveActionExecutionIDs(ids ...int64) *ConfigurationUpdate {
+	_u.mutation.RemoveActionExecutionIDs(ids...)
 	return _u
 }
 
-// RemoveActions removes "actions" edges to Action entities.
-func (_u *ConfigurationUpdate) RemoveActions(v ...*Action) *ConfigurationUpdate {
+// RemoveActionExecutions removes "action_executions" edges to ActionExecution entities.
+func (_u *ConfigurationUpdate) RemoveActionExecutions(v ...*ActionExecution) *ConfigurationUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveActionIDs(ids...)
+	return _u.RemoveActionExecutionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -320,28 +320,28 @@ func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ActionsCleared() {
+	if _u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionExecutionsIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -349,15 +349,15 @@ func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -492,19 +492,19 @@ func (_u *ConfigurationUpdateOne) AddInvocationTargets(v ...*InvocationTarget) *
 	return _u.AddInvocationTargetIDs(ids...)
 }
 
-// AddActionIDs adds the "actions" edge to the Action entity by IDs.
-func (_u *ConfigurationUpdateOne) AddActionIDs(ids ...int64) *ConfigurationUpdateOne {
-	_u.mutation.AddActionIDs(ids...)
+// AddActionExecutionIDs adds the "action_executions" edge to the ActionExecution entity by IDs.
+func (_u *ConfigurationUpdateOne) AddActionExecutionIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.AddActionExecutionIDs(ids...)
 	return _u
 }
 
-// AddActions adds the "actions" edges to the Action entity.
-func (_u *ConfigurationUpdateOne) AddActions(v ...*Action) *ConfigurationUpdateOne {
+// AddActionExecutions adds the "action_executions" edges to the ActionExecution entity.
+func (_u *ConfigurationUpdateOne) AddActionExecutions(v ...*ActionExecution) *ConfigurationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddActionIDs(ids...)
+	return _u.AddActionExecutionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
@@ -533,25 +533,25 @@ func (_u *ConfigurationUpdateOne) RemoveInvocationTargets(v ...*InvocationTarget
 	return _u.RemoveInvocationTargetIDs(ids...)
 }
 
-// ClearActions clears all "actions" edges to the Action entity.
-func (_u *ConfigurationUpdateOne) ClearActions() *ConfigurationUpdateOne {
-	_u.mutation.ClearActions()
+// ClearActionExecutions clears all "action_executions" edges to the ActionExecution entity.
+func (_u *ConfigurationUpdateOne) ClearActionExecutions() *ConfigurationUpdateOne {
+	_u.mutation.ClearActionExecutions()
 	return _u
 }
 
-// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
-func (_u *ConfigurationUpdateOne) RemoveActionIDs(ids ...int64) *ConfigurationUpdateOne {
-	_u.mutation.RemoveActionIDs(ids...)
+// RemoveActionExecutionIDs removes the "action_executions" edge to ActionExecution entities by IDs.
+func (_u *ConfigurationUpdateOne) RemoveActionExecutionIDs(ids ...int64) *ConfigurationUpdateOne {
+	_u.mutation.RemoveActionExecutionIDs(ids...)
 	return _u
 }
 
-// RemoveActions removes "actions" edges to Action entities.
-func (_u *ConfigurationUpdateOne) RemoveActions(v ...*Action) *ConfigurationUpdateOne {
+// RemoveActionExecutions removes "action_executions" edges to ActionExecution entities.
+func (_u *ConfigurationUpdateOne) RemoveActionExecutions(v ...*ActionExecution) *ConfigurationUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveActionIDs(ids...)
+	return _u.RemoveActionExecutionIDs(ids...)
 }
 
 // Where appends a list predicates to the ConfigurationUpdate builder.
@@ -706,28 +706,28 @@ func (_u *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configura
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ActionsCleared() {
+	if _u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedActionsIDs(); len(nodes) > 0 && !_u.mutation.ActionsCleared() {
+	if nodes := _u.mutation.RemovedActionExecutionsIDs(); len(nodes) > 0 && !_u.mutation.ActionExecutionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -735,15 +735,15 @@ func (_u *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configura
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.ActionsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ActionExecutionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   configuration.ActionsTable,
-			Columns: []string{configuration.ActionsColumn},
+			Table:   configuration.ActionExecutionsTable,
+			Columns: []string{configuration.ActionExecutionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(actionexecution.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

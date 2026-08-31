@@ -149,21 +149,21 @@ func HasFilePathWith(preds ...predicate.FilePath) predicate.File {
 	})
 }
 
-// HasActionStdout applies the HasEdge predicate on the "action_stdout" edge.
-func HasActionStdout() predicate.File {
+// HasActionExecutionPrimaryOutput applies the HasEdge predicate on the "action_execution_primary_output" edge.
+func HasActionExecutionPrimaryOutput() predicate.File {
 	return predicate.File(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, ActionStdoutTable, ActionStdoutColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionPrimaryOutputTable, ActionExecutionPrimaryOutputColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasActionStdoutWith applies the HasEdge predicate on the "action_stdout" edge with a given conditions (other predicates).
-func HasActionStdoutWith(preds ...predicate.Action) predicate.File {
+// HasActionExecutionPrimaryOutputWith applies the HasEdge predicate on the "action_execution_primary_output" edge with a given conditions (other predicates).
+func HasActionExecutionPrimaryOutputWith(preds ...predicate.ActionExecution) predicate.File {
 	return predicate.File(func(s *sql.Selector) {
-		step := newActionStdoutStep()
+		step := newActionExecutionPrimaryOutputStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -172,21 +172,44 @@ func HasActionStdoutWith(preds ...predicate.Action) predicate.File {
 	})
 }
 
-// HasActionStderr applies the HasEdge predicate on the "action_stderr" edge.
-func HasActionStderr() predicate.File {
+// HasActionExecutionStdout applies the HasEdge predicate on the "action_execution_stdout" edge.
+func HasActionExecutionStdout() predicate.File {
 	return predicate.File(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, ActionStderrTable, ActionStderrColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionStdoutTable, ActionExecutionStdoutColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasActionStderrWith applies the HasEdge predicate on the "action_stderr" edge with a given conditions (other predicates).
-func HasActionStderrWith(preds ...predicate.Action) predicate.File {
+// HasActionExecutionStdoutWith applies the HasEdge predicate on the "action_execution_stdout" edge with a given conditions (other predicates).
+func HasActionExecutionStdoutWith(preds ...predicate.ActionExecution) predicate.File {
 	return predicate.File(func(s *sql.Selector) {
-		step := newActionStderrStep()
+		step := newActionExecutionStdoutStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasActionExecutionStderr applies the HasEdge predicate on the "action_execution_stderr" edge.
+func HasActionExecutionStderr() predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionStderrTable, ActionExecutionStderrColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasActionExecutionStderrWith applies the HasEdge predicate on the "action_execution_stderr" edge with a given conditions (other predicates).
+func HasActionExecutionStderrWith(preds ...predicate.ActionExecution) predicate.File {
+	return predicate.File(func(s *sql.Selector) {
+		step := newActionExecutionStderrStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

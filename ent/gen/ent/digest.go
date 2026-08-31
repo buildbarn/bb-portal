@@ -34,13 +34,16 @@ type Digest struct {
 type DigestEdges struct {
 	// Files holds the value of the files edge.
 	Files []*File `json:"files,omitempty"`
+	// ActionExecutions holds the value of the action_executions edge.
+	ActionExecutions []*ActionExecution `json:"action_executions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
 
-	namedFiles map[string][]*File
+	namedFiles            map[string][]*File
+	namedActionExecutions map[string][]*ActionExecution
 }
 
 // FilesOrErr returns the Files value or an error if the edge
@@ -50,6 +53,15 @@ func (e DigestEdges) FilesOrErr() ([]*File, error) {
 		return e.Files, nil
 	}
 	return nil, &NotLoadedError{edge: "files"}
+}
+
+// ActionExecutionsOrErr returns the ActionExecutions value or an error if the edge
+// was not loaded in eager-loading.
+func (e DigestEdges) ActionExecutionsOrErr() ([]*ActionExecution, error) {
+	if e.loadedTypes[1] {
+		return e.ActionExecutions, nil
+	}
+	return nil, &NotLoadedError{edge: "action_executions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -126,6 +138,11 @@ func (_m *Digest) QueryFiles() *FileQuery {
 	return NewDigestClient(_m.config).QueryFiles(_m)
 }
 
+// QueryActionExecutions queries the "action_executions" edge of the Digest entity.
+func (_m *Digest) QueryActionExecutions() *ActionExecutionQuery {
+	return NewDigestClient(_m.config).QueryActionExecutions(_m)
+}
+
 // Update returns a builder for updating this Digest.
 // Note that you need to call Digest.Unwrap() before calling this method if this Digest
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -185,6 +202,30 @@ func (_m *Digest) appendNamedFiles(name string, edges ...*File) {
 		_m.Edges.namedFiles[name] = []*File{}
 	} else {
 		_m.Edges.namedFiles[name] = append(_m.Edges.namedFiles[name], edges...)
+	}
+}
+
+// NamedActionExecutions returns the ActionExecutions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (_m *Digest) NamedActionExecutions(name string) ([]*ActionExecution, error) {
+	if _m.Edges.namedActionExecutions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := _m.Edges.namedActionExecutions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (_m *Digest) appendNamedActionExecutions(name string, edges ...*ActionExecution) {
+	if _m.Edges.namedActionExecutions == nil {
+		_m.Edges.namedActionExecutions = make(map[string][]*ActionExecution)
+	}
+	if len(edges) == 0 {
+		_m.Edges.namedActionExecutions[name] = []*ActionExecution{}
+	} else {
+		_m.Edges.namedActionExecutions[name] = append(_m.Edges.namedActionExecutions[name], edges...)
 	}
 }
 

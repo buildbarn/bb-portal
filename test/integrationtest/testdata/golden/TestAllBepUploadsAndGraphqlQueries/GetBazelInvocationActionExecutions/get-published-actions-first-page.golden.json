@@ -1,0 +1,155 @@
+{
+  "getBazelInvocation": {
+    "actionExecutions": {
+      "edges": [
+        {
+          "node": {
+            "actionDigest": null,
+            "cacheHit": true,
+            "commandLine": [
+              "clang",
+              "-c",
+              "first.cc"
+            ],
+            "configuration": {
+              "configurationID": "published-actions-config",
+              "cpu": "k8",
+              "id": "Q29uZmlndXJhdGlvbjoxOA==",
+              "makeVariables": {
+                "COMPILATION_MODE": "fastbuild",
+                "TARGET_CPU": "k8"
+              },
+              "mnemonic": "k8-fastbuild",
+              "platformName": "linux"
+            },
+            "endTime": "2026-07-31T12:00:01.25Z",
+            "exitCode": 0,
+            "failureCode": "",
+            "failureMessage": "",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjM=",
+            "label": "//example:first",
+            "primaryOutput": "bazel-out/k8-fastbuild/bin/example/first.o",
+            "primaryOutputFile": {
+              "digest": {
+                "digestFunction": "sha256",
+                "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "rev2InstanceName": "",
+                "sizeBytes": 42
+              },
+              "filePath": {
+                "path": "bazel-out/k8-fastbuild/bin/example/first.o"
+              }
+            },
+            "runner": "remote cache hit",
+            "startTime": "2026-07-31T12:00:00Z",
+            "stderr": null,
+            "stdout": {
+              "digest": {
+                "digestFunction": "sha256",
+                "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "rev2InstanceName": "",
+                "sizeBytes": 12
+              },
+              "filePath": {
+                "path": "stdout"
+              }
+            },
+            "success": true,
+            "type": "CppCompile"
+          }
+        },
+        {
+          "node": {
+            "actionDigest": null,
+            "cacheHit": null,
+            "commandLine": [
+              "clang",
+              "second.o"
+            ],
+            "configuration": {
+              "configurationID": "published-actions-config",
+              "cpu": "k8",
+              "id": "Q29uZmlndXJhdGlvbjoxOA==",
+              "makeVariables": {
+                "COMPILATION_MODE": "fastbuild",
+                "TARGET_CPU": "k8"
+              },
+              "mnemonic": "k8-fastbuild",
+              "platformName": "linux"
+            },
+            "endTime": "2026-07-31T12:00:02.5Z",
+            "exitCode": 1,
+            "failureCode": "NON_ZERO_EXIT",
+            "failureMessage": "link failed",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjQ=",
+            "label": "//example:second",
+            "primaryOutput": "bazel-out/k8-fastbuild/bin/example/second.o",
+            "primaryOutputFile": {
+              "digest": {
+                "digestFunction": "sha256",
+                "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "rev2InstanceName": "",
+                "sizeBytes": 84
+              },
+              "filePath": {
+                "path": "bazel-out/k8-fastbuild/bin/example/second.o"
+              }
+            },
+            "runner": "",
+            "startTime": "2026-07-31T12:00:02Z",
+            "stderr": {
+              "digest": {
+                "digestFunction": "sha256",
+                "hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "rev2InstanceName": "",
+                "sizeBytes": 36
+              },
+              "filePath": {
+                "path": "stderr"
+              }
+            },
+            "stdout": {
+              "digest": {
+                "digestFunction": "sha256",
+                "hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "rev2InstanceName": "",
+                "sizeBytes": 24
+              },
+              "filePath": {
+                "path": "stdout"
+              }
+            },
+            "success": false,
+            "type": "CppLink"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAAE",
+        "hasNextPage": true,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAAD"
+      }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
+    },
+    "configurations": [
+      {
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjEx",
+    "metrics": {
+      "actionSummary": null,
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 2250
+      }
+    }
+  }
+}

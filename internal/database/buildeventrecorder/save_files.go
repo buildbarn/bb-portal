@@ -10,6 +10,8 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/invocation/files"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // SaveSingleFile saves a single file to the database
@@ -48,9 +50,9 @@ func SaveSingleFile(ctx context.Context, tx database.Handle, instanceNameDbID in
 	return fileDbID, nil
 }
 
-func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID int64, files []*files.ParsedBepFile) error {
-	if len(files) == 0 {
-		return nil
+func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID int64, bepFiles []*files.ParsedBepFile) ([]int64, error) {
+	if len(bepFiles) == 0 {
+		return nil, nil
 	}
 
 	filePathsMap := make(map[string]struct{})
@@ -72,7 +74,7 @@ func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID in
 	}
 	filesMap := make(map[FileKey]struct{})
 
-	for _, file := range files {
+	for _, file := range bepFiles {
 		hashStr := string(file.Hash)
 
 		filePathsMap[file.Path] = struct{}{}
@@ -89,7 +91,7 @@ func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID in
 		filePathParams.Paths = append(filePathParams.Paths, key)
 	}
 	if err := tx.Sqlc().InsertMissingFilePaths(ctx, filePathParams); err != nil {
-		return util.StatusWrap(err, "Failed to upsert file paths in batch")
+		return nil, util.StatusWrap(err, "Failed to upsert file paths in batch")
 	}
 
 	// Upsert digests
@@ -106,7 +108,7 @@ func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID in
 		digestsParams.SizeBytes = append(digestsParams.SizeBytes, key.sizeBytes)
 	}
 	if err := tx.Sqlc().InsertMissingDigests(ctx, digestsParams); err != nil {
-		return util.StatusWrap(err, "Failed to upsert digests in batch")
+		return nil, util.StatusWrap(err, "Failed to upsert digests in batch")
 	}
 
 	// Upsert files
@@ -126,7 +128,30 @@ func saveFilesBatch(ctx context.Context, tx database.Handle, instanceNameDbID in
 		filesParams.SizeBytes = append(filesParams.SizeBytes, key.sizeBytes)
 	}
 	if err := tx.Sqlc().InsertMissingFiles(ctx, filesParams); err != nil {
-		return util.StatusWrap(err, "Failed to upsert files in batch")
+		return nil, util.StatusWrap(err, "Failed to upsert files in batch")
 	}
-	return nil
+
+	getFileIDsParams := sqlc.GetFileIDsParams{
+		FilePaths:         make([]string, 0, len(bepFiles)),
+		Rev2InstanceNames: make([]string, 0, len(bepFiles)),
+		DigestFunctions:   make([]int16, 0, len(bepFiles)),
+		Hashes:            make([][]byte, 0, len(bepFiles)),
+		SizeBytes:         make([]int64, 0, len(bepFiles)),
+		BepInstanceNameID: instanceNameDbID,
+	}
+	for _, file := range bepFiles {
+		getFileIDsParams.FilePaths = append(getFileIDsParams.FilePaths, file.Path)
+		getFileIDsParams.Rev2InstanceNames = append(getFileIDsParams.Rev2InstanceNames, file.InstanceName)
+		getFileIDsParams.DigestFunctions = append(getFileIDsParams.DigestFunctions, file.DigestFunction)
+		getFileIDsParams.Hashes = append(getFileIDsParams.Hashes, file.Hash)
+		getFileIDsParams.SizeBytes = append(getFileIDsParams.SizeBytes, file.SizeBytes)
+	}
+	fileIDs, err := tx.Sqlc().GetFileIDs(ctx, getFileIDsParams)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to look up files after batch upsert")
+	}
+	if len(fileIDs) != len(bepFiles) {
+		return nil, status.Errorf(codes.Internal, "Expected to find %d files after batch upsert, but found %d", len(bepFiles), len(fileIDs))
+	}
+	return fileIDs, nil
 }

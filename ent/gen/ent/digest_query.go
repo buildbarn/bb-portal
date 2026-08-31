@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -20,14 +21,16 @@ import (
 // DigestQuery is the builder for querying Digest entities.
 type DigestQuery struct {
 	config
-	ctx            *QueryContext
-	order          []digest.OrderOption
-	inters         []Interceptor
-	predicates     []predicate.Digest
-	withFiles      *FileQuery
-	modifiers      []func(*sql.Selector)
-	loadTotal      []func(context.Context, []*Digest) error
-	withNamedFiles map[string]*FileQuery
+	ctx                       *QueryContext
+	order                     []digest.OrderOption
+	inters                    []Interceptor
+	predicates                []predicate.Digest
+	withFiles                 *FileQuery
+	withActionExecutions      *ActionExecutionQuery
+	modifiers                 []func(*sql.Selector)
+	loadTotal                 []func(context.Context, []*Digest) error
+	withNamedFiles            map[string]*FileQuery
+	withNamedActionExecutions map[string]*ActionExecutionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -79,6 +82,28 @@ func (_q *DigestQuery) QueryFiles() *FileQuery {
 			sqlgraph.From(digest.Table, digest.FieldID, selector),
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, digest.FilesTable, digest.FilesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryActionExecutions chains the current query on the "action_executions" edge.
+func (_q *DigestQuery) QueryActionExecutions() *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(digest.Table, digest.FieldID, selector),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, digest.ActionExecutionsTable, digest.ActionExecutionsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -273,12 +298,13 @@ func (_q *DigestQuery) Clone() *DigestQuery {
 		return nil
 	}
 	return &DigestQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]digest.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Digest{}, _q.predicates...),
-		withFiles:  _q.withFiles.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]digest.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.Digest{}, _q.predicates...),
+		withFiles:            _q.withFiles.Clone(),
+		withActionExecutions: _q.withActionExecutions.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -293,6 +319,17 @@ func (_q *DigestQuery) WithFiles(opts ...func(*FileQuery)) *DigestQuery {
 		opt(query)
 	}
 	_q.withFiles = query
+	return _q
+}
+
+// WithActionExecutions tells the query-builder to eager-load the nodes that are connected to
+// the "action_executions" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *DigestQuery) WithActionExecutions(opts ...func(*ActionExecutionQuery)) *DigestQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withActionExecutions = query
 	return _q
 }
 
@@ -374,8 +411,9 @@ func (_q *DigestQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Diges
 	var (
 		nodes       = []*Digest{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withFiles != nil,
+			_q.withActionExecutions != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -406,10 +444,24 @@ func (_q *DigestQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Diges
 			return nil, err
 		}
 	}
+	if query := _q.withActionExecutions; query != nil {
+		if err := _q.loadActionExecutions(ctx, query, nodes,
+			func(n *Digest) { n.Edges.ActionExecutions = []*ActionExecution{} },
+			func(n *Digest, e *ActionExecution) { n.Edges.ActionExecutions = append(n.Edges.ActionExecutions, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range _q.withNamedFiles {
 		if err := _q.loadFiles(ctx, query, nodes,
 			func(n *Digest) { n.appendNamedFiles(name) },
 			func(n *Digest, e *File) { n.appendNamedFiles(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedActionExecutions {
+		if err := _q.loadActionExecutions(ctx, query, nodes,
+			func(n *Digest) { n.appendNamedActionExecutions(name) },
+			func(n *Digest, e *ActionExecution) { n.appendNamedActionExecutions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -446,6 +498,36 @@ func (_q *DigestQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "digest_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *DigestQuery) loadActionExecutions(ctx context.Context, query *ActionExecutionQuery, nodes []*Digest, init func(*Digest), assign func(*Digest, *ActionExecution)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Digest)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(actionexecution.FieldActionDigestID)
+	}
+	query.Where(predicate.ActionExecution(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(digest.ActionExecutionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ActionDigestID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "action_digest_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -547,6 +629,20 @@ func (_q *DigestQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *Di
 		_q.withNamedFiles = make(map[string]*FileQuery)
 	}
 	_q.withNamedFiles[name] = query
+	return _q
+}
+
+// WithNamedActionExecutions tells the query-builder to eager-load the nodes that are connected to the "action_executions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *DigestQuery) WithNamedActionExecutions(name string, opts ...func(*ActionExecutionQuery)) *DigestQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedActionExecutions == nil {
+		_q.withNamedActionExecutions = make(map[string]*ActionExecutionQuery)
+	}
+	_q.withNamedActionExecutions[name] = query
 	return _q
 }
 

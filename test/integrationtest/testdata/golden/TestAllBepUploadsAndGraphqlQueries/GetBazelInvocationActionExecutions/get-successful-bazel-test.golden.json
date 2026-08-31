@@ -1,0 +1,51 @@
+{
+  "getBazelInvocation": {
+    "actionExecutions": {
+      "edges": [],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 0,
+      "timeSavedByCacheHitsInMs": 0,
+      "timedActions": 0,
+      "timedCacheHitActions": 0,
+      "totalActions": 0,
+      "totalExpectedTimeInMs": 0
+    },
+    "configurations": [
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "metrics": {
+      "actionSummary": {
+        "actionData": [
+          {
+            "mnemonic": "TestRunner"
+          },
+          {
+            "mnemonic": "BazelWorkspaceStatusAction"
+          },
+          {
+            "mnemonic": "CopyFile"
+          },
+          {
+            "mnemonic": "TsProject"
+          }
+        ]
+      },
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 2268
+      }
+    }
+  }
+}

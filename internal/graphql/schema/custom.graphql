@@ -9,3 +9,22 @@ extend type Query {
 extend type ConnectionMetadata {
   timeSinceLastConnectionMillis: Int! @goField(forceResolver: true)
 }
+
+"""
+Invocation-wide action timing aggregates. These values are independent of
+pagination and action-list filters.
+"""
+type ActionTimingMetrics {
+  """Sum of the reported execution durations for all timed actions."""
+  totalExpectedTimeInMs: Int!
+  """Sum of the reported execution durations for timed cache-hit actions."""
+  timeSavedByCacheHitsInMs: Int!
+  totalActions: Int!
+  timedActions: Int!
+  cacheHitActions: Int!
+  timedCacheHitActions: Int!
+}
+
+extend type BazelInvocation {
+  actionTimingMetrics: ActionTimingMetrics! @goField(forceResolver: true)
+}

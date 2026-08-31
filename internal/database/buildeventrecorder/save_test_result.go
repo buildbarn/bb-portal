@@ -196,7 +196,7 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 		}
 	}
 
-	if err = saveFilesBatch(ctx, tx, instanceNameDbID, testActionOutputFiles); err != nil {
+	if _, err = saveFilesBatch(ctx, tx, instanceNameDbID, testActionOutputFiles); err != nil {
 		return util.StatusWrap(err, "Failed to save files")
 	}
 

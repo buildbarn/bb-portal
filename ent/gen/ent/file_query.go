@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
@@ -26,24 +26,26 @@ import (
 // FileQuery is the builder for querying File entities.
 type FileQuery struct {
 	config
-	ctx                            *QueryContext
-	order                          []file.OrderOption
-	inters                         []Interceptor
-	predicates                     []predicate.File
-	withDigest                     *DigestQuery
-	withFilePath                   *FilePathQuery
-	withActionStdout               *ActionQuery
-	withActionStderr               *ActionQuery
-	withInvocationProfile          *BazelInvocationQuery
-	withTestActionOutput           *TestResultQuery
-	withTestActionOutputTable      *TestActionOutputQuery
-	modifiers                      []func(*sql.Selector)
-	loadTotal                      []func(context.Context, []*File) error
-	withNamedActionStdout          map[string]*ActionQuery
-	withNamedActionStderr          map[string]*ActionQuery
-	withNamedInvocationProfile     map[string]*BazelInvocationQuery
-	withNamedTestActionOutput      map[string]*TestResultQuery
-	withNamedTestActionOutputTable map[string]*TestActionOutputQuery
+	ctx                                   *QueryContext
+	order                                 []file.OrderOption
+	inters                                []Interceptor
+	predicates                            []predicate.File
+	withDigest                            *DigestQuery
+	withFilePath                          *FilePathQuery
+	withActionExecutionPrimaryOutput      *ActionExecutionQuery
+	withActionExecutionStdout             *ActionExecutionQuery
+	withActionExecutionStderr             *ActionExecutionQuery
+	withInvocationProfile                 *BazelInvocationQuery
+	withTestActionOutput                  *TestResultQuery
+	withTestActionOutputTable             *TestActionOutputQuery
+	modifiers                             []func(*sql.Selector)
+	loadTotal                             []func(context.Context, []*File) error
+	withNamedActionExecutionPrimaryOutput map[string]*ActionExecutionQuery
+	withNamedActionExecutionStdout        map[string]*ActionExecutionQuery
+	withNamedActionExecutionStderr        map[string]*ActionExecutionQuery
+	withNamedInvocationProfile            map[string]*BazelInvocationQuery
+	withNamedTestActionOutput             map[string]*TestResultQuery
+	withNamedTestActionOutputTable        map[string]*TestActionOutputQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -124,9 +126,9 @@ func (_q *FileQuery) QueryFilePath() *FilePathQuery {
 	return query
 }
 
-// QueryActionStdout chains the current query on the "action_stdout" edge.
-func (_q *FileQuery) QueryActionStdout() *ActionQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// QueryActionExecutionPrimaryOutput chains the current query on the "action_execution_primary_output" edge.
+func (_q *FileQuery) QueryActionExecutionPrimaryOutput() *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -137,8 +139,8 @@ func (_q *FileQuery) QueryActionStdout() *ActionQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, selector),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStdoutTable, file.ActionStdoutColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionPrimaryOutputTable, file.ActionExecutionPrimaryOutputColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -146,9 +148,9 @@ func (_q *FileQuery) QueryActionStdout() *ActionQuery {
 	return query
 }
 
-// QueryActionStderr chains the current query on the "action_stderr" edge.
-func (_q *FileQuery) QueryActionStderr() *ActionQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// QueryActionExecutionStdout chains the current query on the "action_execution_stdout" edge.
+func (_q *FileQuery) QueryActionExecutionStdout() *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -159,8 +161,30 @@ func (_q *FileQuery) QueryActionStderr() *ActionQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, selector),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStderrTable, file.ActionStderrColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStdoutTable, file.ActionExecutionStdoutColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryActionExecutionStderr chains the current query on the "action_execution_stderr" edge.
+func (_q *FileQuery) QueryActionExecutionStderr() *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, selector),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStderrTable, file.ActionExecutionStderrColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -421,18 +445,19 @@ func (_q *FileQuery) Clone() *FileQuery {
 		return nil
 	}
 	return &FileQuery{
-		config:                    _q.config,
-		ctx:                       _q.ctx.Clone(),
-		order:                     append([]file.OrderOption{}, _q.order...),
-		inters:                    append([]Interceptor{}, _q.inters...),
-		predicates:                append([]predicate.File{}, _q.predicates...),
-		withDigest:                _q.withDigest.Clone(),
-		withFilePath:              _q.withFilePath.Clone(),
-		withActionStdout:          _q.withActionStdout.Clone(),
-		withActionStderr:          _q.withActionStderr.Clone(),
-		withInvocationProfile:     _q.withInvocationProfile.Clone(),
-		withTestActionOutput:      _q.withTestActionOutput.Clone(),
-		withTestActionOutputTable: _q.withTestActionOutputTable.Clone(),
+		config:                           _q.config,
+		ctx:                              _q.ctx.Clone(),
+		order:                            append([]file.OrderOption{}, _q.order...),
+		inters:                           append([]Interceptor{}, _q.inters...),
+		predicates:                       append([]predicate.File{}, _q.predicates...),
+		withDigest:                       _q.withDigest.Clone(),
+		withFilePath:                     _q.withFilePath.Clone(),
+		withActionExecutionPrimaryOutput: _q.withActionExecutionPrimaryOutput.Clone(),
+		withActionExecutionStdout:        _q.withActionExecutionStdout.Clone(),
+		withActionExecutionStderr:        _q.withActionExecutionStderr.Clone(),
+		withInvocationProfile:            _q.withInvocationProfile.Clone(),
+		withTestActionOutput:             _q.withTestActionOutput.Clone(),
+		withTestActionOutputTable:        _q.withTestActionOutputTable.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -461,25 +486,36 @@ func (_q *FileQuery) WithFilePath(opts ...func(*FilePathQuery)) *FileQuery {
 	return _q
 }
 
-// WithActionStdout tells the query-builder to eager-load the nodes that are connected to
-// the "action_stdout" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithActionStdout(opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// WithActionExecutionPrimaryOutput tells the query-builder to eager-load the nodes that are connected to
+// the "action_execution_primary_output" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithActionExecutionPrimaryOutput(opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withActionStdout = query
+	_q.withActionExecutionPrimaryOutput = query
 	return _q
 }
 
-// WithActionStderr tells the query-builder to eager-load the nodes that are connected to
-// the "action_stderr" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithActionStderr(opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+// WithActionExecutionStdout tells the query-builder to eager-load the nodes that are connected to
+// the "action_execution_stdout" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithActionExecutionStdout(opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withActionStderr = query
+	_q.withActionExecutionStdout = query
+	return _q
+}
+
+// WithActionExecutionStderr tells the query-builder to eager-load the nodes that are connected to
+// the "action_execution_stderr" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithActionExecutionStderr(opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withActionExecutionStderr = query
 	return _q
 }
 
@@ -600,11 +636,12 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 	var (
 		nodes       = []*File{}
 		_spec       = _q.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [8]bool{
 			_q.withDigest != nil,
 			_q.withFilePath != nil,
-			_q.withActionStdout != nil,
-			_q.withActionStderr != nil,
+			_q.withActionExecutionPrimaryOutput != nil,
+			_q.withActionExecutionStdout != nil,
+			_q.withActionExecutionStderr != nil,
 			_q.withInvocationProfile != nil,
 			_q.withTestActionOutput != nil,
 			_q.withTestActionOutputTable != nil,
@@ -643,17 +680,30 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			return nil, err
 		}
 	}
-	if query := _q.withActionStdout; query != nil {
-		if err := _q.loadActionStdout(ctx, query, nodes,
-			func(n *File) { n.Edges.ActionStdout = []*Action{} },
-			func(n *File, e *Action) { n.Edges.ActionStdout = append(n.Edges.ActionStdout, e) }); err != nil {
+	if query := _q.withActionExecutionPrimaryOutput; query != nil {
+		if err := _q.loadActionExecutionPrimaryOutput(ctx, query, nodes,
+			func(n *File) { n.Edges.ActionExecutionPrimaryOutput = []*ActionExecution{} },
+			func(n *File, e *ActionExecution) {
+				n.Edges.ActionExecutionPrimaryOutput = append(n.Edges.ActionExecutionPrimaryOutput, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
-	if query := _q.withActionStderr; query != nil {
-		if err := _q.loadActionStderr(ctx, query, nodes,
-			func(n *File) { n.Edges.ActionStderr = []*Action{} },
-			func(n *File, e *Action) { n.Edges.ActionStderr = append(n.Edges.ActionStderr, e) }); err != nil {
+	if query := _q.withActionExecutionStdout; query != nil {
+		if err := _q.loadActionExecutionStdout(ctx, query, nodes,
+			func(n *File) { n.Edges.ActionExecutionStdout = []*ActionExecution{} },
+			func(n *File, e *ActionExecution) {
+				n.Edges.ActionExecutionStdout = append(n.Edges.ActionExecutionStdout, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withActionExecutionStderr; query != nil {
+		if err := _q.loadActionExecutionStderr(ctx, query, nodes,
+			func(n *File) { n.Edges.ActionExecutionStderr = []*ActionExecution{} },
+			func(n *File, e *ActionExecution) {
+				n.Edges.ActionExecutionStderr = append(n.Edges.ActionExecutionStderr, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -680,17 +730,24 @@ func (_q *FileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*File, e
 			return nil, err
 		}
 	}
-	for name, query := range _q.withNamedActionStdout {
-		if err := _q.loadActionStdout(ctx, query, nodes,
-			func(n *File) { n.appendNamedActionStdout(name) },
-			func(n *File, e *Action) { n.appendNamedActionStdout(name, e) }); err != nil {
+	for name, query := range _q.withNamedActionExecutionPrimaryOutput {
+		if err := _q.loadActionExecutionPrimaryOutput(ctx, query, nodes,
+			func(n *File) { n.appendNamedActionExecutionPrimaryOutput(name) },
+			func(n *File, e *ActionExecution) { n.appendNamedActionExecutionPrimaryOutput(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range _q.withNamedActionStderr {
-		if err := _q.loadActionStderr(ctx, query, nodes,
-			func(n *File) { n.appendNamedActionStderr(name) },
-			func(n *File, e *Action) { n.appendNamedActionStderr(name, e) }); err != nil {
+	for name, query := range _q.withNamedActionExecutionStdout {
+		if err := _q.loadActionExecutionStdout(ctx, query, nodes,
+			func(n *File) { n.appendNamedActionExecutionStdout(name) },
+			func(n *File, e *ActionExecution) { n.appendNamedActionExecutionStdout(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range _q.withNamedActionExecutionStderr {
+		if err := _q.loadActionExecutionStderr(ctx, query, nodes,
+			func(n *File) { n.appendNamedActionExecutionStderr(name) },
+			func(n *File, e *ActionExecution) { n.appendNamedActionExecutionStderr(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -781,7 +838,7 @@ func (_q *FileQuery) loadFilePath(ctx context.Context, query *FilePathQuery, nod
 	}
 	return nil
 }
-func (_q *FileQuery) loadActionStdout(ctx context.Context, query *ActionQuery, nodes []*File, init func(*File), assign func(*File, *Action)) error {
+func (_q *FileQuery) loadActionExecutionPrimaryOutput(ctx context.Context, query *ActionExecutionQuery, nodes []*File, init func(*File), assign func(*File, *ActionExecution)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*File)
 	for i := range nodes {
@@ -792,10 +849,40 @@ func (_q *FileQuery) loadActionStdout(ctx context.Context, query *ActionQuery, n
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(action.FieldStdoutFileID)
+		query.ctx.AppendFieldOnce(actionexecution.FieldPrimaryOutputFileID)
 	}
-	query.Where(predicate.Action(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(file.ActionStdoutColumn), fks...))
+	query.Where(predicate.ActionExecution(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.ActionExecutionPrimaryOutputColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.PrimaryOutputFileID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "primary_output_file_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *FileQuery) loadActionExecutionStdout(ctx context.Context, query *ActionExecutionQuery, nodes []*File, init func(*File), assign func(*File, *ActionExecution)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*File)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(actionexecution.FieldStdoutFileID)
+	}
+	query.Where(predicate.ActionExecution(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.ActionExecutionStdoutColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -811,7 +898,7 @@ func (_q *FileQuery) loadActionStdout(ctx context.Context, query *ActionQuery, n
 	}
 	return nil
 }
-func (_q *FileQuery) loadActionStderr(ctx context.Context, query *ActionQuery, nodes []*File, init func(*File), assign func(*File, *Action)) error {
+func (_q *FileQuery) loadActionExecutionStderr(ctx context.Context, query *ActionExecutionQuery, nodes []*File, init func(*File), assign func(*File, *ActionExecution)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*File)
 	for i := range nodes {
@@ -822,10 +909,10 @@ func (_q *FileQuery) loadActionStderr(ctx context.Context, query *ActionQuery, n
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(action.FieldStderrFileID)
+		query.ctx.AppendFieldOnce(actionexecution.FieldStderrFileID)
 	}
-	query.Where(predicate.Action(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(file.ActionStderrColumn), fks...))
+	query.Where(predicate.ActionExecution(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(file.ActionExecutionStderrColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1054,31 +1141,45 @@ func (_q *FileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// WithNamedActionStdout tells the query-builder to eager-load the nodes that are connected to the "action_stdout"
+// WithNamedActionExecutionPrimaryOutput tells the query-builder to eager-load the nodes that are connected to the "action_execution_primary_output"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithNamedActionStdout(name string, opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+func (_q *FileQuery) WithNamedActionExecutionPrimaryOutput(name string, opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if _q.withNamedActionStdout == nil {
-		_q.withNamedActionStdout = make(map[string]*ActionQuery)
+	if _q.withNamedActionExecutionPrimaryOutput == nil {
+		_q.withNamedActionExecutionPrimaryOutput = make(map[string]*ActionExecutionQuery)
 	}
-	_q.withNamedActionStdout[name] = query
+	_q.withNamedActionExecutionPrimaryOutput[name] = query
 	return _q
 }
 
-// WithNamedActionStderr tells the query-builder to eager-load the nodes that are connected to the "action_stderr"
+// WithNamedActionExecutionStdout tells the query-builder to eager-load the nodes that are connected to the "action_execution_stdout"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (_q *FileQuery) WithNamedActionStderr(name string, opts ...func(*ActionQuery)) *FileQuery {
-	query := (&ActionClient{config: _q.config}).Query()
+func (_q *FileQuery) WithNamedActionExecutionStdout(name string, opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if _q.withNamedActionStderr == nil {
-		_q.withNamedActionStderr = make(map[string]*ActionQuery)
+	if _q.withNamedActionExecutionStdout == nil {
+		_q.withNamedActionExecutionStdout = make(map[string]*ActionExecutionQuery)
 	}
-	_q.withNamedActionStderr[name] = query
+	_q.withNamedActionExecutionStdout[name] = query
+	return _q
+}
+
+// WithNamedActionExecutionStderr tells the query-builder to eager-load the nodes that are connected to the "action_execution_stderr"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (_q *FileQuery) WithNamedActionExecutionStderr(name string, opts ...func(*ActionExecutionQuery)) *FileQuery {
+	query := (&ActionExecutionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if _q.withNamedActionExecutionStderr == nil {
+		_q.withNamedActionExecutionStderr = make(map[string]*ActionExecutionQuery)
+	}
+	_q.withNamedActionExecutionStderr[name] = query
 	return _q
 }
 

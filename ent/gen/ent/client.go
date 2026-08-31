@@ -15,9 +15,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionexecution"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -74,12 +74,12 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Action is the client for interacting with the Action builders.
-	Action *ActionClient
 	// ActionCacheStatistics is the client for interacting with the ActionCacheStatistics builders.
 	ActionCacheStatistics *ActionCacheStatisticsClient
 	// ActionData is the client for interacting with the ActionData builders.
 	ActionData *ActionDataClient
+	// ActionExecution is the client for interacting with the ActionExecution builders.
+	ActionExecution *ActionExecutionClient
 	// ActionSummary is the client for interacting with the ActionSummary builders.
 	ActionSummary *ActionSummaryClient
 	// ArtifactMetrics is the client for interacting with the ArtifactMetrics builders.
@@ -187,9 +187,9 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Action = NewActionClient(c.config)
 	c.ActionCacheStatistics = NewActionCacheStatisticsClient(c.config)
 	c.ActionData = NewActionDataClient(c.config)
+	c.ActionExecution = NewActionExecutionClient(c.config)
 	c.ActionSummary = NewActionSummaryClient(c.config)
 	c.ArtifactMetrics = NewArtifactMetricsClient(c.config)
 	c.AuthenticatedUser = NewAuthenticatedUserClient(c.config)
@@ -329,9 +329,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                           ctx,
 		config:                        cfg,
-		Action:                        NewActionClient(cfg),
 		ActionCacheStatistics:         NewActionCacheStatisticsClient(cfg),
 		ActionData:                    NewActionDataClient(cfg),
+		ActionExecution:               NewActionExecutionClient(cfg),
 		ActionSummary:                 NewActionSummaryClient(cfg),
 		ArtifactMetrics:               NewArtifactMetricsClient(cfg),
 		AuthenticatedUser:             NewAuthenticatedUserClient(cfg),
@@ -398,9 +398,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                           ctx,
 		config:                        cfg,
-		Action:                        NewActionClient(cfg),
 		ActionCacheStatistics:         NewActionCacheStatisticsClient(cfg),
 		ActionData:                    NewActionDataClient(cfg),
+		ActionExecution:               NewActionExecutionClient(cfg),
 		ActionSummary:                 NewActionSummaryClient(cfg),
 		ArtifactMetrics:               NewArtifactMetricsClient(cfg),
 		AuthenticatedUser:             NewAuthenticatedUserClient(cfg),
@@ -454,7 +454,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Action.
+//		ActionCacheStatistics.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -477,7 +477,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
+		c.ActionCacheStatistics, c.ActionData, c.ActionExecution, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
 		c.BuildGraphAspectCount, c.BuildGraphEvaluationStat, c.BuildGraphMetrics,
 		c.BuildGraphRuleClassCount, c.BuildLogChunk, c.BuildTag, c.Configuration,
@@ -499,7 +499,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
+		c.ActionCacheStatistics, c.ActionData, c.ActionExecution, c.ActionSummary,
 		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
 		c.BuildGraphAspectCount, c.BuildGraphEvaluationStat, c.BuildGraphMetrics,
 		c.BuildGraphRuleClassCount, c.BuildLogChunk, c.BuildTag, c.Configuration,
@@ -520,12 +520,12 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ActionMutation:
-		return c.Action.mutate(ctx, m)
 	case *ActionCacheStatisticsMutation:
 		return c.ActionCacheStatistics.mutate(ctx, m)
 	case *ActionDataMutation:
 		return c.ActionData.mutate(ctx, m)
+	case *ActionExecutionMutation:
+		return c.ActionExecution.mutate(ctx, m)
 	case *ActionSummaryMutation:
 		return c.ActionSummary.mutate(ctx, m)
 	case *ArtifactMetricsMutation:
@@ -622,203 +622,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.WorkerStats.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// ActionClient is a client for the Action schema.
-type ActionClient struct {
-	config
-}
-
-// NewActionClient returns a client for the Action from the given config.
-func NewActionClient(c config) *ActionClient {
-	return &ActionClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `action.Hooks(f(g(h())))`.
-func (c *ActionClient) Use(hooks ...Hook) {
-	c.hooks.Action = append(c.hooks.Action, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `action.Intercept(f(g(h())))`.
-func (c *ActionClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Action = append(c.inters.Action, interceptors...)
-}
-
-// Create returns a builder for creating a Action entity.
-func (c *ActionClient) Create() *ActionCreate {
-	mutation := newActionMutation(c.config, OpCreate)
-	return &ActionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Action entities.
-func (c *ActionClient) CreateBulk(builders ...*ActionCreate) *ActionCreateBulk {
-	return &ActionCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *ActionClient) MapCreateBulk(slice any, setFunc func(*ActionCreate, int)) *ActionCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &ActionCreateBulk{err: fmt.Errorf("calling to ActionClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*ActionCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &ActionCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Action.
-func (c *ActionClient) Update() *ActionUpdate {
-	mutation := newActionMutation(c.config, OpUpdate)
-	return &ActionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *ActionClient) UpdateOne(_m *Action) *ActionUpdateOne {
-	mutation := newActionMutation(c.config, OpUpdateOne, withAction(_m))
-	return &ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *ActionClient) UpdateOneID(id int64) *ActionUpdateOne {
-	mutation := newActionMutation(c.config, OpUpdateOne, withActionID(id))
-	return &ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Action.
-func (c *ActionClient) Delete() *ActionDelete {
-	mutation := newActionMutation(c.config, OpDelete)
-	return &ActionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *ActionClient) DeleteOne(_m *Action) *ActionDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ActionClient) DeleteOneID(id int64) *ActionDeleteOne {
-	builder := c.Delete().Where(action.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &ActionDeleteOne{builder}
-}
-
-// Query returns a query builder for Action.
-func (c *ActionClient) Query() *ActionQuery {
-	return &ActionQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeAction},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Action entity by its id.
-func (c *ActionClient) Get(ctx context.Context, id int64) (*Action, error) {
-	return c.Query().Where(action.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *ActionClient) GetX(ctx context.Context, id int64) *Action {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryBazelInvocation queries the bazel_invocation edge of a Action.
-func (c *ActionClient) QueryBazelInvocation(_m *Action) *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, id),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, action.BazelInvocationTable, action.BazelInvocationColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryConfiguration queries the configuration edge of a Action.
-func (c *ActionClient) QueryConfiguration(_m *Action) *ConfigurationQuery {
-	query := (&ConfigurationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, id),
-			sqlgraph.To(configuration.Table, configuration.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.ConfigurationTable, action.ConfigurationColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryStdout queries the stdout edge of a Action.
-func (c *ActionClient) QueryStdout(_m *Action) *FileQuery {
-	query := (&FileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, id),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StdoutTable, action.StdoutColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryStderr queries the stderr edge of a Action.
-func (c *ActionClient) QueryStderr(_m *Action) *FileQuery {
-	query := (&FileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(action.Table, action.FieldID, id),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, action.StderrTable, action.StderrColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *ActionClient) Hooks() []Hook {
-	return c.hooks.Action
-}
-
-// Interceptors returns the client interceptors.
-func (c *ActionClient) Interceptors() []Interceptor {
-	return c.inters.Action
-}
-
-func (c *ActionClient) mutate(ctx context.Context, m *ActionMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&ActionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&ActionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&ActionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Action mutation op: %q", m.Op())
 	}
 }
 
@@ -1133,6 +936,236 @@ func (c *ActionDataClient) mutate(ctx context.Context, m *ActionDataMutation) (V
 		return (&ActionDataDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown ActionData mutation op: %q", m.Op())
+	}
+}
+
+// ActionExecutionClient is a client for the ActionExecution schema.
+type ActionExecutionClient struct {
+	config
+}
+
+// NewActionExecutionClient returns a client for the ActionExecution from the given config.
+func NewActionExecutionClient(c config) *ActionExecutionClient {
+	return &ActionExecutionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `actionexecution.Hooks(f(g(h())))`.
+func (c *ActionExecutionClient) Use(hooks ...Hook) {
+	c.hooks.ActionExecution = append(c.hooks.ActionExecution, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `actionexecution.Intercept(f(g(h())))`.
+func (c *ActionExecutionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ActionExecution = append(c.inters.ActionExecution, interceptors...)
+}
+
+// Create returns a builder for creating a ActionExecution entity.
+func (c *ActionExecutionClient) Create() *ActionExecutionCreate {
+	mutation := newActionExecutionMutation(c.config, OpCreate)
+	return &ActionExecutionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ActionExecution entities.
+func (c *ActionExecutionClient) CreateBulk(builders ...*ActionExecutionCreate) *ActionExecutionCreateBulk {
+	return &ActionExecutionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ActionExecutionClient) MapCreateBulk(slice any, setFunc func(*ActionExecutionCreate, int)) *ActionExecutionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ActionExecutionCreateBulk{err: fmt.Errorf("calling to ActionExecutionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ActionExecutionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ActionExecutionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ActionExecution.
+func (c *ActionExecutionClient) Update() *ActionExecutionUpdate {
+	mutation := newActionExecutionMutation(c.config, OpUpdate)
+	return &ActionExecutionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ActionExecutionClient) UpdateOne(_m *ActionExecution) *ActionExecutionUpdateOne {
+	mutation := newActionExecutionMutation(c.config, OpUpdateOne, withActionExecution(_m))
+	return &ActionExecutionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ActionExecutionClient) UpdateOneID(id int64) *ActionExecutionUpdateOne {
+	mutation := newActionExecutionMutation(c.config, OpUpdateOne, withActionExecutionID(id))
+	return &ActionExecutionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ActionExecution.
+func (c *ActionExecutionClient) Delete() *ActionExecutionDelete {
+	mutation := newActionExecutionMutation(c.config, OpDelete)
+	return &ActionExecutionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ActionExecutionClient) DeleteOne(_m *ActionExecution) *ActionExecutionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ActionExecutionClient) DeleteOneID(id int64) *ActionExecutionDeleteOne {
+	builder := c.Delete().Where(actionexecution.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ActionExecutionDeleteOne{builder}
+}
+
+// Query returns a query builder for ActionExecution.
+func (c *ActionExecutionClient) Query() *ActionExecutionQuery {
+	return &ActionExecutionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeActionExecution},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ActionExecution entity by its id.
+func (c *ActionExecutionClient) Get(ctx context.Context, id int64) (*ActionExecution, error) {
+	return c.Query().Where(actionexecution.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ActionExecutionClient) GetX(ctx context.Context, id int64) *ActionExecution {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryBazelInvocation(_m *ActionExecution) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, actionexecution.BazelInvocationTable, actionexecution.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConfiguration queries the configuration edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryConfiguration(_m *ActionExecution) *ConfigurationQuery {
+	query := (&ConfigurationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.ConfigurationTable, actionexecution.ConfigurationColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionDigest queries the action_digest edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryActionDigest(_m *ActionExecution) *DigestQuery {
+	query := (&DigestClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(digest.Table, digest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, actionexecution.ActionDigestTable, actionexecution.ActionDigestColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPrimaryOutputFile queries the primary_output_file edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryPrimaryOutputFile(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.PrimaryOutputFileTable, actionexecution.PrimaryOutputFileColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStdout queries the stdout edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryStdout(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StdoutTable, actionexecution.StdoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStderr queries the stderr edge of a ActionExecution.
+func (c *ActionExecutionClient) QueryStderr(_m *ActionExecution) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionexecution.Table, actionexecution.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, actionexecution.StderrTable, actionexecution.StderrColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ActionExecutionClient) Hooks() []Hook {
+	hooks := c.hooks.ActionExecution
+	return append(hooks[:len(hooks):len(hooks)], actionexecution.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *ActionExecutionClient) Interceptors() []Interceptor {
+	return c.inters.ActionExecution
+}
+
+func (c *ActionExecutionClient) mutate(ctx context.Context, m *ActionExecutionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ActionExecutionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ActionExecutionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ActionExecutionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ActionExecutionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ActionExecution mutation op: %q", m.Op())
 	}
 }
 
@@ -1852,15 +1885,15 @@ func (c *BazelInvocationClient) QueryConfigurations(_m *BazelInvocation) *Config
 	return query
 }
 
-// QueryActions queries the actions edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryActions(_m *BazelInvocation) *ActionQuery {
-	query := (&ActionClient{config: c.config}).Query()
+// QueryActionExecutions queries the action_executions edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryActionExecutions(_m *BazelInvocation) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionsTable, bazelinvocation.ActionsColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionExecutionsTable, bazelinvocation.ActionExecutionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3270,15 +3303,15 @@ func (c *ConfigurationClient) QueryInvocationTargets(_m *Configuration) *Invocat
 	return query
 }
 
-// QueryActions queries the actions edge of a Configuration.
-func (c *ConfigurationClient) QueryActions(_m *Configuration) *ActionQuery {
-	query := (&ActionClient{config: c.config}).Query()
+// QueryActionExecutions queries the action_executions edge of a Configuration.
+func (c *ConfigurationClient) QueryActionExecutions(_m *Configuration) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(configuration.Table, configuration.FieldID, id),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, configuration.ActionsTable, configuration.ActionsColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, configuration.ActionExecutionsTable, configuration.ActionExecutionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3726,6 +3759,22 @@ func (c *DigestClient) QueryFiles(_m *Digest) *FileQuery {
 			sqlgraph.From(digest.Table, digest.FieldID, id),
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, digest.FilesTable, digest.FilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionExecutions queries the action_executions edge of a Digest.
+func (c *DigestClient) QueryActionExecutions(_m *Digest) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(digest.Table, digest.FieldID, id),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, digest.ActionExecutionsTable, digest.ActionExecutionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -4361,15 +4410,15 @@ func (c *FileClient) QueryFilePath(_m *File) *FilePathQuery {
 	return query
 }
 
-// QueryActionStdout queries the action_stdout edge of a File.
-func (c *FileClient) QueryActionStdout(_m *File) *ActionQuery {
-	query := (&ActionClient{config: c.config}).Query()
+// QueryActionExecutionPrimaryOutput queries the action_execution_primary_output edge of a File.
+func (c *FileClient) QueryActionExecutionPrimaryOutput(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, id),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStdoutTable, file.ActionStdoutColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionPrimaryOutputTable, file.ActionExecutionPrimaryOutputColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -4377,15 +4426,31 @@ func (c *FileClient) QueryActionStdout(_m *File) *ActionQuery {
 	return query
 }
 
-// QueryActionStderr queries the action_stderr edge of a File.
-func (c *FileClient) QueryActionStderr(_m *File) *ActionQuery {
-	query := (&ActionClient{config: c.config}).Query()
+// QueryActionExecutionStdout queries the action_execution_stdout edge of a File.
+func (c *FileClient) QueryActionExecutionStdout(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(file.Table, file.FieldID, id),
-			sqlgraph.To(action.Table, action.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionStderrTable, file.ActionStderrColumn),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStdoutTable, file.ActionExecutionStdoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionExecutionStderr queries the action_execution_stderr edge of a File.
+func (c *FileClient) QueryActionExecutionStderr(_m *File) *ActionExecutionQuery {
+	query := (&ActionExecutionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(actionexecution.Table, actionexecution.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, file.ActionExecutionStderrTable, file.ActionExecutionStderrColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -9174,30 +9239,32 @@ func (c *WorkerStatsClient) mutate(ctx context.Context, m *WorkerStatsMutation) 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		AuthenticatedUser, BazelInvocation, Build, BuildGraphAspectCount,
-		BuildGraphEvaluationStat, BuildGraphMetrics, BuildGraphRuleClassCount,
-		BuildLogChunk, BuildTag, Configuration, ConnectionMetadata, CumulativeMetrics,
-		Digest, DynamicExecutionMetrics, DynamicExecutionRaceStatistic, EventMetadata,
-		File, FilePath, GarbageMetrics, IncompleteBuildLog, InstanceName,
-		InvocationTag, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
-		NetworkMetrics, PackageLoadMetrics, PackageMetrics, RunnerCount, SourceControl,
-		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestActionOutput,
-		TestResult, TestSummary, TestTarget, TimingMetrics, WorkerID, WorkerMetrics,
-		WorkerPoolMetrics, WorkerPoolStats, WorkerStats []ent.Hook
+		ActionCacheStatistics, ActionData, ActionExecution, ActionSummary,
+		ArtifactMetrics, AuthenticatedUser, BazelInvocation, Build,
+		BuildGraphAspectCount, BuildGraphEvaluationStat, BuildGraphMetrics,
+		BuildGraphRuleClassCount, BuildLogChunk, BuildTag, Configuration,
+		ConnectionMetadata, CumulativeMetrics, Digest, DynamicExecutionMetrics,
+		DynamicExecutionRaceStatistic, EventMetadata, File, FilePath, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationTag, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, PackageLoadMetrics,
+		PackageMetrics, RunnerCount, SourceControl, SystemNetworkStats, Target,
+		TargetKindMapping, TargetMetrics, TestActionOutput, TestResult, TestSummary,
+		TestTarget, TimingMetrics, WorkerID, WorkerMetrics, WorkerPoolMetrics,
+		WorkerPoolStats, WorkerStats []ent.Hook
 	}
 	inters struct {
-		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		AuthenticatedUser, BazelInvocation, Build, BuildGraphAspectCount,
-		BuildGraphEvaluationStat, BuildGraphMetrics, BuildGraphRuleClassCount,
-		BuildLogChunk, BuildTag, Configuration, ConnectionMetadata, CumulativeMetrics,
-		Digest, DynamicExecutionMetrics, DynamicExecutionRaceStatistic, EventMetadata,
-		File, FilePath, GarbageMetrics, IncompleteBuildLog, InstanceName,
-		InvocationTag, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
-		NetworkMetrics, PackageLoadMetrics, PackageMetrics, RunnerCount, SourceControl,
-		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestActionOutput,
-		TestResult, TestSummary, TestTarget, TimingMetrics, WorkerID, WorkerMetrics,
-		WorkerPoolMetrics, WorkerPoolStats, WorkerStats []ent.Interceptor
+		ActionCacheStatistics, ActionData, ActionExecution, ActionSummary,
+		ArtifactMetrics, AuthenticatedUser, BazelInvocation, Build,
+		BuildGraphAspectCount, BuildGraphEvaluationStat, BuildGraphMetrics,
+		BuildGraphRuleClassCount, BuildLogChunk, BuildTag, Configuration,
+		ConnectionMetadata, CumulativeMetrics, Digest, DynamicExecutionMetrics,
+		DynamicExecutionRaceStatistic, EventMetadata, File, FilePath, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationTag, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, PackageLoadMetrics,
+		PackageMetrics, RunnerCount, SourceControl, SystemNetworkStats, Target,
+		TargetKindMapping, TargetMetrics, TestActionOutput, TestResult, TestSummary,
+		TestTarget, TimingMetrics, WorkerID, WorkerMetrics, WorkerPoolMetrics,
+		WorkerPoolStats, WorkerStats []ent.Interceptor
 	}
 )
 

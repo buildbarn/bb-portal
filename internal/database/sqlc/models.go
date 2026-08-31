@@ -12,23 +12,6 @@ import (
 	"github.com/sqlc-dev/pqtype"
 )
 
-type Action struct {
-	ID                int64
-	Label             string
-	Type              sql.NullString
-	Success           sql.NullBool
-	ExitCode          sql.NullInt32
-	CommandLine       pqtype.NullRawMessage
-	StartTime         sql.NullTime
-	EndTime           sql.NullTime
-	FailureCode       sql.NullString
-	FailureMessage    sql.NullString
-	ConfigurationID   int64
-	StdoutFileID      sql.NullInt64
-	StderrFileID      sql.NullInt64
-	BazelInvocationID int64
-}
-
 type ActionCacheStatistic struct {
 	ID                                 int64
 	SizeInBytes                        sql.NullInt64
@@ -50,6 +33,28 @@ type ActionDatum struct {
 	SystemTime              sql.NullInt64
 	UserTime                sql.NullInt64
 	ActionSummaryActionData sql.NullInt64
+}
+
+type ActionExecution struct {
+	ID                  int64
+	Label               string
+	Type                sql.NullString
+	Runner              sql.NullString
+	CacheHit            sql.NullBool
+	Success             sql.NullBool
+	ExitCode            sql.NullInt32
+	CommandLine         pqtype.NullRawMessage
+	StartTime           sql.NullTime
+	EndTime             sql.NullTime
+	FailureCode         sql.NullString
+	FailureMessage      sql.NullString
+	PrimaryOutput       sql.NullString
+	ConfigurationID     sql.NullInt64
+	PrimaryOutputFileID sql.NullInt64
+	StdoutFileID        sql.NullInt64
+	StderrFileID        sql.NullInt64
+	BazelInvocationID   int64
+	ActionDigestID      sql.NullInt64
 }
 
 type ActionSummary struct {

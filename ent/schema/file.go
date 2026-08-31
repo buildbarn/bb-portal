@@ -47,11 +47,17 @@ func (File) Edges() []ent.Edge {
 			Required().
 			Immutable(),
 
-		edge.From("action_stdout", Action.Type).
-			Ref("stdout"),
+		edge.From("action_execution_primary_output", ActionExecution.Type).
+			Ref("primary_output_file").
+			Annotations(entgql.Skip()),
 
-		edge.From("action_stderr", Action.Type).
-			Ref("stderr"),
+		edge.From("action_execution_stdout", ActionExecution.Type).
+			Ref("stdout").
+			Annotations(entgql.Skip()),
+
+		edge.From("action_execution_stderr", ActionExecution.Type).
+			Ref("stderr").
+			Annotations(entgql.Skip()),
 
 		edge.From("invocation_profile", BazelInvocation.Type).
 			Ref("profile"),

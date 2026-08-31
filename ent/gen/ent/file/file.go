@@ -21,10 +21,12 @@ const (
 	EdgeDigest = "digest"
 	// EdgeFilePath holds the string denoting the file_path edge name in mutations.
 	EdgeFilePath = "file_path"
-	// EdgeActionStdout holds the string denoting the action_stdout edge name in mutations.
-	EdgeActionStdout = "action_stdout"
-	// EdgeActionStderr holds the string denoting the action_stderr edge name in mutations.
-	EdgeActionStderr = "action_stderr"
+	// EdgeActionExecutionPrimaryOutput holds the string denoting the action_execution_primary_output edge name in mutations.
+	EdgeActionExecutionPrimaryOutput = "action_execution_primary_output"
+	// EdgeActionExecutionStdout holds the string denoting the action_execution_stdout edge name in mutations.
+	EdgeActionExecutionStdout = "action_execution_stdout"
+	// EdgeActionExecutionStderr holds the string denoting the action_execution_stderr edge name in mutations.
+	EdgeActionExecutionStderr = "action_execution_stderr"
 	// EdgeInvocationProfile holds the string denoting the invocation_profile edge name in mutations.
 	EdgeInvocationProfile = "invocation_profile"
 	// EdgeTestActionOutput holds the string denoting the test_action_output edge name in mutations.
@@ -47,20 +49,27 @@ const (
 	FilePathInverseTable = "file_paths"
 	// FilePathColumn is the table column denoting the file_path relation/edge.
 	FilePathColumn = "file_path_id"
-	// ActionStdoutTable is the table that holds the action_stdout relation/edge.
-	ActionStdoutTable = "actions"
-	// ActionStdoutInverseTable is the table name for the Action entity.
-	// It exists in this package in order to avoid circular dependency with the "action" package.
-	ActionStdoutInverseTable = "actions"
-	// ActionStdoutColumn is the table column denoting the action_stdout relation/edge.
-	ActionStdoutColumn = "stdout_file_id"
-	// ActionStderrTable is the table that holds the action_stderr relation/edge.
-	ActionStderrTable = "actions"
-	// ActionStderrInverseTable is the table name for the Action entity.
-	// It exists in this package in order to avoid circular dependency with the "action" package.
-	ActionStderrInverseTable = "actions"
-	// ActionStderrColumn is the table column denoting the action_stderr relation/edge.
-	ActionStderrColumn = "stderr_file_id"
+	// ActionExecutionPrimaryOutputTable is the table that holds the action_execution_primary_output relation/edge.
+	ActionExecutionPrimaryOutputTable = "action_executions"
+	// ActionExecutionPrimaryOutputInverseTable is the table name for the ActionExecution entity.
+	// It exists in this package in order to avoid circular dependency with the "actionexecution" package.
+	ActionExecutionPrimaryOutputInverseTable = "action_executions"
+	// ActionExecutionPrimaryOutputColumn is the table column denoting the action_execution_primary_output relation/edge.
+	ActionExecutionPrimaryOutputColumn = "primary_output_file_id"
+	// ActionExecutionStdoutTable is the table that holds the action_execution_stdout relation/edge.
+	ActionExecutionStdoutTable = "action_executions"
+	// ActionExecutionStdoutInverseTable is the table name for the ActionExecution entity.
+	// It exists in this package in order to avoid circular dependency with the "actionexecution" package.
+	ActionExecutionStdoutInverseTable = "action_executions"
+	// ActionExecutionStdoutColumn is the table column denoting the action_execution_stdout relation/edge.
+	ActionExecutionStdoutColumn = "stdout_file_id"
+	// ActionExecutionStderrTable is the table that holds the action_execution_stderr relation/edge.
+	ActionExecutionStderrTable = "action_executions"
+	// ActionExecutionStderrInverseTable is the table name for the ActionExecution entity.
+	// It exists in this package in order to avoid circular dependency with the "actionexecution" package.
+	ActionExecutionStderrInverseTable = "action_executions"
+	// ActionExecutionStderrColumn is the table column denoting the action_execution_stderr relation/edge.
+	ActionExecutionStderrColumn = "stderr_file_id"
 	// InvocationProfileTable is the table that holds the invocation_profile relation/edge.
 	InvocationProfileTable = "bazel_invocations"
 	// InvocationProfileInverseTable is the table name for the BazelInvocation entity.
@@ -147,31 +156,45 @@ func ByFilePathField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByActionStdoutCount orders the results by action_stdout count.
-func ByActionStdoutCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionExecutionPrimaryOutputCount orders the results by action_execution_primary_output count.
+func ByActionExecutionPrimaryOutputCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionStdoutStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newActionExecutionPrimaryOutputStep(), opts...)
 	}
 }
 
-// ByActionStdout orders the results by action_stdout terms.
-func ByActionStdout(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByActionExecutionPrimaryOutput orders the results by action_execution_primary_output terms.
+func ByActionExecutionPrimaryOutput(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionStdoutStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionExecutionPrimaryOutputStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
-// ByActionStderrCount orders the results by action_stderr count.
-func ByActionStderrCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionExecutionStdoutCount orders the results by action_execution_stdout count.
+func ByActionExecutionStdoutCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionStderrStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newActionExecutionStdoutStep(), opts...)
 	}
 }
 
-// ByActionStderr orders the results by action_stderr terms.
-func ByActionStderr(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByActionExecutionStdout orders the results by action_execution_stdout terms.
+func ByActionExecutionStdout(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionStderrStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionExecutionStdoutStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByActionExecutionStderrCount orders the results by action_execution_stderr count.
+func ByActionExecutionStderrCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newActionExecutionStderrStep(), opts...)
+	}
+}
+
+// ByActionExecutionStderr orders the results by action_execution_stderr terms.
+func ByActionExecutionStderr(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionExecutionStderrStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -230,18 +253,25 @@ func newFilePathStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, true, FilePathTable, FilePathColumn),
 	)
 }
-func newActionStdoutStep() *sqlgraph.Step {
+func newActionExecutionPrimaryOutputStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ActionStdoutInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, ActionStdoutTable, ActionStdoutColumn),
+		sqlgraph.To(ActionExecutionPrimaryOutputInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionPrimaryOutputTable, ActionExecutionPrimaryOutputColumn),
 	)
 }
-func newActionStderrStep() *sqlgraph.Step {
+func newActionExecutionStdoutStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ActionStderrInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, ActionStderrTable, ActionStderrColumn),
+		sqlgraph.To(ActionExecutionStdoutInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionStdoutTable, ActionExecutionStdoutColumn),
+	)
+}
+func newActionExecutionStderrStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionExecutionStderrInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ActionExecutionStderrTable, ActionExecutionStderrColumn),
 	)
 }
 func newInvocationProfileStep() *sqlgraph.Step {

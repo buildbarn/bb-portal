@@ -18,11 +18,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var dbProvider *embedded.DatabaseProvider
-
 func TestMetrics(t *testing.T) {
 	ctx := context.Background()
 	dbProvider := util.Must(embedded.NewDatabaseProvider(os.Stderr))
+	t.Cleanup(func() {
+		require.NoError(t, dbProvider.Cleanup())
+	})
 	externalID := authmetadataextraction.ExampleExternalID()
 	instanceName := "exampleInstanceName"
 	displayName := authmetadataextraction.ExampleDisplayName()

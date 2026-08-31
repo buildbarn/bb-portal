@@ -26,6 +26,7 @@ interface Props {
   title: string;
   logDownloadUrl?: string;
   fileName: string;
+  emptyMessage?: string;
 }
 
 export const LogViewerCard: React.FC<Props> = ({
@@ -36,6 +37,7 @@ export const LogViewerCard: React.FC<Props> = ({
   title,
   logDownloadUrl,
   fileName,
+  emptyMessage = "There is no log information to display",
 }) => {
   const { copyToClipboard } = useBbPortalMessage();
 
@@ -76,7 +78,7 @@ export const LogViewerCard: React.FC<Props> = ({
     if (!log) {
       return (
         <PortalAlert
-          message="There is no log information to display"
+          message={emptyMessage}
           type="warning"
           showIcon
           className={styles.alert}
@@ -84,7 +86,7 @@ export const LogViewerCard: React.FC<Props> = ({
       );
     }
     return <AnsiScrollingWindow log={log} />;
-  }, [loading, error, logSizeBytes, log]);
+  }, [loading, error, logSizeBytes, log, emptyMessage]);
 
   return (
     <PortalCard

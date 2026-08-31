@@ -1,0 +1,59 @@
+{
+  "getBazelInvocation": {
+    "actionExecutions": {
+      "edges": [
+        {
+          "node": {
+            "actionDigest": null,
+            "cacheHit": null,
+            "commandLine": [
+              "touch",
+              "unavailable.out"
+            ],
+            "configuration": null,
+            "endTime": "2026-07-31T12:00:04.25Z",
+            "exitCode": 0,
+            "failureCode": "",
+            "failureMessage": "",
+            "id": "QWN0aW9uRXhlY3V0aW9uOjY=",
+            "label": "//example:unavailable",
+            "primaryOutput": "bazel-out/k8-fastbuild/bin/example/unavailable.out",
+            "primaryOutputFile": null,
+            "runner": "",
+            "startTime": "2026-07-31T12:00:04Z",
+            "stderr": null,
+            "stdout": null,
+            "success": true,
+            "type": "OtherHostAction"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFp0wAAAAAAAAAG",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFp0wAAAAAAAAAG"
+      }
+    },
+    "actionTimingMetrics": {
+      "cacheHitActions": 1,
+      "timeSavedByCacheHitsInMs": 1250,
+      "timedActions": 4,
+      "timedCacheHitActions": 1,
+      "totalActions": 4,
+      "totalExpectedTimeInMs": 3000
+    },
+    "configurations": [
+      {
+        "mnemonic": "k8-fastbuild"
+      }
+    ],
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjEx",
+    "metrics": {
+      "actionSummary": null,
+      "timingMetrics": {
+        "executionPhaseTimeInMs": 2250
+      }
+    }
+  }
+}
