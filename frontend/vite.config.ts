@@ -50,6 +50,14 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // Under Bazel, test/source files are exposed to the process via a
+    // runfiles symlink tree. Vite's dev-server-style module graph (used by
+    // vitest) follows symlinks to their real path by default, which resolves
+    // outside that tree and isn't visible to the sandbox running the test.
+    // Scoped to `vitest` (which sets process.env.VITEST) since enabling this
+    // for `vite build` breaks Rolldown's resolution of pnpm's nested,
+    // symlinked transitive dependencies.
+    preserveSymlinks: !!process.env.VITEST,
   },
   test: {
     environment: "jsdom",
