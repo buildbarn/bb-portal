@@ -1,4 +1,5 @@
 load("@bazel_lib//lib:copy_to_bin.bzl", _copy_to_bin = "copy_to_bin")
+load("@npm//frontend:vitest/package_json.bzl", _vitest_bin = "bin")
 
 def _vite_build_rule_impl(ctx):
     out_dir = ctx.actions.declare_directory(ctx.label.name)
@@ -49,7 +50,7 @@ def _vite_build_macro_impl(name, srcs, tags, **kwargs):
         name = name,
         srcs = [":{}".format(copy_to_bin_name)],
         tags = tags,
-        **kwargs,
+        **kwargs
     )
 
 vite_build = macro(
@@ -57,3 +58,27 @@ vite_build = macro(
     implementation = _vite_build_macro_impl,
     inherit_attrs = vite_build_rule,
 )
+
+def vitest_test(name, srcs, args = ["run"], **kwargs):
+    """Runs the project's vitest test suite under Bazel.
+
+    Args:
+        name: name of the test target.
+        srcs: source files needed at test time: the test files themselves,
+            the code under test, and vitest's configuration (vite.config.ts,
+            tsconfig.json, package.json, node_modules).
+        args: CLI args passed to `vitest`. Defaults to `["run"]` so the suite
+            runs once and exits, instead of vitest's default watch mode.
+        **kwargs: additional args forwarded to the underlying js_test rule,
+            e.g. size or tags.
+    """
+    _vitest_bin.vitest_test(
+        name = name,
+        data = srcs,
+        args = args,
+        # Run inside this directory (relative to the workspace root) so that
+        # vitest picks up frontend/vite.config.ts and resolves the "@/" alias
+        # and node_modules the same way `npm run test` does.
+        chdir = native.package_name(),
+        **kwargs
+    )
