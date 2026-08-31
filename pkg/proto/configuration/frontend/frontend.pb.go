@@ -347,16 +347,14 @@ func (x *PortalFrontendConfiguration_FeatureFlags_HomePage) GetInstructions() *e
 }
 
 type PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags struct {
-	state                         protoimpl.MessageState `protogen:"open.v1"`
-	PageBuilds                    *emptypb.Empty         `protobuf:"bytes,1,opt,name=page_builds,json=pageBuilds,proto3" json:"page_builds,omitempty"`
-	PageInvocations               *emptypb.Empty         `protobuf:"bytes,2,opt,name=page_invocations,json=pageInvocations,proto3" json:"page_invocations,omitempty"`
-	PageTargets                   *emptypb.Empty         `protobuf:"bytes,3,opt,name=page_targets,json=pageTargets,proto3" json:"page_targets,omitempty"`
-	PageTests                     *emptypb.Empty         `protobuf:"bytes,4,opt,name=page_tests,json=pageTests,proto3" json:"page_tests,omitempty"`
-	PageTrends                    *emptypb.Empty         `protobuf:"bytes,5,opt,name=page_trends,json=pageTrends,proto3" json:"page_trends,omitempty"`
-	ColumnInstanceNameBuilds      *emptypb.Empty         `protobuf:"bytes,6,opt,name=column_instance_name_builds,json=columnInstanceNameBuilds,proto3" json:"column_instance_name_builds,omitempty"`
-	ColumnInstanceNameInvocations *emptypb.Empty         `protobuf:"bytes,7,opt,name=column_instance_name_invocations,json=columnInstanceNameInvocations,proto3" json:"column_instance_name_invocations,omitempty"`
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	PageBuilds      *emptypb.Empty         `protobuf:"bytes,1,opt,name=page_builds,json=pageBuilds,proto3" json:"page_builds,omitempty"`
+	PageInvocations *emptypb.Empty         `protobuf:"bytes,2,opt,name=page_invocations,json=pageInvocations,proto3" json:"page_invocations,omitempty"`
+	PageTargets     *emptypb.Empty         `protobuf:"bytes,3,opt,name=page_targets,json=pageTargets,proto3" json:"page_targets,omitempty"`
+	PageTests       *emptypb.Empty         `protobuf:"bytes,4,opt,name=page_tests,json=pageTests,proto3" json:"page_tests,omitempty"`
+	PageTrends      *emptypb.Empty         `protobuf:"bytes,5,opt,name=page_trends,json=pageTrends,proto3" json:"page_trends,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) Reset() {
@@ -420,20 +418,6 @@ func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) GetPageTests(
 func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) GetPageTrends() *emptypb.Empty {
 	if x != nil {
 		return x.PageTrends
-	}
-	return nil
-}
-
-func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) GetColumnInstanceNameBuilds() *emptypb.Empty {
-	if x != nil {
-		return x.ColumnInstanceNameBuilds
-	}
-	return nil
-}
-
-func (x *PortalFrontendConfiguration_FeatureFlags_BesFeatureFlags) GetColumnInstanceNameInvocations() *emptypb.Empty {
-	if x != nil {
-		return x.ColumnInstanceNameInvocations
 	}
 	return nil
 }
@@ -560,14 +544,14 @@ var File_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronten
 
 const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_frontend_proto_rawDesc = "" +
 	"\n" +
-	"Ngithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x12 buildbarn.configuration.frontend\x1a\x1bgoogle/protobuf/empty.proto\"\xf9\x0f\n" +
+	"Ngithub.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto\x12 buildbarn.configuration.frontend\x1a\x1bgoogle/protobuf/empty.proto\"\xc1\x0e\n" +
 	"\x1bPortalFrontendConfiguration\x12o\n" +
 	"\rfeature_flags\x18\x01 \x01(\v2J.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlagsR\ffeatureFlags\x12(\n" +
 	"\x10grpc_backend_url\x18\x02 \x01(\tR\x0egrpcBackendUrl\x12!\n" +
 	"\fcompany_name\x18\x03 \x01(\tR\vcompanyName\x12r\n" +
 	"\x0efooter_content\x18\x04 \x03(\v2K.buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElementR\rfooterContent\x12\x88\x01\n" +
 	"\x18additional_build_columns\x18\x05 \x03(\v2N.buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumnR\x16additionalBuildColumns\x12\x9d\x01\n" +
-	"#additional_build_invocation_columns\x18\x06 \x03(\v2N.buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumnR additionalBuildInvocationColumns\x1a\xc1\a\n" +
+	"#additional_build_invocation_columns\x18\x06 \x03(\v2N.buildbarn.configuration.frontend.PortalFrontendConfiguration.AdditionalColumnR additionalBuildInvocationColumns\x1a\x89\x06\n" +
 	"\fFeatureFlags\x12g\n" +
 	"\x04home\x18\x01 \x01(\v2S.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.HomePageR\x04home\x12l\n" +
 	"\x03bes\x18\x02 \x01(\v2Z.buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlagsR\x03bes\x120\n" +
@@ -576,7 +560,7 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_front
 	"\bHomePage\x127\n" +
 	"\vfile_upload\x18\x01 \x01(\v2\x16.google.protobuf.EmptyR\n" +
 	"fileUpload\x12:\n" +
-	"\finstructions\x18\x02 \x01(\v2\x16.google.protobuf.EmptyR\finstructions\x1a\xf0\x03\n" +
+	"\finstructions\x18\x02 \x01(\v2\x16.google.protobuf.EmptyR\finstructions\x1a\xb8\x02\n" +
 	"\x0fBesFeatureFlags\x127\n" +
 	"\vpage_builds\x18\x01 \x01(\v2\x16.google.protobuf.EmptyR\n" +
 	"pageBuilds\x12A\n" +
@@ -585,9 +569,7 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_front
 	"\n" +
 	"page_tests\x18\x04 \x01(\v2\x16.google.protobuf.EmptyR\tpageTests\x127\n" +
 	"\vpage_trends\x18\x05 \x01(\v2\x16.google.protobuf.EmptyR\n" +
-	"pageTrends\x12U\n" +
-	"\x1bcolumn_instance_name_builds\x18\x06 \x01(\v2\x16.google.protobuf.EmptyR\x18columnInstanceNameBuilds\x12_\n" +
-	" column_instance_name_invocations\x18\a \x01(\v2\x16.google.protobuf.EmptyR\x1dcolumnInstanceNameInvocations\x1a\xd8\x02\n" +
+	"pageTrends\x1a\xd8\x02\n" +
 	"\rFooterElement\x12\x12\n" +
 	"\x04text\x18\x01 \x01(\tR\x04text\x12\x12\n" +
 	"\x04href\x18\x02 \x01(\tR\x04href\x12d\n" +
@@ -643,16 +625,14 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_frontend_fronten
 	7,  // 13: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_targets:type_name -> google.protobuf.Empty
 	7,  // 14: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_tests:type_name -> google.protobuf.Empty
 	7,  // 15: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.page_trends:type_name -> google.protobuf.Empty
-	7,  // 16: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.column_instance_name_builds:type_name -> google.protobuf.Empty
-	7,  // 17: buildbarn.configuration.frontend.PortalFrontendConfiguration.FeatureFlags.BesFeatureFlags.column_instance_name_invocations:type_name -> google.protobuf.Empty
-	7,  // 18: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.slack:type_name -> google.protobuf.Empty
-	7,  // 19: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.github:type_name -> google.protobuf.Empty
-	7,  // 20: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.discord:type_name -> google.protobuf.Empty
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	7,  // 16: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.slack:type_name -> google.protobuf.Empty
+	7,  // 17: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.github:type_name -> google.protobuf.Empty
+	7,  // 18: buildbarn.configuration.frontend.PortalFrontendConfiguration.FooterElement.Icon.discord:type_name -> google.protobuf.Empty
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() {

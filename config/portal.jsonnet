@@ -137,8 +137,6 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
           pageTargets: {},
           pageTests: {},
           pageTrends: {},
-          columnInstanceNameBuilds: {},
-          columnInstanceNameInvocations: {},
         },
         browser: {},
         scheduler: {},

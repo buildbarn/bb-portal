@@ -17,7 +17,6 @@ import type {
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
 import type { TableColumnTypeWithFilter } from "@/types/TableColumnTypeWithFilter";
-import { env } from "@/utils/env";
 import { PageCursorTable } from "../PageCursorTable";
 import type {
   GetPaginationUpdateLinkType,
@@ -43,9 +42,7 @@ export const getTableColumns = (): TableColumnTypeWithFilter<
   durationColumn,
   statusColumn,
   buildColumn,
-  ...(env.featureFlags?.bes?.columnInstanceNameInvocations
-    ? [instanceNameColumn]
-    : []),
+  instanceNameColumn,
 ];
 
 const BazelInvocationsTable: React.FC<Props> = ({
