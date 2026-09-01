@@ -19,21 +19,21 @@ func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
 	userInfoExtractor := authmetadataextraction.ExampleUserInfoExtractor()
 
 	t.Run("NilExtractorConfig", func(t *testing.T) {
-		var config *bb_portal.AuthMetadataExtractorConfiguration = nil
+		var config *bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration = nil
 		extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(config, nil)
 		require.NoError(t, err)
 		require.Nil(t, extractors)
 	})
 
 	t.Run("EmptyExtractorConfig", func(t *testing.T) {
-		config := &bb_portal.AuthMetadataExtractorConfiguration{}
+		config := &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{}
 		extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(config, nil)
 		require.Error(t, err)
 		require.Nil(t, extractors)
 	})
 
 	t.Run("FullExtractorConfig", func(t *testing.T) {
-		config := &bb_portal.AuthMetadataExtractorConfiguration{
+		config := &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 			ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
 			DisplayNameExtractionJmespathExpression: &displayNameExtractor,
 			UserInfoExtractionJmespathExpression:    &userInfoExtractor,
@@ -47,7 +47,7 @@ func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
 	})
 
 	t.Run("ExternalId", func(t *testing.T) {
-		config := &bb_portal.AuthMetadataExtractorConfiguration{
+		config := &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 			ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
 			DisplayNameExtractionJmespathExpression: nil,
 			UserInfoExtractionJmespathExpression:    nil,
@@ -61,7 +61,7 @@ func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
 	})
 
 	t.Run("ExternalIdDisplayName", func(t *testing.T) {
-		config := &bb_portal.AuthMetadataExtractorConfiguration{
+		config := &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 			ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
 			DisplayNameExtractionJmespathExpression: &displayNameExtractor,
 			UserInfoExtractionJmespathExpression:    nil,
@@ -75,7 +75,7 @@ func TestAuthMetadataExtractorsFromConfiguration(t *testing.T) {
 	})
 
 	t.Run("ExternalIdUserInfo", func(t *testing.T) {
-		config := &bb_portal.AuthMetadataExtractorConfiguration{
+		config := &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 			ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
 			DisplayNameExtractionJmespathExpression: nil,
 			UserInfoExtractionJmespathExpression:    &userInfoExtractor,
