@@ -39,6 +39,14 @@ func (Digest) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge to a invocation file with this digest.
 		edge.To("files", File.Type),
+
+		// Edge from a completed action with this digest.
+		edge.From("actions", CompletedAction.Type).
+			Ref("action_digest"),
+
+		// Edge from a completed action with this digest.
+		edge.From("historical_execute_response_actions", CompletedAction.Type).
+			Ref("historical_execute_response_digest"),
 	}
 }
 

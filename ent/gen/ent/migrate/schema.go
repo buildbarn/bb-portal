@@ -515,6 +515,50 @@ var (
 			},
 		},
 	}
+	// CompletedActionsColumns holds the columns for the "completed_actions" table.
+	CompletedActionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "invocation_id", Type: field.TypeString},
+		{Name: "target_id", Type: field.TypeString},
+		{Name: "mnemonic", Type: field.TypeString},
+		{Name: "tool_name", Type: field.TypeString},
+		{Name: "action_id", Type: field.TypeString},
+		{Name: "created_timestamp", Type: field.TypeTime},
+		{Name: "completed_action_action_digest", Type: field.TypeInt64},
+		{Name: "completed_action_historical_execute_response_digest", Type: field.TypeInt64},
+	}
+	// CompletedActionsTable holds the schema information for the "completed_actions" table.
+	CompletedActionsTable = &schema.Table{
+		Name:       "completed_actions",
+		Columns:    CompletedActionsColumns,
+		PrimaryKey: []*schema.Column{CompletedActionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "completed_actions_digests_action_digest",
+				Columns:    []*schema.Column{CompletedActionsColumns[7]},
+				RefColumns: []*schema.Column{DigestsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "completed_actions_digests_historical_execute_response_digest",
+				Columns:    []*schema.Column{CompletedActionsColumns[8]},
+				RefColumns: []*schema.Column{DigestsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "completedaction_completed_action_action_digest",
+				Unique:  false,
+				Columns: []*schema.Column{CompletedActionsColumns[7]},
+			},
+			{
+				Name:    "completedaction_completed_action_historical_execute_response_digest",
+				Unique:  true,
+				Columns: []*schema.Column{CompletedActionsColumns[8]},
+			},
+		},
+	}
 	// ConfigurationsColumns holds the columns for the "configurations" table.
 	ConfigurationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1573,6 +1617,7 @@ var (
 		BuildGraphRuleClassCountsTable,
 		BuildLogChunksTable,
 		BuildTagsTable,
+		CompletedActionsTable,
 		ConfigurationsTable,
 		ConnectionMetadataTable,
 		CumulativeMetricsTable,
@@ -1632,6 +1677,8 @@ func init() {
 	BuildGraphRuleClassCountsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildTagsTable.ForeignKeys[0].RefTable = BuildsTable
+	CompletedActionsTable.ForeignKeys[0].RefTable = DigestsTable
+	CompletedActionsTable.ForeignKeys[1].RefTable = DigestsTable
 	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable

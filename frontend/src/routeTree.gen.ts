@@ -40,6 +40,7 @@ import { Route as BazelInvocationsInvocationIDTagsRouteImport } from './routes/b
 import { Route as BazelInvocationsInvocationIDSourceControlRouteImport } from './routes/bazel-invocations.$invocationID/source-control'
 import { Route as BazelInvocationsInvocationIDMetricsRouteImport } from './routes/bazel-invocations.$invocationID/metrics'
 import { Route as BazelInvocationsInvocationIDLogRouteImport } from './routes/bazel-invocations.$invocationID/log'
+import { Route as BazelInvocationsInvocationIDCompletedActionsRouteImport } from './routes/bazel-invocations.$invocationID/completed-actions'
 import { Route as BazelInvocationsInvocationIDCommandLineRouteImport } from './routes/bazel-invocations.$invocationID/command-line'
 import { Route as BazelInvocationsInvocationIDActionsRouteImport } from './routes/bazel-invocations.$invocationID/actions'
 import { Route as BazelInvocationsInvocationIDTestsIndexRouteImport } from './routes/bazel-invocations.$invocationID/tests.index'
@@ -208,6 +209,12 @@ const BazelInvocationsInvocationIDLogRoute =
     path: '/log',
     getParentRoute: () => BazelInvocationsInvocationIDRoute,
   } as any)
+const BazelInvocationsInvocationIDCompletedActionsRoute =
+  BazelInvocationsInvocationIDCompletedActionsRouteImport.update({
+    id: '/completed-actions',
+    path: '/completed-actions',
+    getParentRoute: () => BazelInvocationsInvocationIDRoute,
+  } as any)
 const BazelInvocationsInvocationIDCommandLineRoute =
   BazelInvocationsInvocationIDCommandLineRouteImport.update({
     id: '/command-line',
@@ -258,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/tests/': typeof TestsIndexRoute
   '/bazel-invocations/$invocationID/actions': typeof BazelInvocationsInvocationIDActionsRoute
   '/bazel-invocations/$invocationID/command-line': typeof BazelInvocationsInvocationIDCommandLineRoute
+  '/bazel-invocations/$invocationID/completed-actions': typeof BazelInvocationsInvocationIDCompletedActionsRoute
   '/bazel-invocations/$invocationID/log': typeof BazelInvocationsInvocationIDLogRoute
   '/bazel-invocations/$invocationID/metrics': typeof BazelInvocationsInvocationIDMetricsRoute
   '/bazel-invocations/$invocationID/source-control': typeof BazelInvocationsInvocationIDSourceControlRoute
@@ -287,6 +295,7 @@ export interface FileRoutesByTo {
   '/tests': typeof TestsIndexRoute
   '/bazel-invocations/$invocationID/actions': typeof BazelInvocationsInvocationIDActionsRoute
   '/bazel-invocations/$invocationID/command-line': typeof BazelInvocationsInvocationIDCommandLineRoute
+  '/bazel-invocations/$invocationID/completed-actions': typeof BazelInvocationsInvocationIDCompletedActionsRoute
   '/bazel-invocations/$invocationID/log': typeof BazelInvocationsInvocationIDLogRoute
   '/bazel-invocations/$invocationID/metrics': typeof BazelInvocationsInvocationIDMetricsRoute
   '/bazel-invocations/$invocationID/source-control': typeof BazelInvocationsInvocationIDSourceControlRoute
@@ -324,6 +333,7 @@ export interface FileRoutesById {
   '/tests/': typeof TestsIndexRoute
   '/bazel-invocations/$invocationID/actions': typeof BazelInvocationsInvocationIDActionsRoute
   '/bazel-invocations/$invocationID/command-line': typeof BazelInvocationsInvocationIDCommandLineRoute
+  '/bazel-invocations/$invocationID/completed-actions': typeof BazelInvocationsInvocationIDCompletedActionsRoute
   '/bazel-invocations/$invocationID/log': typeof BazelInvocationsInvocationIDLogRoute
   '/bazel-invocations/$invocationID/metrics': typeof BazelInvocationsInvocationIDMetricsRoute
   '/bazel-invocations/$invocationID/source-control': typeof BazelInvocationsInvocationIDSourceControlRoute
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/tests/'
     | '/bazel-invocations/$invocationID/actions'
     | '/bazel-invocations/$invocationID/command-line'
+    | '/bazel-invocations/$invocationID/completed-actions'
     | '/bazel-invocations/$invocationID/log'
     | '/bazel-invocations/$invocationID/metrics'
     | '/bazel-invocations/$invocationID/source-control'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/bazel-invocations/$invocationID/actions'
     | '/bazel-invocations/$invocationID/command-line'
+    | '/bazel-invocations/$invocationID/completed-actions'
     | '/bazel-invocations/$invocationID/log'
     | '/bazel-invocations/$invocationID/metrics'
     | '/bazel-invocations/$invocationID/source-control'
@@ -428,6 +440,7 @@ export interface FileRouteTypes {
     | '/tests/'
     | '/bazel-invocations/$invocationID/actions'
     | '/bazel-invocations/$invocationID/command-line'
+    | '/bazel-invocations/$invocationID/completed-actions'
     | '/bazel-invocations/$invocationID/log'
     | '/bazel-invocations/$invocationID/metrics'
     | '/bazel-invocations/$invocationID/source-control'
@@ -673,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BazelInvocationsInvocationIDLogRouteImport
       parentRoute: typeof BazelInvocationsInvocationIDRoute
     }
+    '/bazel-invocations/$invocationID/completed-actions': {
+      id: '/bazel-invocations/$invocationID/completed-actions'
+      path: '/completed-actions'
+      fullPath: '/bazel-invocations/$invocationID/completed-actions'
+      preLoaderRoute: typeof BazelInvocationsInvocationIDCompletedActionsRouteImport
+      parentRoute: typeof BazelInvocationsInvocationIDRoute
+    }
     '/bazel-invocations/$invocationID/command-line': {
       id: '/bazel-invocations/$invocationID/command-line'
       path: '/command-line'
@@ -725,6 +745,7 @@ const BazelInvocationsInvocationIDTestsRouteWithChildren =
 interface BazelInvocationsInvocationIDRouteChildren {
   BazelInvocationsInvocationIDActionsRoute: typeof BazelInvocationsInvocationIDActionsRoute
   BazelInvocationsInvocationIDCommandLineRoute: typeof BazelInvocationsInvocationIDCommandLineRoute
+  BazelInvocationsInvocationIDCompletedActionsRoute: typeof BazelInvocationsInvocationIDCompletedActionsRoute
   BazelInvocationsInvocationIDLogRoute: typeof BazelInvocationsInvocationIDLogRoute
   BazelInvocationsInvocationIDMetricsRoute: typeof BazelInvocationsInvocationIDMetricsRoute
   BazelInvocationsInvocationIDSourceControlRoute: typeof BazelInvocationsInvocationIDSourceControlRoute
@@ -740,6 +761,8 @@ const BazelInvocationsInvocationIDRouteChildren: BazelInvocationsInvocationIDRou
       BazelInvocationsInvocationIDActionsRoute,
     BazelInvocationsInvocationIDCommandLineRoute:
       BazelInvocationsInvocationIDCommandLineRoute,
+    BazelInvocationsInvocationIDCompletedActionsRoute:
+      BazelInvocationsInvocationIDCompletedActionsRoute,
     BazelInvocationsInvocationIDLogRoute: BazelInvocationsInvocationIDLogRoute,
     BazelInvocationsInvocationIDMetricsRoute:
       BazelInvocationsInvocationIDMetricsRoute,

@@ -23,6 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
@@ -2123,6 +2124,115 @@ func newBuildTagPaginateArgs(rv map[string]any) *buildtagPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (_q *CompletedActionQuery) CollectFields(ctx context.Context, satisfies ...string) (*CompletedActionQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return _q, nil
+	}
+	if err := _q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return _q, nil
+}
+
+func (_q *CompletedActionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(completedaction.Columns))
+		selectedFields = []string{completedaction.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "actionDigest":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DigestClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, digestImplementors)...); err != nil {
+				return err
+			}
+			_q.withActionDigest = query
+
+		case "historicalExecuteResponseDigest":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DigestClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, digestImplementors)...); err != nil {
+				return err
+			}
+			_q.withHistoricalExecuteResponseDigest = query
+		case "invocationID":
+			if _, ok := fieldSeen[completedaction.FieldInvocationID]; !ok {
+				selectedFields = append(selectedFields, completedaction.FieldInvocationID)
+				fieldSeen[completedaction.FieldInvocationID] = struct{}{}
+			}
+		case "targetID":
+			if _, ok := fieldSeen[completedaction.FieldTargetID]; !ok {
+				selectedFields = append(selectedFields, completedaction.FieldTargetID)
+				fieldSeen[completedaction.FieldTargetID] = struct{}{}
+			}
+		case "mnemonic":
+			if _, ok := fieldSeen[completedaction.FieldMnemonic]; !ok {
+				selectedFields = append(selectedFields, completedaction.FieldMnemonic)
+				fieldSeen[completedaction.FieldMnemonic] = struct{}{}
+			}
+		case "toolName":
+			if _, ok := fieldSeen[completedaction.FieldToolName]; !ok {
+				selectedFields = append(selectedFields, completedaction.FieldToolName)
+				fieldSeen[completedaction.FieldToolName] = struct{}{}
+			}
+		case "actionID":
+			if _, ok := fieldSeen[completedaction.FieldActionID]; !ok {
+				selectedFields = append(selectedFields, completedaction.FieldActionID)
+				fieldSeen[completedaction.FieldActionID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		_q.Select(selectedFields...)
+	}
+	return nil
+}
+
+type completedactionPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []CompletedActionPaginateOption
+}
+
+func newCompletedActionPaginateArgs(rv map[string]any) *completedactionPaginateArgs {
+	args := &completedactionPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*CompletedActionWhereInput); ok {
+		args.opts = append(args.opts, WithCompletedActionFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (_q *ConfigurationQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConfigurationQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -2448,6 +2558,32 @@ func (_q *DigestQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				return err
 			}
 			_q.WithNamedFiles(alias, func(wq *FileQuery) {
+				*wq = *query
+			})
+
+		case "actions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompletedActionClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, completedactionImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedActions(alias, func(wq *CompletedActionQuery) {
+				*wq = *query
+			})
+
+		case "historicalExecuteResponseActions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CompletedActionClient{config: _q.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, completedactionImplementors)...); err != nil {
+				return err
+			}
+			_q.WithNamedHistoricalExecuteResponseActions(alias, func(wq *CompletedActionQuery) {
 				*wq = *query
 			})
 		case "rev2InstanceName":

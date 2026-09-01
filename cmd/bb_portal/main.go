@@ -16,6 +16,7 @@ import (
 	graphqlapiservice "github.com/buildbarn/bb-portal/internal/api/http/graphql_api_service"
 	"github.com/buildbarn/bb-portal/internal/api/http/zstdmiddleware"
 	"github.com/buildbarn/bb-portal/internal/bep"
+	completedActionLogger "github.com/buildbarn/bb-portal/internal/completedactionlogger"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
@@ -174,6 +175,20 @@ func main() {
 				dbClient,
 			); err != nil {
 				return util.StatusWrap(err, "Failed to create BES service")
+			}
+		}
+
+		// Configure the completed actions logger service
+		if configuration.CompletedActionLogger != nil {
+			if err = completedActionLogger.NewCompletedActionLoggerServiceAndServe(
+				configuration.CompletedActionLogger,
+				siblingsGroup,
+				dependenciesGroup,
+				grpcClientFactory,
+				blobAccess.UnauthorizedContentAddressableStorage,
+				dbClient,
+			); err != nil {
+				return util.StatusWrap(err, "Failed to create CAL service")
 			}
 		}
 

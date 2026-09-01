@@ -22,6 +22,10 @@ const (
 	FieldSizeBytes = "size_bytes"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
 	EdgeFiles = "files"
+	// EdgeActions holds the string denoting the actions edge name in mutations.
+	EdgeActions = "actions"
+	// EdgeHistoricalExecuteResponseActions holds the string denoting the historical_execute_response_actions edge name in mutations.
+	EdgeHistoricalExecuteResponseActions = "historical_execute_response_actions"
 	// Table holds the table name of the digest in the database.
 	Table = "digests"
 	// FilesTable is the table that holds the files relation/edge.
@@ -31,6 +35,20 @@ const (
 	FilesInverseTable = "files"
 	// FilesColumn is the table column denoting the files relation/edge.
 	FilesColumn = "digest_id"
+	// ActionsTable is the table that holds the actions relation/edge.
+	ActionsTable = "completed_actions"
+	// ActionsInverseTable is the table name for the CompletedAction entity.
+	// It exists in this package in order to avoid circular dependency with the "completedaction" package.
+	ActionsInverseTable = "completed_actions"
+	// ActionsColumn is the table column denoting the actions relation/edge.
+	ActionsColumn = "completed_action_action_digest"
+	// HistoricalExecuteResponseActionsTable is the table that holds the historical_execute_response_actions relation/edge.
+	HistoricalExecuteResponseActionsTable = "completed_actions"
+	// HistoricalExecuteResponseActionsInverseTable is the table name for the CompletedAction entity.
+	// It exists in this package in order to avoid circular dependency with the "completedaction" package.
+	HistoricalExecuteResponseActionsInverseTable = "completed_actions"
+	// HistoricalExecuteResponseActionsColumn is the table column denoting the historical_execute_response_actions relation/edge.
+	HistoricalExecuteResponseActionsColumn = "completed_action_historical_execute_response_digest"
 )
 
 // Columns holds all SQL columns for digest fields.
@@ -88,10 +106,52 @@ func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByActionsCount orders the results by actions count.
+func ByActionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newActionsStep(), opts...)
+	}
+}
+
+// ByActions orders the results by actions terms.
+func ByActions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByHistoricalExecuteResponseActionsCount orders the results by historical_execute_response_actions count.
+func ByHistoricalExecuteResponseActionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newHistoricalExecuteResponseActionsStep(), opts...)
+	}
+}
+
+// ByHistoricalExecuteResponseActions orders the results by historical_execute_response_actions terms.
+func ByHistoricalExecuteResponseActions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newHistoricalExecuteResponseActionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newFilesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FilesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+	)
+}
+func newActionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ActionsTable, ActionsColumn),
+	)
+}
+func newHistoricalExecuteResponseActionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(HistoricalExecuteResponseActionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, HistoricalExecuteResponseActionsTable, HistoricalExecuteResponseActionsColumn),
 	)
 }

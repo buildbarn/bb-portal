@@ -781,6 +781,9 @@ var (
 						},
 					},
 				},
+				"GetCompletedActionsList": {
+					"get completed actions": {},
+				},
 			},
 		},
 		{

@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "cal",
+    srcs = ["server.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/api/grpc/cal",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/digest",
+        "//internal/api/common",
+        "//internal/database",
+        "//pkg/prometheus_metrics",
+        "//pkg/proto/configuration/bb_portal",
+        "@bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto",
+        "@com_github_buildbarn_bb_remote_execution//pkg/proto/completedactionlogger",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/blobstore",
+        "@com_github_buildbarn_bb_storage//pkg/blobstore/buffer",
+        "@com_github_buildbarn_bb_storage//pkg/digest",
+        "@io_entgo_ent//dialect/sql",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/known/emptypb",
+    ],
+)

@@ -146,6 +146,18 @@ const getMenuItems = (
       ),
       hidden: hideActionsTab,
     },
+    {
+      key: "/bazel-invocations/$invocationID/completed-actions",
+      icon: <DatabaseOutlined />,
+      label: (
+        <Link
+          to="/bazel-invocations/$invocationID/completed-actions"
+          params={{ invocationID }}
+        >
+          Completed Actions
+        </Link>
+      ),
+    },
   ]);
 };
 
@@ -156,6 +168,7 @@ interface Props {
 export const BazelInvocationTabBar: React.FC<Props> = ({ invocation }) => {
   const menuItems = useMemo(() => getMenuItems(invocation), [invocation]);
   const selectedKeys = usePortalMenuSelectedKeys(menuItems);
+
   return (
     <Menu
       mode="horizontal"

@@ -4,11 +4,13 @@ package runtime
 
 import (
 	"context"
+	"time"
 
 	"github.com/buildbarn/bb-portal/ent/authschema"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -73,6 +75,12 @@ func init() {
 			return next.Mutate(ctx, m)
 		})
 	}
+	completedactionFields := authschema.CompletedAction{}.Fields()
+	_ = completedactionFields
+	// completedactionDescCreatedTimestamp is the schema descriptor for created_timestamp field.
+	completedactionDescCreatedTimestamp := completedactionFields[5].Descriptor()
+	// completedaction.DefaultCreatedTimestamp holds the default value on creation for the created_timestamp field.
+	completedaction.DefaultCreatedTimestamp = completedactionDescCreatedTimestamp.Default.(func() time.Time)
 	file.Policy = privacy.NewPolicies(authschema.File{})
 	file.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {

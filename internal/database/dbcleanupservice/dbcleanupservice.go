@@ -32,6 +32,7 @@ type DbCleanupService struct {
 	cleanupInterval          time.Duration
 	invocationMessageTimeout time.Duration
 	invocationRetention      time.Duration
+	completedActionRetention time.Duration
 	tracer                   trace.Tracer
 }
 
@@ -62,6 +63,10 @@ func NewDbCleanupService(
 		return nil, util.StatusWrap(err, "Failed to parse invocationRetention parameter time")
 	}
 
+	completedActionRetention := cleanupConfiguration.CompletedActionRetention
+	if err := completedActionRetention.CheckValid(); err != nil {
+		return nil, util.StatusWrap(err, "Failed to parse completedActionRetention parameter time")
+	}
 	return &DbCleanupService{
 		db:                       db,
 		counter:                  rand.Int64N(65536),
@@ -70,6 +75,7 @@ func NewDbCleanupService(
 		cleanupInterval:          cleanupInterval.AsDuration(),
 		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
 		invocationRetention:      invocationRetention.AsDuration(),
+		completedActionRetention: completedActionRetention.AsDuration(),
 		tracer:                   tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
 	}, nil
 }
@@ -115,6 +121,7 @@ func (dc *DbCleanupService) performCleanup(ctx context.Context) {
 	dc.executeTask(ctx, "RemoveUnusedFiles", "removed_files", dc.RemoveUnusedFiles)
 	dc.executeTask(ctx, "RemoveUnusedFilePaths", "removed_file_paths", dc.RemoveUnusedFilePaths)
 	dc.executeTask(ctx, "RemoveUnusedDigests", "removed_digests", dc.RemoveUnusedDigests)
+	dc.executeTask(ctx, "RemoveOldCompletedActions", "deleted_completed_actions", dc.RemoveOldCompletedActions)
 }
 
 // A helper function which records metrics and tracing attributes

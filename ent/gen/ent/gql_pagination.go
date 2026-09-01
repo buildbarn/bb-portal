@@ -27,6 +27,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
@@ -3533,6 +3534,255 @@ func (_m *BuildTag) ToEdge(order *BuildTagOrder) *BuildTagEdge {
 		order = DefaultBuildTagOrder
 	}
 	return &BuildTagEdge{
+		Node:   _m,
+		Cursor: order.Field.toCursor(_m),
+	}
+}
+
+// CompletedActionEdge is the edge representation of CompletedAction.
+type CompletedActionEdge struct {
+	Node   *CompletedAction `json:"node"`
+	Cursor Cursor           `json:"cursor"`
+}
+
+// CompletedActionConnection is the connection containing edges to CompletedAction.
+type CompletedActionConnection struct {
+	Edges      []*CompletedActionEdge `json:"edges"`
+	PageInfo   PageInfo               `json:"pageInfo"`
+	TotalCount int                    `json:"totalCount"`
+}
+
+func (c *CompletedActionConnection) build(nodes []*CompletedAction, pager *completedactionPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *CompletedAction
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *CompletedAction {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *CompletedAction {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*CompletedActionEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &CompletedActionEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// CompletedActionPaginateOption enables pagination customization.
+type CompletedActionPaginateOption func(*completedactionPager) error
+
+// WithCompletedActionOrder configures pagination ordering.
+func WithCompletedActionOrder(order *CompletedActionOrder) CompletedActionPaginateOption {
+	if order == nil {
+		order = DefaultCompletedActionOrder
+	}
+	o := *order
+	return func(pager *completedactionPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultCompletedActionOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithCompletedActionFilter configures pagination filter.
+func WithCompletedActionFilter(filter func(*CompletedActionQuery) (*CompletedActionQuery, error)) CompletedActionPaginateOption {
+	return func(pager *completedactionPager) error {
+		if filter == nil {
+			return errors.New("CompletedActionQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type completedactionPager struct {
+	reverse bool
+	order   *CompletedActionOrder
+	filter  func(*CompletedActionQuery) (*CompletedActionQuery, error)
+}
+
+func newCompletedActionPager(opts []CompletedActionPaginateOption, reverse bool) (*completedactionPager, error) {
+	pager := &completedactionPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultCompletedActionOrder
+	}
+	return pager, nil
+}
+
+func (p *completedactionPager) applyFilter(query *CompletedActionQuery) (*CompletedActionQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *completedactionPager) toCursor(_m *CompletedAction) Cursor {
+	return p.order.Field.toCursor(_m)
+}
+
+func (p *completedactionPager) applyCursors(query *CompletedActionQuery, after, before *Cursor) (*CompletedActionQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultCompletedActionOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *completedactionPager) applyOrder(query *CompletedActionQuery) *CompletedActionQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultCompletedActionOrder.Field {
+		query = query.Order(DefaultCompletedActionOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *completedactionPager) orderExpr(query *CompletedActionQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultCompletedActionOrder.Field {
+			b.Comma().Ident(DefaultCompletedActionOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to CompletedAction.
+func (_m *CompletedActionQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...CompletedActionPaginateOption,
+) (*CompletedActionConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newCompletedActionPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if _m, err = pager.applyFilter(_m); err != nil {
+		return nil, err
+	}
+	conn := &CompletedActionConnection{Edges: []*CompletedActionEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	needTotalCount := hasCollectedField(ctx, totalCountField)
+	needPageInfo := hasCollectedField(ctx, pageInfoField)
+	hasPagination := after != nil || first != nil || before != nil || last != nil
+	if (needTotalCount && hasPagination) || (ignoredEdges && (needTotalCount || needPageInfo)) {
+		c := _m.Clone()
+		c.ctx.Fields = nil
+		if conn.TotalCount, err = c.Count(ctx); err != nil {
+			return nil, err
+		}
+		conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+		conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if _m, err = pager.applyCursors(_m, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		_m.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := _m.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	_m = pager.applyOrder(_m)
+	nodes, err := _m.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// CompletedActionOrderField defines the ordering field of CompletedAction.
+type CompletedActionOrderField struct {
+	// Value extracts the ordering value from the given CompletedAction.
+	Value    func(*CompletedAction) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) completedaction.OrderOption
+	toCursor func(*CompletedAction) Cursor
+}
+
+// CompletedActionOrder defines the ordering of CompletedAction.
+type CompletedActionOrder struct {
+	Direction OrderDirection             `json:"direction"`
+	Field     *CompletedActionOrderField `json:"field"`
+}
+
+// DefaultCompletedActionOrder is the default ordering of CompletedAction.
+var DefaultCompletedActionOrder = &CompletedActionOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &CompletedActionOrderField{
+		Value: func(_m *CompletedAction) (ent.Value, error) {
+			return _m.ID, nil
+		},
+		column: completedaction.FieldID,
+		toTerm: completedaction.ByID,
+		toCursor: func(_m *CompletedAction) Cursor {
+			return Cursor{ID: _m.ID}
+		},
+	},
+}
+
+// ToEdge converts CompletedAction into CompletedActionEdge.
+func (_m *CompletedAction) ToEdge(order *CompletedActionOrder) *CompletedActionEdge {
+	if order == nil {
+		order = DefaultCompletedActionOrder
+	}
+	return &CompletedActionEdge{
 		Node:   _m,
 		Cursor: order.Field.toCursor(_m),
 	}

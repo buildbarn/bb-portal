@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
@@ -131,6 +132,11 @@ var buildtagImplementors = []string{"BuildTag", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*BuildTag) IsNode() {}
+
+var completedactionImplementors = []string{"CompletedAction", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*CompletedAction) IsNode() {}
 
 var configurationImplementors = []string{"Configuration", "Node"}
 
@@ -463,6 +469,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(buildtag.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildtagImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case completedaction.Table:
+		query := c.CompletedAction.Query().
+			Where(completedaction.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, completedactionImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -1024,6 +1039,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.BuildTag.Query().
 			Where(buildtag.IDIn(ids...))
 		query, err := query.CollectFields(ctx, buildtagImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case completedaction.Table:
+		query := c.CompletedAction.Query().
+			Where(completedaction.IDIn(ids...))
+		query, err := query.CollectFields(ctx, completedactionImplementors...)
 		if err != nil {
 			return nil, err
 		}

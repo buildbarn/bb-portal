@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
@@ -136,6 +137,7 @@ func checkColumn(t, c string) error {
 			buildgraphruleclasscount.Table:      buildgraphruleclasscount.ValidColumn,
 			buildlogchunk.Table:                 buildlogchunk.ValidColumn,
 			buildtag.Table:                      buildtag.ValidColumn,
+			completedaction.Table:               completedaction.ValidColumn,
 			configuration.Table:                 configuration.ValidColumn,
 			connectionmetadata.Table:            connectionmetadata.ValidColumn,
 			cumulativemetrics.Table:             cumulativemetrics.ValidColumn,

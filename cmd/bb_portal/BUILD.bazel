@@ -13,6 +13,7 @@ go_library(
         "//internal/api/http/graphql_api_service",
         "//internal/api/http/zstdmiddleware",
         "//internal/bep",
+        "//internal/completedactionlogger",
         "//internal/database",
         "//internal/database/common",
         "//internal/database/dbcleanupservice",

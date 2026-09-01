@@ -36,6 +36,7 @@ func getNewDbCleanupService(db database.Client, c clock.Clock, traceProvider tra
 		CleanupInterval:          durationpb.New(1 * time.Minute),
 		InvocationMessageTimeout: durationpb.New(30 * time.Second),
 		InvocationRetention:      durationpb.New(30 * time.Minute),
+		CompletedActionRetention: durationpb.New(30 * time.Minute),
 	}
 	batcher := dbcleanupservice.NewTimedBatcher(clock.SystemClock, 1*time.Second, 128, 1<<20)
 	return dbcleanupservice.NewDbCleanupService(db, c, batcher, cleanupConfiguration, traceProvider)

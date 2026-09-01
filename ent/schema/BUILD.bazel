@@ -17,6 +17,7 @@ go_library(
         "buildgraphruleclasscount.go",
         "buildlogchunk.go",
         "buildtag.go",
+        "completedaction.go",
         "configuration.go",
         "connectionmetadata.go",
         "cumulativemetrics.go",

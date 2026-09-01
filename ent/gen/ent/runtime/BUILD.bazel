@@ -10,6 +10,7 @@ go_library(
         "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/build",
+        "//ent/gen/ent/completedaction",
         "//ent/gen/ent/file",
         "//ent/gen/ent/filepath",
         "//ent/gen/ent/invocationtarget",

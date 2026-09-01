@@ -37,6 +37,8 @@ type (
 	BuildGraphRuleClassCount struct {
 		schema.BuildGraphRuleClassCount
 	}
+	// CompletedAction reexport with auth policy added
+	CompletedAction struct{ schema.CompletedAction }
 	// Configuration reexport with auth policy added
 	Configuration struct{ schema.Configuration }
 	// CumulativeMetrics reexport with auth policy added

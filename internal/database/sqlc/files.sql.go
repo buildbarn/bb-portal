@@ -25,6 +25,14 @@ WHERE ctid IN (
                 WHERE "digest_id" = "digests"."id"
             )
         )
+        AND NOT EXISTS (
+            SELECT 1
+            FROM "completed_actions"
+            WHERE
+                "completed_action_action_digest" = "digests"."id"
+                OR
+                "completed_action_historical_execute_response_digest" = "digests"."id"
+        )
     FOR UPDATE SKIP LOCKED
     LIMIT $3::bigint
 )

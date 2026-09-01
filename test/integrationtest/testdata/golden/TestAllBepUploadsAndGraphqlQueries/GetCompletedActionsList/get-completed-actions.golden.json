@@ -1,0 +1,11 @@
+{
+  "findCompletedActions": {
+    "edges": [],
+    "pageInfo": {
+      "endCursor": null,
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": null
+    }
+  }
+}

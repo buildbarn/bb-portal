@@ -6,6 +6,7 @@ go_library(
         "authenticated_users.sql.go",
         "bazel_invocations.sql.go",
         "builds.sql.go",
+        "completed_actions.sql.go",
         "db.go",
         "event_metadata.sql.go",
         "files.sql.go",

@@ -48,6 +48,9 @@ type BuildLogChunk func(*sql.Selector)
 // BuildTag is the predicate function for buildtag builders.
 type BuildTag func(*sql.Selector)
 
+// CompletedAction is the predicate function for completedaction builders.
+type CompletedAction func(*sql.Selector)
+
 // Configuration is the predicate function for configuration builders.
 type Configuration func(*sql.Selector)
 

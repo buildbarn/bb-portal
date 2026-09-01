@@ -177,6 +177,18 @@ func (f BuildTagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildTagMutation", m)
 }
 
+// The CompletedActionFunc type is an adapter to allow the use of ordinary
+// function as CompletedAction mutator.
+type CompletedActionFunc func(context.Context, *ent.CompletedActionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CompletedActionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CompletedActionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CompletedActionMutation", m)
+}
+
 // The ConfigurationFunc type is an adapter to allow the use of ordinary
 // function as Configuration mutator.
 type ConfigurationFunc func(context.Context, *ent.ConfigurationMutation) (ent.Value, error)

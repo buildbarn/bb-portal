@@ -138,6 +138,11 @@ func (r *buildTagResolver) ID(ctx context.Context, obj *ent.BuildTag) (string, e
 }
 
 // ID is the resolver for the id field.
+func (r *completedActionResolver) ID(ctx context.Context, obj *ent.CompletedAction) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("CompletedAction", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *configurationResolver) ID(ctx context.Context, obj *ent.Configuration) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("Configuration", obj.ID), nil
 }
@@ -277,6 +282,12 @@ func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.
 func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
 	helpers.PaginationCursorsToUTC(after, before)
 	return r.db.Ent().Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter), ent.WithBuildOrder(orderBy))
+}
+
+// FindCompletedActions is the resolver for the findCompletedActions field.
+func (r *queryResolver) FindCompletedActions(ctx context.Context, after *entgql.Cursor[int64], first *int, before *entgql.Cursor[int64], last *int, where *ent.CompletedActionWhereInput) (*ent.CompletedActionConnection, error) {
+	helpers.PaginationCursorsToUTC(after, before)
+	return r.db.Ent().CompletedAction.Query().Paginate(ctx, after, first, before, last, ent.WithCompletedActionFilter(where.Filter))
 }
 
 // FindTargets is the resolver for the findTargets field.
@@ -890,6 +901,46 @@ func (r *buildWhereInputResolver) IDLt(ctx context.Context, obj *ent.BuildWhereI
 
 // IDLte is the resolver for the idLTE field.
 func (r *buildWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *completedActionWhereInputResolver) ID(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *completedActionWhereInputResolver) IDNeq(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *completedActionWhereInputResolver) IDIn(ctx context.Context, obj *ent.CompletedActionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *completedActionWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.CompletedActionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *completedActionWhereInputResolver) IDGt(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *completedActionWhereInputResolver) IDGte(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *completedActionWhereInputResolver) IDLt(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *completedActionWhereInputResolver) IDLte(ctx context.Context, obj *ent.CompletedActionWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -2315,6 +2366,9 @@ func (r *Resolver) BuildGraphRuleClassCount() BuildGraphRuleClassCountResolver {
 // BuildTag returns BuildTagResolver implementation.
 func (r *Resolver) BuildTag() BuildTagResolver { return &buildTagResolver{r} }
 
+// CompletedAction returns CompletedActionResolver implementation.
+func (r *Resolver) CompletedAction() CompletedActionResolver { return &completedActionResolver{r} }
+
 // Configuration returns ConfigurationResolver implementation.
 func (r *Resolver) Configuration() ConfigurationResolver { return &configurationResolver{r} }
 
@@ -2489,6 +2543,11 @@ func (r *Resolver) BuildTagWhereInput() BuildTagWhereInputResolver {
 // BuildWhereInput returns BuildWhereInputResolver implementation.
 func (r *Resolver) BuildWhereInput() BuildWhereInputResolver { return &buildWhereInputResolver{r} }
 
+// CompletedActionWhereInput returns CompletedActionWhereInputResolver implementation.
+func (r *Resolver) CompletedActionWhereInput() CompletedActionWhereInputResolver {
+	return &completedActionWhereInputResolver{r}
+}
+
 // ConfigurationWhereInput returns ConfigurationWhereInputResolver implementation.
 func (r *Resolver) ConfigurationWhereInput() ConfigurationWhereInputResolver {
 	return &configurationWhereInputResolver{r}
@@ -2657,6 +2716,7 @@ type (
 	buildGraphMetricsResolver                       struct{ *Resolver }
 	buildGraphRuleClassCountResolver                struct{ *Resolver }
 	buildTagResolver                                struct{ *Resolver }
+	completedActionResolver                         struct{ *Resolver }
 	configurationResolver                           struct{ *Resolver }
 	connectionMetadataResolver                      struct{ *Resolver }
 	cumulativeMetricsResolver                       struct{ *Resolver }
@@ -2703,6 +2763,7 @@ type (
 	buildGraphRuleClassCountWhereInputResolver      struct{ *Resolver }
 	buildTagWhereInputResolver                      struct{ *Resolver }
 	buildWhereInputResolver                         struct{ *Resolver }
+	completedActionWhereInputResolver               struct{ *Resolver }
 	configurationWhereInputResolver                 struct{ *Resolver }
 	connectionMetadataWhereInputResolver            struct{ *Resolver }
 	cumulativeMetricsWhereInputResolver             struct{ *Resolver }

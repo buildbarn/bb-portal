@@ -447,6 +447,30 @@ func (f BuildTagMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutati
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BuildTagMutation", m)
 }
 
+// The CompletedActionQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type CompletedActionQueryRuleFunc func(context.Context, *ent.CompletedActionQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f CompletedActionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CompletedActionQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CompletedActionQuery", q)
+}
+
+// The CompletedActionMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type CompletedActionMutationRuleFunc func(context.Context, *ent.CompletedActionMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f CompletedActionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CompletedActionMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CompletedActionMutation", m)
+}
+
 // The ConfigurationQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type ConfigurationQueryRuleFunc func(context.Context, *ent.ConfigurationQuery) error
@@ -1374,6 +1398,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BuildTagQuery:
 		return q.Filter(), nil
+	case *ent.CompletedActionQuery:
+		return q.Filter(), nil
 	case *ent.ConfigurationQuery:
 		return q.Filter(), nil
 	case *ent.ConnectionMetadataQuery:
@@ -1480,6 +1506,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.BuildLogChunkMutation:
 		return m.Filter(), nil
 	case *ent.BuildTagMutation:
+		return m.Filter(), nil
+	case *ent.CompletedActionMutation:
 		return m.Filter(), nil
 	case *ent.ConfigurationMutation:
 		return m.Filter(), nil

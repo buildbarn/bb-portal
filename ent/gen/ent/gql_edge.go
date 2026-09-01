@@ -388,6 +388,22 @@ func (_m *BuildTag) Build(ctx context.Context) (*Build, error) {
 	return result, err
 }
 
+func (_m *CompletedAction) ActionDigest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.ActionDigestOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActionDigest().Only(ctx)
+	}
+	return result, err
+}
+
+func (_m *CompletedAction) HistoricalExecuteResponseDigest(ctx context.Context) (*Digest, error) {
+	result, err := _m.Edges.HistoricalExecuteResponseDigestOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryHistoricalExecuteResponseDigest().Only(ctx)
+	}
+	return result, err
+}
+
 func (_m *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
 	result, err := _m.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
@@ -444,6 +460,30 @@ func (_m *Digest) Files(ctx context.Context) (result []*File, err error) {
 	}
 	if IsNotLoaded(err) {
 		result, err = _m.QueryFiles().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Digest) Actions(ctx context.Context) (result []*CompletedAction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.ActionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryActions().All(ctx)
+	}
+	return result, err
+}
+
+func (_m *Digest) HistoricalExecuteResponseActions(ctx context.Context) (result []*CompletedAction, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = _m.NamedHistoricalExecuteResponseActions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = _m.Edges.HistoricalExecuteResponseActionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = _m.QueryHistoricalExecuteResponseActions().All(ctx)
 	}
 	return result, err
 }

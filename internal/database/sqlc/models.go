@@ -172,6 +172,18 @@ type BuildTag struct {
 	BuildID int64
 }
 
+type CompletedAction struct {
+	ID                                             int64
+	InvocationID                                   string
+	TargetID                                       string
+	Mnemonic                                       string
+	ToolName                                       string
+	ActionID                                       string
+	CreatedTimestamp                               time.Time
+	CompletedActionActionDigest                    int64
+	CompletedActionHistoricalExecuteResponseDigest int64
+}
+
 type Configuration struct {
 	ID                int64
 	ConfigurationID   string

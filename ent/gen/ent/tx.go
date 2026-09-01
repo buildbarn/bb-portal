@@ -42,6 +42,8 @@ type Tx struct {
 	BuildLogChunk *BuildLogChunkClient
 	// BuildTag is the client for interacting with the BuildTag builders.
 	BuildTag *BuildTagClient
+	// CompletedAction is the client for interacting with the CompletedAction builders.
+	CompletedAction *CompletedActionClient
 	// Configuration is the client for interacting with the Configuration builders.
 	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
@@ -259,6 +261,7 @@ func (tx *Tx) init() {
 	tx.BuildGraphRuleClassCount = NewBuildGraphRuleClassCountClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.BuildTag = NewBuildTagClient(tx.config)
+	tx.CompletedAction = NewCompletedActionClient(tx.config)
 	tx.Configuration = NewConfigurationClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)

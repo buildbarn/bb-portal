@@ -20,6 +20,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphruleclasscount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildtag"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/completedaction"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
@@ -5638,6 +5639,444 @@ func (i *BuildTagWhereInput) P() (predicate.BuildTag, error) {
 	}
 }
 
+// CompletedActionWhereInput represents a where input for filtering CompletedAction queries.
+type CompletedActionWhereInput struct {
+	Predicates []predicate.CompletedAction  `json:"-"`
+	Not        *CompletedActionWhereInput   `json:"not,omitempty"`
+	Or         []*CompletedActionWhereInput `json:"or,omitempty"`
+	And        []*CompletedActionWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int64  `json:"id,omitempty"`
+	IDNEQ   *int64  `json:"idNEQ,omitempty"`
+	IDIn    []int64 `json:"idIn,omitempty"`
+	IDNotIn []int64 `json:"idNotIn,omitempty"`
+	IDGT    *int64  `json:"idGT,omitempty"`
+	IDGTE   *int64  `json:"idGTE,omitempty"`
+	IDLT    *int64  `json:"idLT,omitempty"`
+	IDLTE   *int64  `json:"idLTE,omitempty"`
+
+	// "invocation_id" field predicates.
+	InvocationID             *string  `json:"invocationID,omitempty"`
+	InvocationIDNEQ          *string  `json:"invocationIDNEQ,omitempty"`
+	InvocationIDIn           []string `json:"invocationIDIn,omitempty"`
+	InvocationIDNotIn        []string `json:"invocationIDNotIn,omitempty"`
+	InvocationIDGT           *string  `json:"invocationIDGT,omitempty"`
+	InvocationIDGTE          *string  `json:"invocationIDGTE,omitempty"`
+	InvocationIDLT           *string  `json:"invocationIDLT,omitempty"`
+	InvocationIDLTE          *string  `json:"invocationIDLTE,omitempty"`
+	InvocationIDContains     *string  `json:"invocationIDContains,omitempty"`
+	InvocationIDHasPrefix    *string  `json:"invocationIDHasPrefix,omitempty"`
+	InvocationIDHasSuffix    *string  `json:"invocationIDHasSuffix,omitempty"`
+	InvocationIDEqualFold    *string  `json:"invocationIDEqualFold,omitempty"`
+	InvocationIDContainsFold *string  `json:"invocationIDContainsFold,omitempty"`
+
+	// "target_id" field predicates.
+	TargetID             *string  `json:"targetID,omitempty"`
+	TargetIDNEQ          *string  `json:"targetIDNEQ,omitempty"`
+	TargetIDIn           []string `json:"targetIDIn,omitempty"`
+	TargetIDNotIn        []string `json:"targetIDNotIn,omitempty"`
+	TargetIDGT           *string  `json:"targetIDGT,omitempty"`
+	TargetIDGTE          *string  `json:"targetIDGTE,omitempty"`
+	TargetIDLT           *string  `json:"targetIDLT,omitempty"`
+	TargetIDLTE          *string  `json:"targetIDLTE,omitempty"`
+	TargetIDContains     *string  `json:"targetIDContains,omitempty"`
+	TargetIDHasPrefix    *string  `json:"targetIDHasPrefix,omitempty"`
+	TargetIDHasSuffix    *string  `json:"targetIDHasSuffix,omitempty"`
+	TargetIDEqualFold    *string  `json:"targetIDEqualFold,omitempty"`
+	TargetIDContainsFold *string  `json:"targetIDContainsFold,omitempty"`
+
+	// "mnemonic" field predicates.
+	Mnemonic             *string  `json:"mnemonic,omitempty"`
+	MnemonicNEQ          *string  `json:"mnemonicNEQ,omitempty"`
+	MnemonicIn           []string `json:"mnemonicIn,omitempty"`
+	MnemonicNotIn        []string `json:"mnemonicNotIn,omitempty"`
+	MnemonicGT           *string  `json:"mnemonicGT,omitempty"`
+	MnemonicGTE          *string  `json:"mnemonicGTE,omitempty"`
+	MnemonicLT           *string  `json:"mnemonicLT,omitempty"`
+	MnemonicLTE          *string  `json:"mnemonicLTE,omitempty"`
+	MnemonicContains     *string  `json:"mnemonicContains,omitempty"`
+	MnemonicHasPrefix    *string  `json:"mnemonicHasPrefix,omitempty"`
+	MnemonicHasSuffix    *string  `json:"mnemonicHasSuffix,omitempty"`
+	MnemonicEqualFold    *string  `json:"mnemonicEqualFold,omitempty"`
+	MnemonicContainsFold *string  `json:"mnemonicContainsFold,omitempty"`
+
+	// "tool_name" field predicates.
+	ToolName             *string  `json:"toolName,omitempty"`
+	ToolNameNEQ          *string  `json:"toolNameNEQ,omitempty"`
+	ToolNameIn           []string `json:"toolNameIn,omitempty"`
+	ToolNameNotIn        []string `json:"toolNameNotIn,omitempty"`
+	ToolNameGT           *string  `json:"toolNameGT,omitempty"`
+	ToolNameGTE          *string  `json:"toolNameGTE,omitempty"`
+	ToolNameLT           *string  `json:"toolNameLT,omitempty"`
+	ToolNameLTE          *string  `json:"toolNameLTE,omitempty"`
+	ToolNameContains     *string  `json:"toolNameContains,omitempty"`
+	ToolNameHasPrefix    *string  `json:"toolNameHasPrefix,omitempty"`
+	ToolNameHasSuffix    *string  `json:"toolNameHasSuffix,omitempty"`
+	ToolNameEqualFold    *string  `json:"toolNameEqualFold,omitempty"`
+	ToolNameContainsFold *string  `json:"toolNameContainsFold,omitempty"`
+
+	// "action_id" field predicates.
+	ActionID             *string  `json:"actionID,omitempty"`
+	ActionIDNEQ          *string  `json:"actionIDNEQ,omitempty"`
+	ActionIDIn           []string `json:"actionIDIn,omitempty"`
+	ActionIDNotIn        []string `json:"actionIDNotIn,omitempty"`
+	ActionIDGT           *string  `json:"actionIDGT,omitempty"`
+	ActionIDGTE          *string  `json:"actionIDGTE,omitempty"`
+	ActionIDLT           *string  `json:"actionIDLT,omitempty"`
+	ActionIDLTE          *string  `json:"actionIDLTE,omitempty"`
+	ActionIDContains     *string  `json:"actionIDContains,omitempty"`
+	ActionIDHasPrefix    *string  `json:"actionIDHasPrefix,omitempty"`
+	ActionIDHasSuffix    *string  `json:"actionIDHasSuffix,omitempty"`
+	ActionIDEqualFold    *string  `json:"actionIDEqualFold,omitempty"`
+	ActionIDContainsFold *string  `json:"actionIDContainsFold,omitempty"`
+
+	// "action_digest" edge predicates.
+	HasActionDigest     *bool               `json:"hasActionDigest,omitempty"`
+	HasActionDigestWith []*DigestWhereInput `json:"hasActionDigestWith,omitempty"`
+
+	// "historical_execute_response_digest" edge predicates.
+	HasHistoricalExecuteResponseDigest     *bool               `json:"hasHistoricalExecuteResponseDigest,omitempty"`
+	HasHistoricalExecuteResponseDigestWith []*DigestWhereInput `json:"hasHistoricalExecuteResponseDigestWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *CompletedActionWhereInput) AddPredicates(predicates ...predicate.CompletedAction) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the CompletedActionWhereInput filter on the CompletedActionQuery builder.
+func (i *CompletedActionWhereInput) Filter(q *CompletedActionQuery) (*CompletedActionQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyCompletedActionWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyCompletedActionWhereInput is returned in case the CompletedActionWhereInput is empty.
+var ErrEmptyCompletedActionWhereInput = errors.New("ent: empty predicate CompletedActionWhereInput")
+
+// P returns a predicate for filtering completedactions.
+// An error is returned if the input is empty or invalid.
+func (i *CompletedActionWhereInput) P() (predicate.CompletedAction, error) {
+	var predicates []predicate.CompletedAction
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, completedaction.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.CompletedAction, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, completedaction.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.CompletedAction, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, completedaction.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, completedaction.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, completedaction.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, completedaction.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, completedaction.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, completedaction.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, completedaction.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, completedaction.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, completedaction.IDLTE(*i.IDLTE))
+	}
+	if i.InvocationID != nil {
+		predicates = append(predicates, completedaction.InvocationIDEQ(*i.InvocationID))
+	}
+	if i.InvocationIDNEQ != nil {
+		predicates = append(predicates, completedaction.InvocationIDNEQ(*i.InvocationIDNEQ))
+	}
+	if len(i.InvocationIDIn) > 0 {
+		predicates = append(predicates, completedaction.InvocationIDIn(i.InvocationIDIn...))
+	}
+	if len(i.InvocationIDNotIn) > 0 {
+		predicates = append(predicates, completedaction.InvocationIDNotIn(i.InvocationIDNotIn...))
+	}
+	if i.InvocationIDGT != nil {
+		predicates = append(predicates, completedaction.InvocationIDGT(*i.InvocationIDGT))
+	}
+	if i.InvocationIDGTE != nil {
+		predicates = append(predicates, completedaction.InvocationIDGTE(*i.InvocationIDGTE))
+	}
+	if i.InvocationIDLT != nil {
+		predicates = append(predicates, completedaction.InvocationIDLT(*i.InvocationIDLT))
+	}
+	if i.InvocationIDLTE != nil {
+		predicates = append(predicates, completedaction.InvocationIDLTE(*i.InvocationIDLTE))
+	}
+	if i.InvocationIDContains != nil {
+		predicates = append(predicates, completedaction.InvocationIDContains(*i.InvocationIDContains))
+	}
+	if i.InvocationIDHasPrefix != nil {
+		predicates = append(predicates, completedaction.InvocationIDHasPrefix(*i.InvocationIDHasPrefix))
+	}
+	if i.InvocationIDHasSuffix != nil {
+		predicates = append(predicates, completedaction.InvocationIDHasSuffix(*i.InvocationIDHasSuffix))
+	}
+	if i.InvocationIDEqualFold != nil {
+		predicates = append(predicates, completedaction.InvocationIDEqualFold(*i.InvocationIDEqualFold))
+	}
+	if i.InvocationIDContainsFold != nil {
+		predicates = append(predicates, completedaction.InvocationIDContainsFold(*i.InvocationIDContainsFold))
+	}
+	if i.TargetID != nil {
+		predicates = append(predicates, completedaction.TargetIDEQ(*i.TargetID))
+	}
+	if i.TargetIDNEQ != nil {
+		predicates = append(predicates, completedaction.TargetIDNEQ(*i.TargetIDNEQ))
+	}
+	if len(i.TargetIDIn) > 0 {
+		predicates = append(predicates, completedaction.TargetIDIn(i.TargetIDIn...))
+	}
+	if len(i.TargetIDNotIn) > 0 {
+		predicates = append(predicates, completedaction.TargetIDNotIn(i.TargetIDNotIn...))
+	}
+	if i.TargetIDGT != nil {
+		predicates = append(predicates, completedaction.TargetIDGT(*i.TargetIDGT))
+	}
+	if i.TargetIDGTE != nil {
+		predicates = append(predicates, completedaction.TargetIDGTE(*i.TargetIDGTE))
+	}
+	if i.TargetIDLT != nil {
+		predicates = append(predicates, completedaction.TargetIDLT(*i.TargetIDLT))
+	}
+	if i.TargetIDLTE != nil {
+		predicates = append(predicates, completedaction.TargetIDLTE(*i.TargetIDLTE))
+	}
+	if i.TargetIDContains != nil {
+		predicates = append(predicates, completedaction.TargetIDContains(*i.TargetIDContains))
+	}
+	if i.TargetIDHasPrefix != nil {
+		predicates = append(predicates, completedaction.TargetIDHasPrefix(*i.TargetIDHasPrefix))
+	}
+	if i.TargetIDHasSuffix != nil {
+		predicates = append(predicates, completedaction.TargetIDHasSuffix(*i.TargetIDHasSuffix))
+	}
+	if i.TargetIDEqualFold != nil {
+		predicates = append(predicates, completedaction.TargetIDEqualFold(*i.TargetIDEqualFold))
+	}
+	if i.TargetIDContainsFold != nil {
+		predicates = append(predicates, completedaction.TargetIDContainsFold(*i.TargetIDContainsFold))
+	}
+	if i.Mnemonic != nil {
+		predicates = append(predicates, completedaction.MnemonicEQ(*i.Mnemonic))
+	}
+	if i.MnemonicNEQ != nil {
+		predicates = append(predicates, completedaction.MnemonicNEQ(*i.MnemonicNEQ))
+	}
+	if len(i.MnemonicIn) > 0 {
+		predicates = append(predicates, completedaction.MnemonicIn(i.MnemonicIn...))
+	}
+	if len(i.MnemonicNotIn) > 0 {
+		predicates = append(predicates, completedaction.MnemonicNotIn(i.MnemonicNotIn...))
+	}
+	if i.MnemonicGT != nil {
+		predicates = append(predicates, completedaction.MnemonicGT(*i.MnemonicGT))
+	}
+	if i.MnemonicGTE != nil {
+		predicates = append(predicates, completedaction.MnemonicGTE(*i.MnemonicGTE))
+	}
+	if i.MnemonicLT != nil {
+		predicates = append(predicates, completedaction.MnemonicLT(*i.MnemonicLT))
+	}
+	if i.MnemonicLTE != nil {
+		predicates = append(predicates, completedaction.MnemonicLTE(*i.MnemonicLTE))
+	}
+	if i.MnemonicContains != nil {
+		predicates = append(predicates, completedaction.MnemonicContains(*i.MnemonicContains))
+	}
+	if i.MnemonicHasPrefix != nil {
+		predicates = append(predicates, completedaction.MnemonicHasPrefix(*i.MnemonicHasPrefix))
+	}
+	if i.MnemonicHasSuffix != nil {
+		predicates = append(predicates, completedaction.MnemonicHasSuffix(*i.MnemonicHasSuffix))
+	}
+	if i.MnemonicEqualFold != nil {
+		predicates = append(predicates, completedaction.MnemonicEqualFold(*i.MnemonicEqualFold))
+	}
+	if i.MnemonicContainsFold != nil {
+		predicates = append(predicates, completedaction.MnemonicContainsFold(*i.MnemonicContainsFold))
+	}
+	if i.ToolName != nil {
+		predicates = append(predicates, completedaction.ToolNameEQ(*i.ToolName))
+	}
+	if i.ToolNameNEQ != nil {
+		predicates = append(predicates, completedaction.ToolNameNEQ(*i.ToolNameNEQ))
+	}
+	if len(i.ToolNameIn) > 0 {
+		predicates = append(predicates, completedaction.ToolNameIn(i.ToolNameIn...))
+	}
+	if len(i.ToolNameNotIn) > 0 {
+		predicates = append(predicates, completedaction.ToolNameNotIn(i.ToolNameNotIn...))
+	}
+	if i.ToolNameGT != nil {
+		predicates = append(predicates, completedaction.ToolNameGT(*i.ToolNameGT))
+	}
+	if i.ToolNameGTE != nil {
+		predicates = append(predicates, completedaction.ToolNameGTE(*i.ToolNameGTE))
+	}
+	if i.ToolNameLT != nil {
+		predicates = append(predicates, completedaction.ToolNameLT(*i.ToolNameLT))
+	}
+	if i.ToolNameLTE != nil {
+		predicates = append(predicates, completedaction.ToolNameLTE(*i.ToolNameLTE))
+	}
+	if i.ToolNameContains != nil {
+		predicates = append(predicates, completedaction.ToolNameContains(*i.ToolNameContains))
+	}
+	if i.ToolNameHasPrefix != nil {
+		predicates = append(predicates, completedaction.ToolNameHasPrefix(*i.ToolNameHasPrefix))
+	}
+	if i.ToolNameHasSuffix != nil {
+		predicates = append(predicates, completedaction.ToolNameHasSuffix(*i.ToolNameHasSuffix))
+	}
+	if i.ToolNameEqualFold != nil {
+		predicates = append(predicates, completedaction.ToolNameEqualFold(*i.ToolNameEqualFold))
+	}
+	if i.ToolNameContainsFold != nil {
+		predicates = append(predicates, completedaction.ToolNameContainsFold(*i.ToolNameContainsFold))
+	}
+	if i.ActionID != nil {
+		predicates = append(predicates, completedaction.ActionIDEQ(*i.ActionID))
+	}
+	if i.ActionIDNEQ != nil {
+		predicates = append(predicates, completedaction.ActionIDNEQ(*i.ActionIDNEQ))
+	}
+	if len(i.ActionIDIn) > 0 {
+		predicates = append(predicates, completedaction.ActionIDIn(i.ActionIDIn...))
+	}
+	if len(i.ActionIDNotIn) > 0 {
+		predicates = append(predicates, completedaction.ActionIDNotIn(i.ActionIDNotIn...))
+	}
+	if i.ActionIDGT != nil {
+		predicates = append(predicates, completedaction.ActionIDGT(*i.ActionIDGT))
+	}
+	if i.ActionIDGTE != nil {
+		predicates = append(predicates, completedaction.ActionIDGTE(*i.ActionIDGTE))
+	}
+	if i.ActionIDLT != nil {
+		predicates = append(predicates, completedaction.ActionIDLT(*i.ActionIDLT))
+	}
+	if i.ActionIDLTE != nil {
+		predicates = append(predicates, completedaction.ActionIDLTE(*i.ActionIDLTE))
+	}
+	if i.ActionIDContains != nil {
+		predicates = append(predicates, completedaction.ActionIDContains(*i.ActionIDContains))
+	}
+	if i.ActionIDHasPrefix != nil {
+		predicates = append(predicates, completedaction.ActionIDHasPrefix(*i.ActionIDHasPrefix))
+	}
+	if i.ActionIDHasSuffix != nil {
+		predicates = append(predicates, completedaction.ActionIDHasSuffix(*i.ActionIDHasSuffix))
+	}
+	if i.ActionIDEqualFold != nil {
+		predicates = append(predicates, completedaction.ActionIDEqualFold(*i.ActionIDEqualFold))
+	}
+	if i.ActionIDContainsFold != nil {
+		predicates = append(predicates, completedaction.ActionIDContainsFold(*i.ActionIDContainsFold))
+	}
+
+	if i.HasActionDigest != nil {
+		p := completedaction.HasActionDigest()
+		if !*i.HasActionDigest {
+			p = completedaction.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasActionDigestWith) > 0 {
+		with := make([]predicate.Digest, 0, len(i.HasActionDigestWith))
+		for _, w := range i.HasActionDigestWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasActionDigestWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, completedaction.HasActionDigestWith(with...))
+	}
+	if i.HasHistoricalExecuteResponseDigest != nil {
+		p := completedaction.HasHistoricalExecuteResponseDigest()
+		if !*i.HasHistoricalExecuteResponseDigest {
+			p = completedaction.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHistoricalExecuteResponseDigestWith) > 0 {
+		with := make([]predicate.Digest, 0, len(i.HasHistoricalExecuteResponseDigestWith))
+		for _, w := range i.HasHistoricalExecuteResponseDigestWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasHistoricalExecuteResponseDigestWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, completedaction.HasHistoricalExecuteResponseDigestWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyCompletedActionWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return completedaction.And(predicates...), nil
+	}
+}
+
 // ConfigurationWhereInput represents a where input for filtering Configuration queries.
 type ConfigurationWhereInput struct {
 	Predicates []predicate.Configuration  `json:"-"`
@@ -6551,6 +6990,14 @@ type DigestWhereInput struct {
 	// "files" edge predicates.
 	HasFiles     *bool             `json:"hasFiles,omitempty"`
 	HasFilesWith []*FileWhereInput `json:"hasFilesWith,omitempty"`
+
+	// "actions" edge predicates.
+	HasActions     *bool                        `json:"hasActions,omitempty"`
+	HasActionsWith []*CompletedActionWhereInput `json:"hasActionsWith,omitempty"`
+
+	// "historical_execute_response_actions" edge predicates.
+	HasHistoricalExecuteResponseActions     *bool                        `json:"hasHistoricalExecuteResponseActions,omitempty"`
+	HasHistoricalExecuteResponseActionsWith []*CompletedActionWhereInput `json:"hasHistoricalExecuteResponseActionsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -6753,6 +7200,42 @@ func (i *DigestWhereInput) P() (predicate.Digest, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, digest.HasFilesWith(with...))
+	}
+	if i.HasActions != nil {
+		p := digest.HasActions()
+		if !*i.HasActions {
+			p = digest.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasActionsWith) > 0 {
+		with := make([]predicate.CompletedAction, 0, len(i.HasActionsWith))
+		for _, w := range i.HasActionsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasActionsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, digest.HasActionsWith(with...))
+	}
+	if i.HasHistoricalExecuteResponseActions != nil {
+		p := digest.HasHistoricalExecuteResponseActions()
+		if !*i.HasHistoricalExecuteResponseActions {
+			p = digest.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHistoricalExecuteResponseActionsWith) > 0 {
+		with := make([]predicate.CompletedAction, 0, len(i.HasHistoricalExecuteResponseActionsWith))
+		for _, w := range i.HasHistoricalExecuteResponseActionsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasHistoricalExecuteResponseActionsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, digest.HasHistoricalExecuteResponseActionsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

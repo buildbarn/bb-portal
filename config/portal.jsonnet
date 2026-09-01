@@ -110,6 +110,15 @@ local adminAuthorizer = { allow: {} };
     buildKey: 'build_id',
   },
 
+  completedActionLogger: {
+    grpcServers: [{
+      listenAddresses: [':8084'],
+      authenticationPolicy: { allow: {} },
+      maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
+    }],
+    logAuthorizer: writeAuthorizer,
+  },
+
   schedulerServiceConfiguration: {
     buildQueueStateClient: {
       address: 'localhost:8984',

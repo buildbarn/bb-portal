@@ -23,6 +23,14 @@ const (
 )
 
 var (
+	// CompletedActions A gauge for number of completed actions
+	CompletedActions = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: namespace,
+		Subsystem: subsystem,
+		Name:      "completed_actions",
+		Help:      "Number of Completed Actions",
+	})
+
 	// Invocations A gauge for invocations
 	Invocations = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: namespace,
@@ -62,6 +70,7 @@ func init() {
 	prometheus.MustRegister(AuthenticatedUsersCount)
 	prometheus.MustRegister(CleanupDurations)
 	prometheus.MustRegister(CleanupVolumes)
+	prometheus.MustRegister(CompletedActions)
 }
 
 // SyncMetrics synchronizes the Prometheus service with
@@ -77,6 +86,11 @@ func SyncMetrics(db *ent.Client) {
 	err = SyncAuthenticatedUsersCount(ctx, db)
 	if err != nil {
 		slog.Error("Failed to synchronize Prometheus metric AuthenticatedUsersCount", "err", err)
+	}
+
+	err = SyncCompletedActions(ctx, db)
+	if err != nil {
+		slog.Error("Failed to synchronize Prometheus metric CompletedActions", "err", err)
 	}
 }
 
@@ -99,6 +113,19 @@ func SyncInvocations(ctx context.Context, db *ent.Client) error {
 	}
 	Invocations.WithLabelValues(UnauthenticatedUsersLabel).Set(float64(unauthenticatedInvocationsCount))
 
+	return nil
+}
+
+// SyncCompletedActions synchronizes the Prometheus metric Compleed
+// Actions with completed actions from the database.
+func SyncCompletedActions(ctx context.Context, db *ent.Client) error {
+	completedActionsCount, err := db.CompletedAction.Query().
+		Count(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to count completed actions")
+	}
+
+	CompletedActions.Set(float64(completedActionsCount))
 	return nil
 }
 

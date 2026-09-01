@@ -256,6 +256,15 @@ message FrontendService {
       2;
 }
 
+message CompletedActionLoggerService {
+  // gRPC servers to spawn to listen for requests from clients.
+  repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 1;
+
+  // Authorizer that is used to determine which instances should be allowed to
+  // store completed actions in the database.
+  buildbarn.configuration.auth.AuthorizerConfiguration log_authorizer = 2;
+}
+
 // Authorized storage configuration.
 message StorageBlobAccessConfiguration {
   buildbarn.configuration.blobstore.BlobAccessConfiguration backend = 1;
@@ -325,4 +334,7 @@ message ApplicationConfiguration {
   // Config for the Graphql API. If not configured, no Graphql API will be
   // served, and the Build Event Stream parts of the frontend will not work.
   GraphqlApiService graphql_api_service_configuration = 17;
+
+  // Config for Completed Action Logger Service
+  CompletedActionLoggerService completed_action_logger = 18;
 }
