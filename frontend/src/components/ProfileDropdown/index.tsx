@@ -19,7 +19,7 @@ const fetchProfileFile = async (
   return res.arrayBuffer();
 };
 
-export function createPerfettoTraceMessage(
+function createPerfettoTraceMessage(
   buffer: ArrayBuffer,
   profile: FileDetailsFragment,
   invocationID: string,
@@ -33,7 +33,7 @@ export function createPerfettoTraceMessage(
   };
 }
 
-export const waitForPerfettoToLoad = async (handle: Window) => {
+const waitForPerfettoToLoad = async (handle: Window) => {
   const timer = setInterval(
     () => handle.postMessage("PING", PERFETTO_URL),
     100,
