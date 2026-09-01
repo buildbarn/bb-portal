@@ -113,4 +113,10 @@ message PortalFrontendConfiguration {
 
   // Additional columns to display in the build invocation table.
   repeated AdditionalColumn additional_build_invocation_columns = 6;
+
+  // URL of the Prometheus proxy exposed by this bb-portal instance.
+  // When set, the worker utilization chart is enabled on the Scheduler page.
+  // The frontend calls /api/v1/prometheus/* relative to the backend origin;
+  // this field is informational so the UI can conditionally render the chart.
+  string prometheus_url = 7;
 }

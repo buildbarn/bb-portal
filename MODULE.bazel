@@ -165,7 +165,7 @@ npm.npm_translate_lock(
     ],
     npm_package_lock = "//frontend:package-lock.json",
     pnpm_lock = "//frontend:pnpm-lock.yaml",
-    update_pnpm_lock = True,
+    update_pnpm_lock = False,
 )
 use_repo(npm, "npm")
 

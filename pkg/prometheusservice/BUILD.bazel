@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "prometheusservice",
+    srcs = ["prometheus_service.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/prometheusservice",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gorilla_mux//:mux",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

@@ -105,6 +105,11 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
     buildKey: "build_id",
   },
 
+  // URL of the Prometheus server. When set, bb-portal proxies /api/v1/prometheus/*
+  // to this address, enabling the worker utilization chart on the Scheduler page.
+  // Remove or leave empty to disable the chart.
+  prometheusUrl: 'http://localhost:9090',
+
   // The SchedulerService can be disabled by not setting this field.
   schedulerServiceConfiguration: {
     buildQueueStateClient: {

@@ -113,4 +113,9 @@ message PortalFrontendConfiguration {
 
   // Additional columns to display in the build invocation table.
   repeated AdditionalColumn additional_build_invocation_columns = 6;
+
+  // When set, the worker utilization chart is shown on the Scheduler page.
+  // This should match the prometheus_url set at the ApplicationConfiguration
+  // level, which causes the backend to proxy /api/v1/prometheus/* to Prometheus.
+  string prometheus_url = 7;
 }

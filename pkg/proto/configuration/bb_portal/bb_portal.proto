@@ -291,4 +291,12 @@ message ApplicationConfiguration {
   // ByteStream server, and enables ZSTD compression for ByteStream
   // operations where the server supports it.
   buildbarn.configuration.zstd.PoolConfiguration zstd_pool = 15;
+
+  // URL of the Prometheus server to proxy metric queries through.
+  // When set, bb-portal exposes /api/v1/prometheus/* and forwards
+  // requests to this URL, allowing the frontend to query Prometheus
+  // without CORS issues or direct cluster access.
+  //
+  // Example: "http://prometheus-server:9090"
+  string prometheus_url = 16;
 }

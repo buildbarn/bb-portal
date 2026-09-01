@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/blobstoreservice"
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/schedulerservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	"github.com/buildbarn/bb-portal/pkg/prometheusservice"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
@@ -108,6 +109,18 @@ func main() {
 				tracerProvider,
 			); err != nil {
 				return util.StatusWrap(err, "Failed to create BES service")
+			}
+		}
+
+		if configuration.PrometheusUrl != "" {
+			if err = prometheusservice.NewPrometheusService(configuration.PrometheusUrl, router); err != nil {
+				return util.StatusWrap(err, "Failed to create Prometheus proxy service")
+			}
+			// Propagate the prometheus URL into the frontend config so the UI can
+			// conditionally enable the worker utilization chart without duplicating config.
+			if configuration.FrontendServiceConfiguration != nil &&
+				configuration.FrontendServiceConfiguration.FrontendConfig != nil {
+				configuration.FrontendServiceConfiguration.FrontendConfig.PrometheusUrl = configuration.PrometheusUrl
 			}
 		}
 

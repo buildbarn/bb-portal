@@ -43,6 +43,8 @@ export interface PortalFrontendConfiguration {
   additionalBuildColumns: PortalFrontendConfiguration_AdditionalColumn[];
   /** Additional columns to display in the build invocation table. */
   additionalBuildInvocationColumns: PortalFrontendConfiguration_AdditionalColumn[];
+  /** When set, worker utilization chart is enabled; the backend proxies /api/v1/prometheus/* to this URL. */
+  prometheusUrl: string;
 }
 
 export interface PortalFrontendConfiguration_FeatureFlags {
@@ -146,6 +148,7 @@ function createBasePortalFrontendConfiguration(): PortalFrontendConfiguration {
     footerContent: [],
     additionalBuildColumns: [],
     additionalBuildInvocationColumns: [],
+    prometheusUrl: "",
   };
 }
 
@@ -276,6 +279,11 @@ export const PortalFrontendConfiguration: MessageFns<PortalFrontendConfiguration
           PortalFrontendConfiguration_AdditionalColumn.fromJSON(e)
         )
         : [],
+      prometheusUrl: isSet(object.prometheusUrl)
+        ? globalThis.String(object.prometheusUrl)
+        : isSet(object.prometheus_url)
+        ? globalThis.String(object.prometheus_url)
+        : "",
     };
   },
 

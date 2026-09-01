@@ -451,6 +451,7 @@ type ApplicationConfiguration struct {
 	InitialSizeClassCache         *blobstore.BlobAccessConfiguration `protobuf:"bytes,13,opt,name=initial_size_class_cache,json=initialSizeClassCache,proto3" json:"initial_size_class_cache,omitempty"`
 	FileSystemAccessCache         *blobstore.BlobAccessConfiguration `protobuf:"bytes,14,opt,name=file_system_access_cache,json=fileSystemAccessCache,proto3" json:"file_system_access_cache,omitempty"`
 	ZstdPool                      *zstd.PoolConfiguration            `protobuf:"bytes,15,opt,name=zstd_pool,json=zstdPool,proto3" json:"zstd_pool,omitempty"`
+	PrometheusUrl                 string                             `protobuf:"bytes,16,opt,name=prometheus_url,json=prometheusUrl,proto3" json:"prometheus_url,omitempty"`
 	unknownFields                 protoimpl.UnknownFields
 	sizeCache                     protoimpl.SizeCache
 }
@@ -567,6 +568,13 @@ func (x *ApplicationConfiguration) GetZstdPool() *zstd.PoolConfiguration {
 		return x.ZstdPool
 	}
 	return nil
+}
+
+func (x *ApplicationConfiguration) GetPrometheusUrl() string {
+	if x != nil {
+		return x.PrometheusUrl
+	}
+	return ""
 }
 
 type Database_DatabaseConnectionPoolConfiguration struct {

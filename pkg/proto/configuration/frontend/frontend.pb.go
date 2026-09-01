@@ -30,6 +30,7 @@ type PortalFrontendConfiguration struct {
 	FooterContent                    []*PortalFrontendConfiguration_FooterElement    `protobuf:"bytes,4,rep,name=footer_content,json=footerContent,proto3" json:"footer_content,omitempty"`
 	AdditionalBuildColumns           []*PortalFrontendConfiguration_AdditionalColumn `protobuf:"bytes,5,rep,name=additional_build_columns,json=additionalBuildColumns,proto3" json:"additional_build_columns,omitempty"`
 	AdditionalBuildInvocationColumns []*PortalFrontendConfiguration_AdditionalColumn `protobuf:"bytes,6,rep,name=additional_build_invocation_columns,json=additionalBuildInvocationColumns,proto3" json:"additional_build_invocation_columns,omitempty"`
+	PrometheusUrl                    string                                          `protobuf:"bytes,7,opt,name=prometheus_url,json=prometheusUrl,proto3" json:"prometheus_url,omitempty"`
 	unknownFields                    protoimpl.UnknownFields
 	sizeCache                        protoimpl.SizeCache
 }
@@ -104,6 +105,13 @@ func (x *PortalFrontendConfiguration) GetAdditionalBuildInvocationColumns() []*P
 		return x.AdditionalBuildInvocationColumns
 	}
 	return nil
+}
+
+func (x *PortalFrontendConfiguration) GetPrometheusUrl() string {
+	if x != nil {
+		return x.PrometheusUrl
+	}
+	return ""
 }
 
 type PortalFrontendConfiguration_FeatureFlags struct {
