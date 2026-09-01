@@ -15,14 +15,14 @@ import "github.com/buildbarn/bb-storage/pkg/proto/configuration/zstd/zstd.proto"
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
 
-// Postgres database source type.
-message PostgresSource {
-  // Database connection string for pgx, see:
-  // https://pkg.go.dev/github.com/jackc/pgx/v5
-  string connection_string = 1;
-}
-
 message Database {
+  // Postgres database source type.
+  message PostgresSource {
+    // Database connection string for pgx, see:
+    // https://pkg.go.dev/github.com/jackc/pgx/v5
+    string connection_string = 1;
+  }
+
   message DatabaseConnectionPoolConfiguration {
     // The maximum number of simultaneous open connections to the
     // database. Should be set to a value such that you do not exceed
@@ -41,7 +41,7 @@ message Database {
     // Recommended value: Match max_open_connections
     int32 max_idle_connections = 2;
 
-    // The maximum lifetime of an indvidual connection before recycling
+    // The maximum lifetime of an individual connection before recycling
     // the connection.
     //
     // Recommended value: '120s' (2 minutes)
@@ -54,6 +54,26 @@ message Database {
     google.protobuf.Duration connection_max_idle_time = 4;
   }
 
+  message CleanupConfiguration {
+    // How often to run the cleanup job. 5% jitter will be applied to
+    // avoid accidental synchronization with other instances.
+    // Recommended value: '60s'
+    google.protobuf.Duration cleanup_interval = 1;
+    // If an invocation that has not yet received the last message in the BES
+    // stream does not receive any new messages within this duration, the
+    // invocation is considered abandoned, and will be locked to prevent further
+    // modifications.
+    // Recommended value: '3600s' (i.e., 1 hour)
+    google.protobuf.Duration invocation_message_timeout = 3;
+    // How long to retain data about an invocation after the invocation was
+    // either completed or considered abandoned.
+    // Recommended value: '604800s' (i.e., 7 days)
+    google.protobuf.Duration invocation_retention = 4;
+    // How long to retain data about a completed action
+    // Recommended value: '604800s' (i.e., 7 days)
+    google.protobuf.Duration completed_action_retention = 5;
+  }
+
   // Was 'SqliteSource', configuration for running with a SQLite
   // database.
   reserved 1;
@@ -61,33 +81,21 @@ message Database {
   // Database source type. Currently only Postgres is supported.
   oneof source { PostgresSource postgres = 2; }
 
-  // Database connection pool configuraiton, if not specified the
+  // Database connection pool configuration, if not specified the
   // default values of the runtime will be used.
   DatabaseConnectionPoolConfiguration connection_pool_configuration = 3;
-}
 
-message AuthMetadataExtractorConfiguration {
-  // JMESPath Expression for extracting the external identity provider's
-  // (unique) identifier for a user.
-  buildbarn.configuration.jmespath.Expression
-      external_id_extraction_jmespath_expression = 1;
-
-  // JMESPath Expression for extracting a human-readable display name.
-  buildbarn.configuration.jmespath.Expression
-      display_name_extraction_jmespath_expression = 2;
-
-  // JMESPath Expression for extracting arbitrary structured data about
-  // the user.
-  buildbarn.configuration.jmespath.Expression
-      user_info_extraction_jmespath_expression = 3;
+  // Configuration for the database cleanup service to avoid
+  // the database growing without bounds.
+  CleanupConfiguration cleanup_configuration = 4;
 }
 
 message BuildEventStreamService {
   // gRPC servers to spawn to listen for requests from clients.
   repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 1;
 
-  // Configures the database for BES information storage.
-  Database database = 2;
+  // Was 'database'. Has been moved to the top level ApplicationConfiguration.
+  reserved 2;
 
   // Was 'blob_archive_folder'.
   reserved 3;
@@ -95,8 +103,8 @@ message BuildEventStreamService {
   // Enables the BEP file upload endpoint.
   bool enable_bep_file_upload = 4;
 
-  // Enables the Graphql playground.
-  bool enable_graphql_playground = 5;
+  // Was 'enable_graphql_playground'. Removed and set to enabled.
+  reserved 5;
 
   // Was 'save_target_data_level'. Replaced by 'save_data_level'.
   reserved 6;
@@ -113,30 +121,25 @@ message BuildEventStreamService {
   // Controls what data should be saved to the database.
   SaveDataLevel save_data_level = 7;
 
-  message DatabaseCleanupConfiguration {
-    // How often to run the cleanup job. 5% jitter will be applied to
-    // avoid accidental synchronization with other instances.
-    // Recommended value: '60s'
-    google.protobuf.Duration cleanup_interval = 1;
+  // Was 'database_cleanup_configuration'. Has been moved to the database
+  // configuration.
+  reserved 8;
 
-    // If an invocation that has not yet received the last message in the BES
-    // stream does not receive any new messages within this duration, the
-    // invocation is considered abandoned, and will be locked to prevent further
-    // modifications.
-    // Recommended value: '3600s' (i.e., 1 hour)
-    google.protobuf.Duration invocation_message_timeout = 3;
+  message AuthMetadataExtractorConfiguration {
+    // JMESPath Expression for extracting the external identity provider's
+    // (unique) identifier for a user.
+    buildbarn.configuration.jmespath.Expression
+        external_id_extraction_jmespath_expression = 1;
 
-    // How long to retain data about an invocation after the invocation was
-    // either completed or considered abandoned.
-    // Recommended value: '604800s' (i.e., 7 days)
-    google.protobuf.Duration invocation_retention = 4;
+    // JMESPath Expression for extracting a human-readable display name.
+    buildbarn.configuration.jmespath.Expression
+        display_name_extraction_jmespath_expression = 2;
+
+    // JMESPath Expression for extracting arbitrary structured data about
+    // the user.
+    buildbarn.configuration.jmespath.Expression
+        user_info_extraction_jmespath_expression = 3;
   }
-
-  // Configuration for the internal database cleanup service. This is a
-  // required field, as otherwise the database will grow without bounds.
-  // If you really want to disable it, just set the cleanup interval to a
-  // very high value.
-  DatabaseCleanupConfiguration database_cleanup_configuration = 8;
 
   // JMESPath expressions to extract authentication metadata. Used to record
   // information about the user responsible for an invocation.
@@ -198,6 +201,10 @@ message BuildEventStreamService {
   // `buildTags[buildKey]` is unset, the invocation will not be associated with
   // any build.
   string build_key = 12;
+
+  // Authorizer that determines which instance names a user may publish build
+  // event streams for.
+  buildbarn.configuration.auth.AuthorizerConfiguration publish_authorizer = 13;
 }
 
 message SchedulerService {
@@ -205,8 +212,8 @@ message SchedulerService {
   // communicate with the Buildbarn.
   buildbarn.configuration.grpc.ClientConfiguration build_queue_state_client = 1;
 
-  // Authorizer that is used to determine which instances the user is allowed
-  // to access.
+  // Authorizer that is used to determine which instances names the user is
+  // allowed to kill operations in.
   buildbarn.configuration.auth.AuthorizerConfiguration
       kill_operations_authorizer = 2;
 
@@ -214,7 +221,17 @@ message SchedulerService {
   // BuildQueueState API.
   //
   // Recommended value: 500
-  uint32 listOperationsPageSize = 3;
+  uint32 list_operations_page_size = 3;
+
+  // Authorizer that determines which workers and operations the user is
+  // allowed to see.
+  buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 4;
+}
+
+message GraphqlApiService {
+  // Authorizer for what the user can read from the database via the Graphql
+  // API and associated endpoints.
+  buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 1;
 }
 
 message FrontendService {
@@ -239,6 +256,18 @@ message FrontendService {
       2;
 }
 
+// Authorized storage configuration.
+message StorageBlobAccessConfiguration {
+  buildbarn.configuration.blobstore.BlobAccessConfiguration backend = 1;
+
+  // The authorizer for determining whether bb-portal may read from storage.
+  // Applies for both `get` and `find_missing`.
+  buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 2;
+
+  // There is no write_authorizer as bb-portal shouldn't be able to write to
+  // storage.
+}
+
 message ApplicationConfiguration {
   // Configuration for the main HTTP server for the application. All HTTP
   // traffic is routed through this server, including gRPC-Web traffic from the
@@ -252,10 +281,11 @@ message ApplicationConfiguration {
   // part of the backend will not be started.
   BuildEventStreamService bes_service_configuration = 3;
 
-  // Was 'browser_service_configuration'. Replaced by configuring
-  // 'content_addressable_storage', 'action_cache', 'initial_size_class_cache',
-  // and/or 'file_system_access_cache' on the top level.
-  reserved 4;
+  // Config for the blobstore service. The blobstore service uses the
+  // configured StorageBlobAccesses and creates a gRPC-web server that serves
+  // files and blobs from the storage to the frontend. Without this, the
+  // browser parts of the application will not work.
+  google.protobuf.Empty blobstore_service_configuration = 4;
 
   // Config for starting the Scheduler Service. If omitted, the Scheduler part
   // of the backend will not be started.
@@ -264,10 +294,8 @@ message ApplicationConfiguration {
   // Maximum Protobuf message size to unmarshal.
   int64 maximum_message_size_bytes = 6;
 
-  // Authorizer that is used to determine which instances the user is allowed
-  // to access resources from.
-  buildbarn.configuration.auth.AuthorizerConfiguration
-      instance_name_authorizer = 7;
+  // Was 'instance_name_authorizer'. Replaced by authorizers for each service.
+  reserved 7;
 
   // Was 'frontend_proxy_url'. Replaced by 'frontend_service_configuration'.
   reserved 8;
@@ -276,19 +304,25 @@ message ApplicationConfiguration {
   // served by the backend.
   reserved 9;
 
+  // Config for how to serve the frontend, and config that changes frontend
+  // behaviour.
   FrontendService frontend_service_configuration = 10;
 
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      content_addressable_storage = 11;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration action_cache = 12;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      initial_size_class_cache = 13;
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      file_system_access_cache = 14;
+  StorageBlobAccessConfiguration content_addressable_storage = 11;
+  StorageBlobAccessConfiguration action_cache = 12;
+  StorageBlobAccessConfiguration initial_size_class_cache = 13;
+  StorageBlobAccessConfiguration file_system_access_cache = 14;
 
   // ZSTD encoder/decoder pool configuration. When set, creates a
   // process-wide pool shared by all gRPC CAS clients and the
   // ByteStream server, and enables ZSTD compression for ByteStream
   // operations where the server supports it.
   buildbarn.configuration.zstd.PoolConfiguration zstd_pool = 15;
+
+  // Configures the database for information storage.
+  Database database = 16;
+
+  // Config for the Graphql API. If not configured, no Graphql API will be
+  // served, and the Build Event Stream parts of the frontend will not work.
+  GraphqlApiService graphql_api_service_configuration = 17;
 }

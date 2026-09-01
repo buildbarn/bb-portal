@@ -5,22 +5,17 @@
 // assumes that the following services are running:
 // - A Buildbarn scheduler, accessible at localhost:8984
 // - A Buildbarn frontend, accessible at localhost:8980
-
-// The application consists of 3 different services:
-//  - BesService: A service that provides access to Buildbarn Execution Service
-//    (BES) insights.
-//  - BrowserService: A service that allows you to browse the contents of the
-//    content addressable storage (CAS) and action cache.
-//  - SchedulerService: A service that shows the state of the Buildbarn
-//    scheduler
 //
-// Each service can be disabled by not setting the corresponding configuration.
-// At least one service should be configured, otherwise the portal will not
-// do anything useful.
+// It also assumes a Postgresql database is running on localhost:5432 with
+// username `app`, password `app`, and database `app`
 
 local githubActionsExtractor = importstr 'gh-actions.jmespath';
 local gitlabExtractor = importstr 'gitlab.jmespath';
 local semaphoreExtractor = importstr 'semaphore.jmespath';
+
+local readAuthorizer = { allow: {} };
+local writeAuthorizer = { allow: {} };
+local adminAuthorizer = { allow: {} };
 
 {
   global: {
@@ -55,65 +50,77 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
       enableActiveSpans: true,
     },
   },
+  maximumMessageSizeBytes: 2 * 1024 * 1024,
 
   httpServers: [{
     listenAddresses: [':8081'],
     authenticationPolicy: { allow: {} },
   }],
 
-  contentAddressableStorage: { grpc: { client: { address: 'localhost:8980' } } },
-  actionCache: { grpc: { client: { address: 'localhost:8980' } } },
-  initialSizeClassCache: { grpc: { client: { address: 'localhost:8980' } } },
-  fileSystemAccessCache: { grpc: { client: { address: 'localhost:8980' } } },
-
-  instanceNameAuthorizer: {
-    allow: {},
+  database: {
+    postgres: {
+      connectionString: 'postgresql://app:password@localhost:5432/app',
+    },
+    connectionPoolConfiguration: {
+      maxOpenConnections: 10,
+      maxIdleConnections: 10,
+      connectionMaxLifetime: '120s',
+      connectionMaxIdleTime: '30s',
+    },
+    cleanupConfiguration: {
+      cleanupInterval: '60s',
+      invocationMessageTimeout: '3600s',
+      invocationRetention: '604800s',
+      completedActionRetention: '604800s',
+    },
   },
 
-  maximumMessageSizeBytes: 2 * 1024 * 1024,
+  contentAddressableStorage: {
+    backend: { grpc: { client: { address: 'localhost:8980' } } },
+    readAuthorizer: readAuthorizer,
+  },
+  actionCache: {
+    backend: { grpc: { client: { address: 'localhost:8980' } } },
+    readAuthorizer: readAuthorizer,
+  },
+  initialSizeClassCache: {
+    backend: { grpc: { client: { address: 'localhost:8980' } } },
+    readAuthorizer: readAuthorizer,
+  },
+  fileSystemAccessCache: {
+    backend: { grpc: { client: { address: 'localhost:8980' } } },
+    readAuthorizer: readAuthorizer,
+  },
 
-  // The BesService can be disabled by not setting this field.
+  blobstoreServiceConfiguration: {},
+
   besServiceConfiguration: {
     grpcServers: [{
       listenAddresses: [':8082'],
       authenticationPolicy: { allow: {} },
       maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
     }],
-    database: {
-      postgres: {
-        connectionString: 'postgresql://app:password@localhost:5432/app',
-      },
-      connectionPoolConfiguration: {
-        maxOpenConnections: 10,
-        maxIdleConnections: 10,
-        connectionMaxLifetime: '120s',
-        connectionMaxIdleTime: '30s',
-      },
-    },
+    publishAuthorizer: writeAuthorizer,
     enableBepFileUpload: true,
-    enableGraphqlPlayground: true,
     saveDataLevel: { basicAndTarget: {} },
-    databaseCleanupConfiguration: {
-      cleanupInterval: '60s',
-      invocationMessageTimeout: '3600s',
-      invocationRetention: '604800s',
-    },
     minEventBatchDuration: '0.1s',
     invocationMetadataExtractor: {
       expression: githubActionsExtractor,
     },
-    buildKey: "build_id",
+    buildKey: 'build_id',
   },
 
-  // The SchedulerService can be disabled by not setting this field.
   schedulerServiceConfiguration: {
     buildQueueStateClient: {
       address: 'localhost:8984',
     },
-    killOperationsAuthorizer: {
-      allow: {},
-    },
+    readAuthorizer: readAuthorizer,
+    killOperationsAuthorizer: adminAuthorizer,
     listOperationsPageSize: 500,
+  },
+
+  graphqlApiServiceConfiguration: {
+    readAuthorizer: readAuthorizer,
   },
 
   frontendServiceConfiguration: {
@@ -159,5 +166,4 @@ local semaphoreExtractor = importstr 'semaphore.jmespath';
       ],
     },
   },
-
 }

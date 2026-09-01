@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
 }
 
 func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase) *bepuploader.BepUploader {
-	var authExtractors *bb_portal.AuthMetadataExtractorConfiguration
+	var authExtractors *bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration
 	var invocationExtractor *jmespath.Expression
 	if testCase.dataExtractors != nil {
 		authExtractors = testCase.dataExtractors.authMetadataExtractors

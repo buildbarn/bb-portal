@@ -25,12 +25,12 @@ type LogHandler struct {
 }
 
 // NewLogHandler creates a new LogHandler.
-func NewLogHandler(client *ent.Client, dbAuthService *dbauthservice.DbAuthService, tracerProvider trace.TracerProvider) (*LogHandler, error) {
+func NewLogHandler(client *ent.Client, dbAuthService *dbauthservice.DbAuthService, tracerProvider trace.TracerProvider) *LogHandler {
 	return &LogHandler{
 		client:        client,
 		dbAuthService: dbAuthService,
 		tracer:        tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/api/http/loghandler"),
-	}, nil
+	}
 }
 
 // ServeHTTP serves the log as a memory efficient http stream.

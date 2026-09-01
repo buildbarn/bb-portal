@@ -16,23 +16,23 @@ import (
 // database. It caches the list of instance names for a short period of time to
 // avoid excessive database queries.
 type DbAuthService struct {
-	db                     *ent.Client
-	clock                  clock.Clock
-	instanceNames          []digest.InstanceName
-	lastUpdated            time.Time
-	instanceNameAuthorizer auth.Authorizer
-	updateThreshold        time.Duration
+	db              *ent.Client
+	clock           clock.Clock
+	instanceNames   []digest.InstanceName
+	lastUpdated     time.Time
+	readAuthorizer  auth.Authorizer
+	updateThreshold time.Duration
 }
 
 // NewDbAuthService creates a new DbAuthService
 func NewDbAuthService(db *ent.Client, clock clock.Clock, instanceNameAuthroizer auth.Authorizer, updateThreshold time.Duration) *DbAuthService {
 	return &DbAuthService{
-		db:                     db,
-		clock:                  clock,
-		instanceNames:          []digest.InstanceName{},
-		lastUpdated:            time.Time{},
-		instanceNameAuthorizer: instanceNameAuthroizer,
-		updateThreshold:        updateThreshold,
+		db:              db,
+		clock:           clock,
+		instanceNames:   []digest.InstanceName{},
+		lastUpdated:     time.Time{},
+		readAuthorizer:  instanceNameAuthroizer,
+		updateThreshold: updateThreshold,
 	}
 }
 
@@ -69,7 +69,7 @@ func (s *DbAuthService) GetInstanceNames(ctx context.Context) []digest.InstanceN
 // user is authorized to access.
 func (s *DbAuthService) GetAuthorizedInstanceNames(ctx context.Context) []any {
 	instanceNames := s.GetInstanceNames(ctx)
-	errors := s.instanceNameAuthorizer.Authorize(ctx, instanceNames)
+	errors := s.readAuthorizer.Authorize(ctx, instanceNames)
 
 	authorizedInstanceNames := make([]any, 0, len(instanceNames))
 	for i, instanceName := range instanceNames {

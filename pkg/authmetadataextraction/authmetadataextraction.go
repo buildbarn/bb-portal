@@ -30,7 +30,7 @@ type AuthenticatedUserSummary struct {
 }
 
 // AuthMetadataExtractorsFromConfiguration sets the extractors from the configuration.
-func AuthMetadataExtractorsFromConfiguration(authMetadataExtractorConfig *bb_portal.AuthMetadataExtractorConfiguration, group program.Group) (*AuthMetadataExtractors, error) {
+func AuthMetadataExtractorsFromConfiguration(authMetadataExtractorConfig *bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration, group program.Group) (*AuthMetadataExtractors, error) {
 	if authMetadataExtractorConfig == nil {
 		slog.Info("Did not create authentication metadata extractors because authMetadataKeyConfiguration is not configured")
 		return nil, nil

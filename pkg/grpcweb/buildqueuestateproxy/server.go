@@ -18,7 +18,7 @@ import (
 // BuildQueueStateServerImpl is a gRPC server that forwards requests to a BuildQueueStateClient.
 type BuildQueueStateServerImpl struct {
 	client                   buildqueuestate.BuildQueueStateClient
-	instanceNameAuthorizer   auth.Authorizer
+	readAuthorizer           auth.Authorizer
 	killOperationsAuthorizer auth.Authorizer
 	listOperationsPageSize   uint32
 }
@@ -26,10 +26,10 @@ type BuildQueueStateServerImpl struct {
 // NewBuildQueueStateServerImpl creates a new BuildQueueStateServerImpl from a
 // given client. It also takes an authorizer to filter out the queues that the
 // user is not allowed to see.
-func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, instanceNameAuthorizer, killOperationsAuthorizer auth.Authorizer, listOperationsPageSize uint32) *BuildQueueStateServerImpl {
+func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, readAuthorizer, killOperationsAuthorizer auth.Authorizer, listOperationsPageSize uint32) *BuildQueueStateServerImpl {
 	return &BuildQueueStateServerImpl{
 		client:                   client,
-		instanceNameAuthorizer:   instanceNameAuthorizer,
+		readAuthorizer:           readAuthorizer,
 		killOperationsAuthorizer: killOperationsAuthorizer,
 		listOperationsPageSize:   listOperationsPageSize,
 	}
@@ -41,7 +41,7 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
-	if !isOperationAllowed(ctx, s.instanceNameAuthorizer, response.GetOperation()) {
+	if !isOperationAllowed(ctx, s.readAuthorizer, response.GetOperation()) {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
 	return response, err
@@ -72,7 +72,7 @@ func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *bui
 			OperationName: response.Operations[len(response.Operations)-1].Name,
 		}
 	}
-	allowedOperations := filterOperations(ctx, operations, s.instanceNameAuthorizer)
+	allowedOperations := filterOperations(ctx, operations, s.readAuthorizer)
 	return createPaginatedListOperationsResponse(allowedOperations, req.PageSize, req.StartAfter), nil
 }
 
@@ -95,7 +95,7 @@ func (s *BuildQueueStateServerImpl) ListPlatformQueues(ctx context.Context, req 
 	if err != nil {
 		return nil, err
 	}
-	response.PlatformQueues = filterPlatormQueues(ctx, response, s.instanceNameAuthorizer)
+	response.PlatformQueues = filterPlatormQueues(ctx, response, s.readAuthorizer)
 	return response, err
 }
 
@@ -116,7 +116,7 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 		return nil, err
 	}
 
-	if !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, instanceNamePrefix) {
+	if !common.IsInstanceNameAllowed(ctx, s.readAuthorizer, instanceNamePrefix) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list workers for instance name prefix %s", instanceNamePrefix)
 	}
 	resp, err := s.client.ListWorkers(ctx, req)
@@ -124,7 +124,7 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 		return nil, util.StatusWrap(err, "Failed to list workers")
 	}
 	for _, worker := range resp.GetWorkers() {
-		censorWorkerState(ctx, s.instanceNameAuthorizer, instanceNamePrefix, worker)
+		censorWorkerState(ctx, s.readAuthorizer, instanceNamePrefix, worker)
 	}
 
 	return resp, nil

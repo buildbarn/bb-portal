@@ -584,14 +584,14 @@ func TestListOperations(t *testing.T) {
 		}),
 	}))), t)
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
-	instanceNameAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+	readAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
 
 	operations := []*buildqueuestate.OperationState{
 		{
@@ -931,12 +931,12 @@ func TestIsAllowedToKillOperation(t *testing.T) {
 		}),
 	}))), t)
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
-	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	readAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
 	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
 
 	t.Run("EmptyOperationName", func(t *testing.T) {
 		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
@@ -999,12 +999,12 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 	}))), t)
 
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
-	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	readAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
 	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
 
 	t.Run("MethodNotAllowed", func(t *testing.T) {
 		req, err := http.NewRequest("POST", "/api/checkPermissions/killOperation/op1", nil)

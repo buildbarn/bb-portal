@@ -11,6 +11,8 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -19,6 +21,10 @@ import (
 // NOTE: This needs to be the last handler registered on the router, as it has
 // a catch-all route.
 func ServeFrontend(configuration *bb_portal.FrontendService, router *http.ServeMux) error {
+	if router == nil {
+		return status.Error(codes.NotFound, "Failed to serve frontend. No http server configured")
+	}
+
 	// Return 404 for all API requests not already handled.
 	router.Handle("/api/", http.NotFoundHandler())
 
