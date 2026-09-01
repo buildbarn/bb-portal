@@ -32,7 +32,7 @@ func TestMain(m *testing.M) {
 }
 
 func getNewDbCleanupService(db database.Client, c clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
-	cleanupConfiguration := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
+	cleanupConfiguration := &bb_portal.Database_CleanupConfiguration{
 		CleanupInterval:          durationpb.New(1 * time.Minute),
 		InvocationMessageTimeout: durationpb.New(30 * time.Second),
 		InvocationRetention:      durationpb.New(30 * time.Minute),
