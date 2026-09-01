@@ -17,6 +17,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
+	code "google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // DbCleanupService a service that performs periodic cleanup of the database to
@@ -38,9 +40,13 @@ func NewDbCleanupService(
 	db database.Client,
 	clock clock.Clock,
 	batcher Batcher,
-	cleanupConfiguration *bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration,
+	cleanupConfiguration *bb_portal.Database_CleanupConfiguration,
 	tracerProvider trace.TracerProvider,
 ) (*DbCleanupService, error) {
+	if db == nil {
+		return nil, status.Error(code.NotFound, "No Database configured")
+	}
+
 	cleanupInterval := cleanupConfiguration.CleanupInterval
 	if err := cleanupInterval.CheckValid(); err != nil {
 		return nil, util.StatusWrap(err, "Failed to parse cleanupInterval parameter time")

@@ -42,7 +42,7 @@ type BepUploader struct {
 func NewBepUploader(
 	db database.Client,
 	configuration *bb_portal.BuildEventStreamService,
-	instanceNameAuthorizer auth.Authorizer,
+	publishAuthorizer auth.Authorizer,
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	tracerProvider trace.TracerProvider,
@@ -76,7 +76,7 @@ func NewBepUploader(
 			recorder, err := buildeventrecorder.NewBuildEventRecorder(
 				ctx,
 				db,
-				instanceNameAuthorizer,
+				publishAuthorizer,
 				saveDataLevel,
 				tracerProvider,
 				instanceName,
