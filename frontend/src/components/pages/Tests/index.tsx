@@ -14,7 +14,7 @@ export const TestsPage: React.FC<Props> = (props) => {
         <Alert
           key="search-by-label"
           showIcon
-          message="Search by label and/or instance name to further refine your result"
+          title="Search by label and/or instance name to further refine your result"
           type="info"
         />,
       ]}

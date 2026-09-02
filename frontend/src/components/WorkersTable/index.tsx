@@ -59,7 +59,7 @@ const WorkersTable: React.FC<Props> = ({
   };
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <Space orientation="vertical" style={{ width: "100%" }}>
       <Row>
         <Flex style={{ width: "100%" }} justify="space-between" wrap>
           <WorkersTableTypeSelector

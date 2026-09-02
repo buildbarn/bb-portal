@@ -46,7 +46,7 @@ const BrowserDirectoryPage: React.FC<Params> = ({
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching directory"
+        title="Error fetching directory"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."
@@ -56,7 +56,7 @@ const BrowserDirectoryPage: React.FC<Params> = ({
   }
 
   return (
-    <Space direction="vertical">
+    <Space orientation="vertical">
       <BrowserDirectory
         baseData={{
           instanceName: browserPageParams.instanceName,
@@ -68,9 +68,9 @@ const BrowserDirectoryPage: React.FC<Params> = ({
         openDirsString=""
         useBloomFilter={true}
       />
-      <Space direction="vertical" size="small">
+      <Space orientation="vertical" size="small">
         <DirectoryPrefetchDescription prefetchDataExists={!!data} />
-        <Space direction="horizontal">
+        <Space orientation="horizontal">
           <CopyBbClientdDirectoryButton
             instanceName={browserPageParams.instanceName}
             digestFunction={browserPageParams.digestFunction}

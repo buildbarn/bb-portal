@@ -50,7 +50,7 @@ const BrowserResultDescription: React.FC<Params> = ({
   };
 
   return (
-    <Space direction="vertical" size="small" style={{ width: "100%" }}>
+    <Space orientation="vertical" size="small" style={{ width: "100%" }}>
       <Descriptions
         column={1}
         size="small"

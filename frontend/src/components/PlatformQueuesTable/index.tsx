@@ -35,7 +35,7 @@ const PlatformQueuesTable: React.FC = () => {
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching platform queues"
+        title="Error fetching platform queues"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."

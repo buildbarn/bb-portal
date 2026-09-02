@@ -73,7 +73,7 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching action"
+        title="Error fetching action"
         description={
           actionQuery.error?.message ||
           compareActionQuery.error?.message ||

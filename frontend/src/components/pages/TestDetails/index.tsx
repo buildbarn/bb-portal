@@ -42,7 +42,7 @@ export const TestDetailsPage: React.FC<Props> = ({
       icon={<ExperimentFilled />}
       titleBits={[<span key="title">Test Details</span>]}
     >
-      <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
         <Descriptions column={1}>
           <Descriptions.Item label="Instance Name">
             {target.instanceName.name || "-"}

@@ -16,7 +16,7 @@ export const InvocationTargetTagList: React.FC<Props> = ({ tags }) => {
   const trailingTagsLength = sortedTags.length - splitIndex;
 
   const tagList = (
-    <Space direction="horizontal" size={0}>
+    <Space orientation="horizontal" size={0}>
       {sortedTags.slice(0, splitIndex).map((tag) => (
         <Tag key={tag} color="blue">
           {tag}
@@ -31,7 +31,7 @@ export const InvocationTargetTagList: React.FC<Props> = ({ tags }) => {
       <Popover
         placement="top"
         title={
-          <Space direction="vertical" align="center" size={0}>
+          <Space orientation="vertical" align="center" size={0}>
             {sortedTags.map((tag) => (
               <Tag key={tag} color="blue">
                 {tag}
