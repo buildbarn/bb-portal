@@ -10,6 +10,7 @@ proto_library(
     deps = [
         "//pkg/proto/configuration/bb_portal:bb_portal_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath:jmespath_proto",
         "@protobuf//:duration_proto",
     ],
 )
@@ -22,6 +23,7 @@ go_proto_library(
     deps = [
         "//pkg/proto/configuration/bb_portal",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
     ],
 )
 

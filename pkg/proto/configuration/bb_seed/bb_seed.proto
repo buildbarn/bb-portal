@@ -5,6 +5,7 @@ package buildbarn.configuration.bb_seed;
 import "google/protobuf/duration.proto";
 import "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath/jmespath.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seed";
 
@@ -30,4 +31,12 @@ message ApplicationConfiguration {
 
   // Spread seeded data over this duration ending at the current time.
   google.protobuf.Duration time_span = 7;
+
+  // Specifies how the invocation and build tags should be created.
+  buildbarn.configuration.jmespath.Expression invocation_metadata_extractor = 8;
+
+  // Specifies which field in the `buildTags` object that
+  // identifies the Build ID. See the documentation in
+  // bb_portal.proto for more information.
+  string build_key = 9;
 }

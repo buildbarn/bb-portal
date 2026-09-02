@@ -9,6 +9,7 @@ package bb_seed
 import (
 	bb_portal "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	global "github.com/buildbarn/bb-storage/pkg/proto/configuration/global"
+	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
@@ -25,16 +26,18 @@ const (
 )
 
 type ApplicationConfiguration struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	Database               *bb_portal.Database    `protobuf:"bytes,1,opt,name=database,proto3" json:"database,omitempty"`
-	Global                 *global.Configuration  `protobuf:"bytes,2,opt,name=global,proto3" json:"global,omitempty"`
-	Instances              int32                  `protobuf:"varint,3,opt,name=instances,proto3" json:"instances,omitempty"`
-	Users                  int32                  `protobuf:"varint,4,opt,name=users,proto3" json:"users,omitempty"`
-	InvocationsPerInstance int32                  `protobuf:"varint,5,opt,name=invocations_per_instance,json=invocationsPerInstance,proto3" json:"invocations_per_instance,omitempty"`
-	TargetsPerInvocation   int32                  `protobuf:"varint,6,opt,name=targets_per_invocation,json=targetsPerInvocation,proto3" json:"targets_per_invocation,omitempty"`
-	TimeSpan               *durationpb.Duration   `protobuf:"bytes,7,opt,name=time_span,json=timeSpan,proto3" json:"time_span,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                       protoimpl.MessageState `protogen:"open.v1"`
+	Database                    *bb_portal.Database    `protobuf:"bytes,1,opt,name=database,proto3" json:"database,omitempty"`
+	Global                      *global.Configuration  `protobuf:"bytes,2,opt,name=global,proto3" json:"global,omitempty"`
+	Instances                   int32                  `protobuf:"varint,3,opt,name=instances,proto3" json:"instances,omitempty"`
+	Users                       int32                  `protobuf:"varint,4,opt,name=users,proto3" json:"users,omitempty"`
+	InvocationsPerInstance      int32                  `protobuf:"varint,5,opt,name=invocations_per_instance,json=invocationsPerInstance,proto3" json:"invocations_per_instance,omitempty"`
+	TargetsPerInvocation        int32                  `protobuf:"varint,6,opt,name=targets_per_invocation,json=targetsPerInvocation,proto3" json:"targets_per_invocation,omitempty"`
+	TimeSpan                    *durationpb.Duration   `protobuf:"bytes,7,opt,name=time_span,json=timeSpan,proto3" json:"time_span,omitempty"`
+	InvocationMetadataExtractor *jmespath.Expression   `protobuf:"bytes,8,opt,name=invocation_metadata_extractor,json=invocationMetadataExtractor,proto3" json:"invocation_metadata_extractor,omitempty"`
+	BuildKey                    string                 `protobuf:"bytes,9,opt,name=build_key,json=buildKey,proto3" json:"build_key,omitempty"`
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
 }
 
 func (x *ApplicationConfiguration) Reset() {
@@ -116,11 +119,25 @@ func (x *ApplicationConfiguration) GetTimeSpan() *durationpb.Duration {
 	return nil
 }
 
+func (x *ApplicationConfiguration) GetInvocationMetadataExtractor() *jmespath.Expression {
+	if x != nil {
+		return x.InvocationMetadataExtractor
+	}
+	return nil
+}
+
+func (x *ApplicationConfiguration) GetBuildKey() string {
+	if x != nil {
+		return x.BuildKey
+	}
+	return ""
+}
+
 var File_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_proto protoreflect.FileDescriptor
 
 const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_proto_rawDesc = "" +
 	"\n" +
-	"Lgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seed/bb_seed.proto\x12\x1fbuildbarn.configuration.bb_seed\x1a\x1egoogle/protobuf/duration.proto\x1aPgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto\x1aKgithub.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto\"\x86\x03\n" +
+	"Lgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seed/bb_seed.proto\x12\x1fbuildbarn.configuration.bb_seed\x1a\x1egoogle/protobuf/duration.proto\x1aPgithub.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal/bb_portal.proto\x1aKgithub.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto\x1aOgithub.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath/jmespath.proto\"\x95\x04\n" +
 	"\x18ApplicationConfiguration\x12G\n" +
 	"\bdatabase\x18\x01 \x01(\v2+.buildbarn.configuration.bb_portal.DatabaseR\bdatabase\x12E\n" +
 	"\x06global\x18\x02 \x01(\v2-.buildbarn.configuration.global.ConfigurationR\x06global\x12\x1c\n" +
@@ -128,7 +145,9 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_see
 	"\x05users\x18\x04 \x01(\x05R\x05users\x128\n" +
 	"\x18invocations_per_instance\x18\x05 \x01(\x05R\x16invocationsPerInstance\x124\n" +
 	"\x16targets_per_invocation\x18\x06 \x01(\x05R\x14targetsPerInvocation\x126\n" +
-	"\ttime_span\x18\a \x01(\v2\x19.google.protobuf.DurationR\btimeSpanB@Z>github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seedb\x06proto3"
+	"\ttime_span\x18\a \x01(\v2\x19.google.protobuf.DurationR\btimeSpan\x12p\n" +
+	"\x1dinvocation_metadata_extractor\x18\b \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR\x1binvocationMetadataExtractor\x12\x1b\n" +
+	"\tbuild_key\x18\t \x01(\tR\bbuildKeyB@Z>github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seedb\x06proto3"
 
 var (
 	file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_proto_rawDescOnce sync.Once
@@ -148,16 +167,18 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_
 	(*bb_portal.Database)(nil),       // 1: buildbarn.configuration.bb_portal.Database
 	(*global.Configuration)(nil),     // 2: buildbarn.configuration.global.Configuration
 	(*durationpb.Duration)(nil),      // 3: google.protobuf.Duration
+	(*jmespath.Expression)(nil),      // 4: buildbarn.configuration.jmespath.Expression
 }
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_proto_depIdxs = []int32{
 	1, // 0: buildbarn.configuration.bb_seed.ApplicationConfiguration.database:type_name -> buildbarn.configuration.bb_portal.Database
 	2, // 1: buildbarn.configuration.bb_seed.ApplicationConfiguration.global:type_name -> buildbarn.configuration.global.Configuration
 	3, // 2: buildbarn.configuration.bb_seed.ApplicationConfiguration.time_span:type_name -> google.protobuf.Duration
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 3: buildbarn.configuration.bb_seed.ApplicationConfiguration.invocation_metadata_extractor:type_name -> buildbarn.configuration.jmespath.Expression
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_seed_bb_seed_proto_init() }
