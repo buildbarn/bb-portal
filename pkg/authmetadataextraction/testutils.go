@@ -13,7 +13,7 @@ func ExampleAuthMetadataExtractors() *AuthMetadataExtractors {
 	displayNameExtractor := ExampleDisplayNameExtractor()
 	userInfoExtractor := ExampleUserInfoExtractor()
 
-	config := bb_portal.AuthMetadataExtractorConfiguration{
+	config := bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 		ExternalIdExtractionJmespathExpression:  &externalIDExtractor,
 		DisplayNameExtractionJmespathExpression: &displayNameExtractor,
 		UserInfoExtractionJmespathExpression:    &userInfoExtractor,

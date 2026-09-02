@@ -28,7 +28,7 @@ type graphqlTestCase struct {
 type graphqlTestTable map[string]map[string]graphqlTestCase
 
 type dataExtractors struct {
-	authMetadataExtractors      *bb_portal.AuthMetadataExtractorConfiguration
+	authMetadataExtractors      *bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration
 	invocationMetadataExtractor *jmespath.Expression
 }
 
