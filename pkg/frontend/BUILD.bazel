@@ -44,7 +44,6 @@ go_library(
         "//pkg/proto/configuration/bb_portal",
         "//pkg/proto/configuration/frontend",
         "@com_github_buildbarn_bb_storage//pkg/util",
-        "@com_github_gorilla_mux//:mux",
         "@org_golang_google_protobuf//encoding/protojson",
     ],
 )

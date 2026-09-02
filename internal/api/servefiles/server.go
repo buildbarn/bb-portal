@@ -2,10 +2,12 @@ package servefiles
 
 import (
 	"bufio"
+	"context"
 	"io"
 	"log"
 	"mime"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -15,7 +17,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -24,20 +25,78 @@ import (
 
 var digestFunctionStrings = map[string]remoteexecution.DigestFunction_Value{}
 
+type contextKey string
+
+const varKey contextKey = "routerVars"
+
+var (
+	// For /blobs/<digest>/file/<hash>-<size>/<name>
+	rxFile = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/file/([^/-]+)-([^/]+)/(.*)$`)
+
+	// For /blobs/<digest>/command/<hash>-<size>/
+	rxCommand = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/command/([^/-]+)-([^/]+)/?$`)
+
+	// For /blobs/<digest>/directory/<hash>-<size>/
+	rxDirectory = regexp.MustCompile(`^/api/v1/servefile/(.*?/?)blobs/([^/]+)/directory/([^/-]+)-([^/]+)/?$`)
+)
+
 func init() {
 	for _, digestFunction := range digest.SupportedDigestFunctions {
 		digestFunctionStrings[strings.ToLower(digestFunction.String())] = digestFunction
 	}
 }
 
+// Dispatcher dispatches requests to the appropriate
+// handler based on the URL path
+func Dispatcher(serveFilesService *FileServerService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+
+		if matchRegex := rxFile.FindStringSubmatch(path); matchRegex != nil {
+			r = r.WithContext(context.WithValue(r.Context(), varKey, map[string]string{
+				"instanceName":   matchRegex[1],
+				"digestFunction": matchRegex[2],
+				"hash":           matchRegex[3],
+				"sizeBytes":      matchRegex[4],
+				"name":           matchRegex[5],
+			}))
+			serveFilesService.HandleFile(w, r)
+			return
+		}
+
+		if m := rxCommand.FindStringSubmatch(path); m != nil {
+			r = r.WithContext(context.WithValue(r.Context(), varKey, map[string]string{
+				"instanceName":   m[1],
+				"digestFunction": m[2],
+				"hash":           m[3],
+				"sizeBytes":      m[4],
+			}))
+			serveFilesService.HandleCommand(w, r)
+			return
+		}
+
+		if m := rxDirectory.FindStringSubmatch(path); m != nil {
+			r = r.WithContext(context.WithValue(r.Context(), varKey, map[string]string{
+				"instanceName":   m[1],
+				"digestFunction": m[2],
+				"hash":           m[3],
+				"sizeBytes":      m[4],
+			}))
+			serveFilesService.HandleDirectory(w, r)
+			return
+		}
+
+		http.NotFound(w, r)
+	}
+}
+
 func getDigestFromRequest(req *http.Request) (digest.Digest, error) {
-	vars := mux.Vars(req)
-	instanceNameStr := strings.TrimSuffix(vars["instanceName"], "/")
+	instanceNameStr := strings.TrimSuffix(req.PathValue("instanceName"), "/")
 	instanceName, err := digest.NewInstanceName(instanceNameStr)
 	if err != nil {
 		return digest.BadDigest, util.StatusWrapf(err, "Invalid instance name %#v", instanceNameStr)
 	}
-	digestFunctionStr := vars["digestFunction"]
+	digestFunctionStr := req.PathValue("digestFunction")
 	digestFunctionEnum, ok := digestFunctionStrings[digestFunctionStr]
 	if !ok {
 		return digest.BadDigest, status.Errorf(codes.InvalidArgument, "Unknown digest function %#v", digestFunctionStr)
@@ -46,11 +105,11 @@ func getDigestFromRequest(req *http.Request) (digest.Digest, error) {
 	if err != nil {
 		return digest.BadDigest, err
 	}
-	sizeBytes, err := strconv.ParseInt(vars["sizeBytes"], 10, 64)
+	sizeBytes, err := strconv.ParseInt(req.PathValue("sizeBytes"), 10, 64)
 	if err != nil {
-		return digest.BadDigest, util.StatusWrapf(err, "Invalid blob size %#v", vars["sizeBytes"])
+		return digest.BadDigest, util.StatusWrapf(err, "Invalid blob size %#v", req.PathValue("sizeBytes"))
 	}
-	return digestFunction.NewDigest(vars["hash"], sizeBytes)
+	return digestFunction.NewDigest(req.PathValue("hash"), sizeBytes)
 }
 
 // FileServerService is a service that serves files from the Content
