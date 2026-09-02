@@ -12,7 +12,7 @@ import {
 } from "@/components/InvocationResultTag/filters";
 import { OptionalLinkWrapper } from "@/components/OptionalLinkWrapper";
 import PortalDuration from "@/components/PortalDuration";
-import SearchWidget, { SearchFilterIcon } from "@/components/SearchWidgets";
+import { SearchFilterIcon, SearchWidget } from "@/components/SearchWidgets";
 import type {
   BazelInvocationWhereInput,
   GetBuildInvocationFragment,

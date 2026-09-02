@@ -2,7 +2,7 @@ import { FolderOpenOutlined } from "@ant-design/icons";
 import { Table, type TableColumnsType } from "antd";
 import type { BazelInvocationMetricsPackageMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   packageMetrics: BazelInvocationMetricsPackageMetricsFragment;

@@ -1,7 +1,7 @@
 import { CodeFilled } from "@ant-design/icons";
 import type React from "react";
 import OperationDetails from "@/components/OperationDetails";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 
 interface Params {
   operationID: string;
