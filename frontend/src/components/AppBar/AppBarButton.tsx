@@ -13,11 +13,11 @@ const AppBarButton: React.FC<Props> = ({ icon, title, href, onMouseDown }) => {
     <Tooltip key={title} placement="bottom" title={title}>
       <Button
         type="text"
+        size="large"
+        icon={icon}
         href={href}
         onMouseDown={onMouseDown ? () => onMouseDown() : undefined}
-      >
-        {icon}
-      </Button>
+      />
     </Tooltip>
   );
 };
