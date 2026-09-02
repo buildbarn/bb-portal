@@ -1,6 +1,6 @@
 load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 bool_flag(
     name = "embed_frontend",
@@ -16,7 +16,10 @@ copy_to_directory(
     name = "embedded_frontend_files",
     srcs = select({
         ":embed_enabled": ["//frontend:dist"],
-        "//conditions:default": ["none_embed/index.html"],
+        "//conditions:default": [
+            "none_embed/index.html",
+            "none_embed/route-manifest.json",
+        ],
     }),
     # Now there is only one rule creating this path
     out = "embedded_frontend",
@@ -44,4 +47,12 @@ go_library(
         "@com_github_gorilla_mux//:mux",
         "@org_golang_google_protobuf//encoding/protojson",
     ],
+)
+
+go_test(
+    name = "frontend_test",
+    srcs = ["embedded_test.go"],
+    embed = [":frontend"],
+    embedsrcs = [":embedded_frontend_files"],  # keep
+    deps = ["@com_github_stretchr_testify//require"],
 )

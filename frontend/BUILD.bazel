@@ -87,6 +87,7 @@ vite_build(
     ) + [
         "index.html",
         "package.json",
+        "routeMapper.ts",
         "tsconfig.json",
         "vite.config.ts",
         ":node_modules",
