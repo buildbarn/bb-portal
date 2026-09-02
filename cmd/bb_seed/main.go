@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +22,9 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_seed"
 	"github.com/buildbarn/bb-storage/pkg/global"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/program"
+	jmespath_proto "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -78,48 +81,60 @@ func main() {
 }
 
 type seedParameters struct {
-	instances              int32
-	users                  int32
-	invocationsPerInstance int32
-	targetsPerInvocation   int32
-	from                   time.Time
-	timeSpan               time.Duration
+	instances                   int32
+	users                       int32
+	invocationsPerInstance      int32
+	targetsPerInvocation        int32
+	from                        time.Time
+	timeSpan                    time.Duration
+	invocationMetadataExtractor *jmespath_proto.Expression
+	buildKey                    string
 }
 
 func newSeedParametersFromConfiguration(configuration *bb_seed.ApplicationConfiguration) seedParameters {
 	return seedParameters{
-		instances:              configuration.Instances,
-		users:                  configuration.Users,
-		invocationsPerInstance: configuration.InvocationsPerInstance,
-		targetsPerInvocation:   configuration.TargetsPerInvocation,
-		from:                   time.Now().Add(-configuration.TimeSpan.AsDuration()),
-		timeSpan:               configuration.TimeSpan.AsDuration(),
+		instances:                   configuration.Instances,
+		users:                       configuration.Users,
+		invocationsPerInstance:      configuration.InvocationsPerInstance,
+		targetsPerInvocation:        configuration.TargetsPerInvocation,
+		from:                        time.Now().Add(-configuration.TimeSpan.AsDuration()),
+		timeSpan:                    configuration.TimeSpan.AsDuration(),
+		invocationMetadataExtractor: configuration.InvocationMetadataExtractor,
+		buildKey:                    configuration.BuildKey,
 	}
 }
 
 type instanceSeeder struct {
-	instanceName    *ent.InstanceName
-	users           []*ent.AuthenticatedUser
-	db              database.Handle
-	invocationCount int32
-	targetCount     int32
-	from            time.Time
-	duration        time.Duration
-	random          *rand.Rand
-	tracer          trace.Tracer
+	instanceName       *ent.InstanceName
+	users              []*ent.AuthenticatedUser
+	buildTagKeys       []string
+	invocationTagKeys  []string
+	sourceControlCount int
+	db                 database.Handle
+	buildKey           string
+	invocationCount    int32
+	targetCount        int32
+	from               time.Time
+	duration           time.Duration
+	random             *rand.Rand
+	tracer             trace.Tracer
 }
 
-func newInstanceSeeder(db database.Handle, instanceName *ent.InstanceName, users []*ent.AuthenticatedUser, tracer trace.Tracer, params seedParameters) *instanceSeeder {
+func newInstanceSeeder(db database.Handle, instanceName *ent.InstanceName, users []*ent.AuthenticatedUser, buildTagKeys, invocationTagKeys []string, sourceControlCount int, tracer trace.Tracer, params seedParameters) *instanceSeeder {
 	return &instanceSeeder{
-		db:              db,
-		tracer:          tracer,
-		instanceName:    instanceName,
-		users:           users,
-		random:          rand.New(rand.NewSource(instanceName.ID)),
-		invocationCount: params.invocationsPerInstance,
-		targetCount:     params.targetsPerInvocation,
-		from:            params.from,
-		duration:        params.timeSpan,
+		db:                 db,
+		tracer:             tracer,
+		instanceName:       instanceName,
+		users:              users,
+		buildTagKeys:       buildTagKeys,
+		invocationTagKeys:  invocationTagKeys,
+		sourceControlCount: sourceControlCount,
+		random:             rand.New(rand.NewSource(instanceName.ID)),
+		buildKey:           params.buildKey,
+		invocationCount:    params.invocationsPerInstance,
+		targetCount:        params.targetsPerInvocation,
+		from:               params.from,
+		duration:           params.timeSpan,
 	}
 }
 
@@ -214,6 +229,57 @@ func resetTables(ctx context.Context, db database.Handle) error {
 	return nil
 }
 
+func getTagKeys(key string, metadataExtractor *jmespath_proto.Expression) ([]string, error) {
+	resSlice := make([]string, 0)
+
+	if metadataExtractor == nil {
+		return resSlice, nil
+	}
+
+	compiledMetadataExtractor := jmespath.MustCompile(metadataExtractor.Expression)
+	// Evauluate the expression against nil since we only need the keys
+	keyMap, err := compiledMetadataExtractor.Search(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resMap, ok := keyMap.(map[string]any)
+	if !ok {
+		return resSlice, nil
+	}
+
+	if tags, ok := resMap[key].(map[string]any); ok {
+		for key := range tags {
+			resSlice = append(resSlice, key)
+		}
+	}
+	return resSlice, nil
+}
+
+func getSourceControlCount(metadataExtractor *jmespath_proto.Expression) (int, error) {
+	if metadataExtractor == nil {
+		return 0, nil
+	}
+
+	compiledMetadataExtractor := jmespath.MustCompile(metadataExtractor.Expression)
+	// Evauluate the expression against nil since we only need the keys
+	keyMap, err := compiledMetadataExtractor.Search(nil)
+	if err != nil {
+		return 0, err
+	}
+
+	resMap, ok := keyMap.(map[string]any)
+	if !ok {
+		return 0, nil
+	}
+
+	if sourceControls, ok := resMap["sourceControls"].([]any); ok {
+		return len(sourceControls), nil
+	}
+
+	return 0, nil
+}
+
 func seed(ctx context.Context, db database.Handle, tracer trace.Tracer, params seedParameters) error {
 	instanceNames, err := seedInstanceNames(ctx, db, params.instances)
 	if err != nil {
@@ -225,16 +291,40 @@ func seed(ctx context.Context, db database.Handle, tracer trace.Tracer, params s
 		return util.StatusWrap(err, "Failed to seed authenticated users")
 	}
 
+	buildTagKeys, err := getTagKeys("buildTags", params.invocationMetadataExtractor)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to extract build tag keys")
+	}
+	if params.buildKey != "" && !slices.Contains(buildTagKeys, params.buildKey) {
+		slog.Warn("Build tags do not include the specified build key", "buildKey", params.buildKey)
+	}
+
+	invocationTagKeys, err := getTagKeys("invocationTags", params.invocationMetadataExtractor)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to extract invocation tag keys")
+	}
+
+	sourceControlCount, err := getSourceControlCount(params.invocationMetadataExtractor)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to extract source control keys")
+	}
+
 	var g errgroup.Group
-	for _, instance := range instanceNames {
+	for index, instance := range instanceNames {
 		g.Go(func() error {
 			ctx, span := tracer.Start(ctx, "instance")
-			seeder := newInstanceSeeder(db, instance, users, tracer, params)
+			seeder := newInstanceSeeder(db, instance, users, buildTagKeys, invocationTagKeys, sourceControlCount, tracer, params)
 			defer span.End()
 			invocations, err := seeder.seedBazelInvocations(ctx)
 			if err != nil {
 				return util.StatusWrap(err, "Failed to seed bazel invocations")
 			}
+
+			_, err = seeder.seedBuild(ctx, invocations, index)
+			if err != nil {
+				return util.StatusWrap(err, "Failed to seed build")
+			}
+
 			targets, err := seeder.seedTargets(ctx)
 			if err != nil {
 				return util.StatusWrap(err, "Failed to seed targets")
@@ -243,6 +333,50 @@ func seed(ctx context.Context, db database.Handle, tracer trace.Tracer, params s
 		})
 	}
 	return g.Wait()
+}
+
+func (s *instanceSeeder) seedBuild(ctx context.Context, invocations []*ent.BazelInvocation, index int) (*ent.Build, error) {
+	if s.buildKey == "" || len(s.buildTagKeys) == 0 || !slices.Contains(s.buildTagKeys, s.buildKey) {
+		return nil, nil
+	}
+
+	e := s.db.Ent()
+	buildUUID := common.CalculateBuildUUID(
+		fmt.Sprintf("%s-%d", s.buildKey, index),
+		s.instanceName.Name,
+	)
+	build, err := e.Build.Create().
+		SetBuildUUID(buildUUID).
+		SetTimestamp(s.from).
+		SetInstanceName(s.instanceName).
+		AddInvocations(invocations...).
+		Save(ctx)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create build")
+	}
+
+	buildTagBatcher := newBatcher(len(s.buildTagKeys), func(chunk []*ent.BuildTagCreate) ([]*ent.BuildTag, error) {
+		return e.BuildTag.CreateBulk(chunk...).Save(ctx)
+	})
+
+	for _, key := range s.buildTagKeys {
+		err := buildTagBatcher.add(
+			e.BuildTag.Create().
+				SetBuild(build).
+				SetKey(key).
+				SetValue(fmt.Sprintf("%s-%d", key, index)),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	_, err = buildTagBatcher.result()
+	if err != nil {
+		return nil, util.StatusWrap(err, "Could not batch create build tags")
+	}
+
+	return build, nil
 }
 
 func seedUsers(ctx context.Context, db database.Handle, n int32) ([]*ent.AuthenticatedUser, error) {
@@ -531,6 +665,61 @@ func (s *instanceSeeder) seedBazelInvocations(ctx context.Context) ([]*ent.Bazel
 	invocations, err := invocationBatcher.result()
 	if err != nil {
 		return nil, util.StatusWrap(err, "Could not batch create bazel invocations")
+	}
+
+	if s.sourceControlCount > 0 {
+		// A SourceControl object has 6 fields
+		sourceControlBatcher := newBatcher(6*s.sourceControlCount, func(chunk []*ent.SourceControlCreate) ([]*ent.SourceControl, error) {
+			return e.SourceControl.CreateBulk(chunk...).Save(ctx)
+		})
+
+		for index, invocation := range invocations {
+			for range s.sourceControlCount {
+				err := sourceControlBatcher.add(
+					e.SourceControl.Create().
+						SetBazelInvocation(invocation).
+						SetCommit(fmt.Sprintf("commit-%d", index)).
+						SetCommitURL(fmt.Sprintf("commitUrl-%d", index)).
+						SetRepo(fmt.Sprintf("repo-%d", index)).
+						SetRepoURL(fmt.Sprintf("repoUrl-%d", index)).
+						SetRef(fmt.Sprintf("ref-%d", index)).
+						SetRefURL(fmt.Sprintf("refUrl-%d", index)),
+				)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+
+		_, err := sourceControlBatcher.result()
+		if err != nil {
+			return nil, util.StatusWrap(err, "Could not batch create source controls")
+		}
+	}
+
+	if len(s.invocationTagKeys) > 0 {
+		invocationTagBatcher := newBatcher(len(s.invocationTagKeys)*len(invocations), func(chunk []*ent.InvocationTagCreate) ([]*ent.InvocationTag, error) {
+			return e.InvocationTag.CreateBulk(chunk...).Save(ctx)
+		})
+
+		for index, invocation := range invocations {
+			for _, key := range s.invocationTagKeys {
+				err := invocationTagBatcher.add(
+					e.InvocationTag.Create().
+						SetBazelInvocation(invocation).
+						SetKey(key).
+						SetValue(fmt.Sprintf("%s-%d", key, index)),
+				)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+
+		_, err = invocationTagBatcher.result()
+		if err != nil {
+			return nil, util.StatusWrap(err, "Could not batch create invocation tags")
+		}
 	}
 
 	connectionMetadataBatcher := newBatcher(int(n), func(chunk []*ent.ConnectionMetadataCreate) ([]*ent.ConnectionMetadata, error) {
