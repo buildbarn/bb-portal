@@ -4,10 +4,12 @@ import (
 	"context"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -39,13 +41,9 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
-
-	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
-
-	if platformQueueName == nil || !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, platformQueueName.InstanceNamePrefix) {
+	if !isOperationAllowed(ctx, s.instanceNameAuthorizer, response.GetOperation()) {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
-
 	return response, err
 }
 
@@ -121,7 +119,15 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 	if !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, instanceNamePrefix) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list workers for instance name prefix %s", instanceNamePrefix)
 	}
-	return s.client.ListWorkers(ctx, req)
+	resp, err := s.client.ListWorkers(ctx, req)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to list workers")
+	}
+	for _, worker := range resp.GetWorkers() {
+		censorWorkerState(ctx, s.instanceNameAuthorizer, instanceNamePrefix, worker)
+	}
+
+	return resp, nil
 }
 
 // TerminateWorkers proxies TerminateWorkers requests to the client.
@@ -192,14 +198,43 @@ func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlat
 	return allowedQueues
 }
 
+func censorWorkerState(ctx context.Context, authorizer auth.Authorizer, instanceNamePrefix string, worker *buildqueuestate.WorkerState) {
+	operation := worker.GetCurrentOperation()
+	if operation == nil {
+		return
+	}
+	if !isPrefixSuffixAllowed(ctx, authorizer, instanceNamePrefix, operation.InstanceNameSuffix) {
+		worker.CurrentOperation = nil
+	}
+}
+
+func isOperationAllowed(ctx context.Context, authorizer auth.Authorizer, operation *buildqueuestate.OperationState) bool {
+	if operation == nil {
+		return false
+	}
+	instanceNamePrefix := operation.GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName().GetInstanceNamePrefix()
+	instanceNameSuffix := operation.InstanceNameSuffix
+	return isPrefixSuffixAllowed(ctx, authorizer, instanceNamePrefix, instanceNameSuffix)
+}
+
+func isPrefixSuffixAllowed(ctx context.Context, authorizer auth.Authorizer, instanceNamePrefix, instanceNameSuffix string) bool {
+	parts := make([]string, 0, 2)
+	if instanceNamePrefix != "" {
+		parts = append(parts, instanceNamePrefix)
+	}
+	if instanceNameSuffix != "" {
+		parts = append(parts, instanceNameSuffix)
+	}
+	instanceName := strings.Join(parts, "/")
+
+	return common.IsInstanceNameAllowed(ctx, authorizer, instanceName)
+}
+
 func filterOperations(ctx context.Context, operations []*buildqueuestate.OperationState, authorizer auth.Authorizer) []*buildqueuestate.OperationState {
 	// Filter out the operations that the user is not allowed to see.
 	allowedOperations := make([]*buildqueuestate.OperationState, 0, len(operations))
 	for _, operation := range operations {
-
-		platformQueueName := operation.GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
-
-		if platformQueueName != nil && common.IsInstanceNameAllowed(ctx, authorizer, platformQueueName.InstanceNamePrefix) {
+		if isOperationAllowed(ctx, authorizer, operation) {
 			allowedOperations = append(allowedOperations, operation)
 		}
 	}
