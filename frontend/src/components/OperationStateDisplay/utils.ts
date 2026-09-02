@@ -1,6 +1,8 @@
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
-import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
+import {
+  type BrowserPageParams,
+  parseBrowserPageSlug,
+} from "@/types/BrowserPageParams";
 
 export const historicalExecuteResponseDigestFromOperation = (
   operation: OperationState,

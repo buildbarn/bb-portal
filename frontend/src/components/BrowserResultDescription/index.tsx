@@ -2,7 +2,7 @@ import { Descriptions, Space, Tag } from "antd";
 import type React from "react";
 import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
-import type { BrowserPageParams } from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
 import { CasViewer } from "../LogViewer/casViewer";
 
