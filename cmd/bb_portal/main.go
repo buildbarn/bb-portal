@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"reflect"
@@ -121,6 +122,8 @@ func main() {
 			if configuration.FrontendServiceConfiguration != nil &&
 				configuration.FrontendServiceConfiguration.FrontendConfig != nil {
 				configuration.FrontendServiceConfiguration.FrontendConfig.PrometheusUrl = configuration.PrometheusUrl
+			} else {
+				log.Printf("WARNING: prometheus_url is set but frontend_config is nil; worker utilization chart will not render")
 			}
 		}
 

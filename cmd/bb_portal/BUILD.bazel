@@ -54,8 +54,11 @@ image_push(
     tags = ["manual"],
 )
 
-# Push a linux/amd64 single-arch image to the local kind registry for local testing.
-# Run with: bazel run //cmd/bb_portal:bb_portal_local_push --platforms=@com_github_buildbarn_bb_storage//tools/platforms:linux_amd64
+# Push a single-arch image to the local kind registry for local testing.
+# Use linux_arm64 on Apple Silicon (avoids QEMU; zstd crashes under amd64 emulation):
+#   bazel run //cmd/bb_portal:bb_portal_local_push --platforms=@com_github_buildbarn_bb_storage//tools/platforms:linux_arm64
+# Use linux_amd64 on x86_64 hosts:
+#   bazel run //cmd/bb_portal:bb_portal_local_push --platforms=@com_github_buildbarn_bb_storage//tools/platforms:linux_amd64
 image_push(
     name = "bb_portal_local_push",
     image = ":_bb_portal_container.image",

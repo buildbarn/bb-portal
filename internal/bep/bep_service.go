@@ -2,6 +2,9 @@ package bep
 
 import (
 	"context"
+	"log"
+	"net/http"
+	"runtime/debug"
 	"time"
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
@@ -82,7 +85,25 @@ func NewBuildEventProtocolService(
 	srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
 		return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
 	})
-	router.PathPrefix("/graphql").Handler(srv)
+	// Wrap with panic recovery so a gqlparser SIGSEGV (walk.go bug) doesn't
+	// kill the process. SetPanicOnFault converts address faults in this
+	// goroutine to recoverable panics; the outer recover() then returns 500.
+	gqlHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// SetPanicOnFault converts address faults (SIGSEGV) to recoverable panics
+		// in this goroutine. gqlparser walks.go:262 dereferences a string as a
+		// pointer during query parsing — before any response bytes are written —
+		// so the recover() below can safely return 500.
+		old := debug.SetPanicOnFault(true)
+		defer debug.SetPanicOnFault(old)
+		defer func() {
+			if rec := recover(); rec != nil {
+				log.Printf("ERROR: GraphQL handler panic recovered: %v\n%s", rec, debug.Stack())
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+		}()
+		srv.ServeHTTP(w, r)
+	})
+	router.PathPrefix("/graphql").Handler(gqlHandler)
 	if configuration.EnableGraphqlPlayground {
 		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}

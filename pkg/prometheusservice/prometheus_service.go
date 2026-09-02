@@ -18,16 +18,23 @@ func NewPrometheusService(prometheusURL string, router *mux.Router) error {
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "invalid prometheus_url %q: %v", prometheusURL, err)
 	}
+	if target.Scheme != "http" && target.Scheme != "https" {
+		return status.Errorf(codes.InvalidArgument, "invalid prometheus_url %q: scheme must be http or https", prometheusURL)
+	}
+	if target.Host == "" {
+		return status.Errorf(codes.InvalidArgument, "invalid prometheus_url %q: missing host", prometheusURL)
+	}
 
 	proxy := httputil.NewSingleHostReverseProxy(target)
-	// Remove Accept-Encoding so Prometheus returns plain (uncompressed) JSON.
-	// Without this, the browser's Accept-Encoding header is forwarded verbatim,
-	// Prometheus compresses the response, and the Go proxy passes through the
-	// compressed bytes without decompressing — breaking JSON parsing in the browser.
-	proxy.ModifyResponse = nil
 	originalDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
 		originalDirector(req)
+		// Strip browser auth headers — Prometheus doesn't need them and we
+		// shouldn't forward credentials to an internal service.
+		req.Header.Del("Authorization")
+		req.Header.Del("Cookie")
+		// Strip Accept-Encoding so Prometheus returns plain JSON; otherwise
+		// the compressed response passes through undecoded to the browser.
 		req.Header.Del("Accept-Encoding")
 	}
 	// Strip the /api/v1/prometheus prefix before forwarding so the upstream

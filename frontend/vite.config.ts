@@ -85,12 +85,12 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": "http://localhost:4180",
-      "/graphql": "http://localhost:4180",
       "/api/v1/prometheus": {
         target: "http://localhost:9090",
         rewrite: (path) => path.replace(/^\/api\/v1\/prometheus/, ""),
       },
+      "/api": "http://localhost:4180",
+      "/graphql": "http://localhost:4180",
     },
   },
   test: {
