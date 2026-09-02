@@ -56,10 +56,11 @@ func NewBlobstoreService(
 			return util.StatusWrap(err, "Failed to create Content Addressable Storage")
 		}
 		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
-		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
+		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, instanceNameAuthorizer)
 		remoteexecution.RegisterContentAddressableStorageServer(grpcServer, grpcservers.NewContentAddressableStorageServer(blobAccess, configuration.MaximumMessageSizeBytes))
 		bytestream.RegisterByteStreamServer(grpcServer, grpcservers.NewByteStreamServer(blobAccess, 1<<16, zstdPool))
 		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/google.bytestream.ByteStream/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
+		router.PathPrefix(bb_grpcweb.GrpcWebEndpointPrefix + "/build.bazel.remote.execution.v2.ContentAddressableStorage/").Handler(http.StripPrefix(bb_grpcweb.GrpcWebEndpointPrefix, grpcWebServer))
 
 		// Serve files from the Content Addressable Storage (CAS) over HTTP.
 		serveFilesService := servefiles.NewFileServerService(

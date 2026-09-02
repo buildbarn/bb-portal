@@ -11,6 +11,7 @@ import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient"
 import type { BrowserSearchParams } from "@/routes/browser.$";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import { useCheckDataExists } from "@/utils/fetchCasObject";
 import BrowserActionGrid from "../BrowserActionGrid";
 import { fetchBrowserActionGrid } from "../BrowserActionGrid/fetch";
 import { CompareActionButtons } from "../CompareAction/CompareTargetButton";
@@ -26,6 +27,13 @@ interface Params {
 export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
   const [prefersCompareSideBySide, setPrefersCompareSideBySide] =
     useState(true);
+
+  const { exists, isLoading } = useCheckDataExists(
+    params.instanceName,
+    [params.digest],
+    params.digestFunction,
+  );
+
   const actionQuery = useQuery({
     queryKey: ["browserActionGrid", params.digest.hash],
     queryFn: () => {
@@ -38,10 +46,12 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
       );
     },
     staleTime: 5 * 60 * 1000,
+    enabled: exists === true,
   });
+
   const compareActionQuery = useQuery({
     queryKey: ["browserActionGrid", search.comparedAction?.digest.hash],
-    enabled: !!search.comparedAction,
+    enabled: !!search.comparedAction && exists === true,
     queryFn: () => {
       if (!search.comparedAction) {
         return undefined;
@@ -57,6 +67,17 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
     staleTime: 5 * 60 * 1000,
   });
 
+  if (exists === false && !isLoading) {
+    return (
+      <PortalAlert
+        showIcon
+        type="error"
+        title="Error fetching the operation"
+        description={"The CAS contains no data for this action"}
+      />
+    );
+  }
+
   if (
     actionQuery.isPending ||
     (compareActionQuery.isPending && search.comparedAction)
@@ -69,16 +90,22 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
     compareActionQuery.isError ||
     (!compareActionQuery.data && search.comparedAction)
   ) {
+    let errorMessage: string;
+    if (
+      actionQuery.error?.message.endsWith("Object not found") ||
+      compareActionQuery.error?.message.endsWith("Object not found")
+    ) {
+      errorMessage = "The target action was not found";
+    } else {
+      errorMessage =
+        "Unknown error occurred while fetching data from the server.";
+    }
     return (
       <PortalAlert
         showIcon
         type="error"
-        title="Error fetching action"
-        description={
-          actionQuery.error?.message ||
-          compareActionQuery.error?.message ||
-          "Unknown error occurred while fetching data from the server."
-        }
+        title="Error fetching the operation"
+        description={errorMessage}
       />
     );
   }

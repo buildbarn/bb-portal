@@ -1,11 +1,13 @@
 import { Button, Space } from "antd";
 import { useEffect, useState } from "react";
 import { LinkButton } from "@/components/LinkButton";
+import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import {
   type BrowserPageParams,
   BrowserPageSchema,
 } from "@/types/BrowserPageParams";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import { useCheckDataExists } from "@/utils/fetchCasObject";
 import { generateBrowserSplat } from "@/utils/urlGenerator";
 
 const COMPARE_KEY = "buildbarn_compare_action";
@@ -17,6 +19,19 @@ type Props = {
 
 const CompareActionButtons: React.FC<Props> = ({ params, comparing }) => {
   const [storedData, setStoredData] = useState<BrowserPageParams | undefined>();
+
+  const { exists } = useCheckDataExists(
+    storedData?.instanceName ?? "",
+    [
+      storedData?.digest ?? {
+        hash: "",
+        sizeBytes: "",
+      },
+    ],
+    storedData?.digestFunction ?? digestFunction_ValueFromJSON(""),
+    storedData !== undefined,
+  );
+
   useEffect(() => {
     const checkSavedData = () => {
       try {
@@ -63,7 +78,8 @@ const CompareActionButtons: React.FC<Props> = ({ params, comparing }) => {
       </LinkButton>
     );
   }
-  if (!storedData) {
+
+  if (!storedData || !exists) {
     return (
       <Button type="default" onClick={setCompare}>
         Compare...
