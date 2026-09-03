@@ -64,6 +64,10 @@ const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
     build {
       buildUUID
     }
+    instanceName {
+      id
+      name
+    }
   }
 `);
 

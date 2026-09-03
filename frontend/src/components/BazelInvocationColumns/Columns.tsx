@@ -166,6 +166,33 @@ export const buildColumn: TableColumnTypeWithFilter<
   },
 };
 
+export const instanceNameColumn: TableColumnTypeWithFilter<
+  BazelInvocationNodeFragment,
+  BazelInvocationWhereInput
+> = {
+  key: "instanceName",
+  width: 160,
+  title: "BES Instance",
+  render: (_, record) => record.instanceName?.name,
+  filterDropdown: (filterProps) => (
+    <SearchWidget
+      placeholder="Provide a BES instance name..."
+      {...filterProps}
+    />
+  ),
+  filterIcon: (filtered) => (
+    <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+  ),
+  applyFilter: (value: FilterValue) => {
+    if (value.length === 0) {
+      return undefined;
+    }
+    return [
+      { hasInstanceNameWith: [{ nameContainsFold: value[0] as string }] },
+    ];
+  },
+};
+
 export const userColumn: TableColumnTypeWithFilter<
   BazelInvocationNodeFragment,
   BazelInvocationWhereInput
