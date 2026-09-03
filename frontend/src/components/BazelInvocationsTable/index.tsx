@@ -32,7 +32,7 @@ interface Props {
   pageInfo: PageInfo;
 }
 
-export const getTableColumns = (): TableColumnTypeWithFilter<
+const getTableColumns = (): TableColumnTypeWithFilter<
   BazelInvocationNodeFragment,
   BazelInvocationWhereInput
 >[] => [
