@@ -146,13 +146,13 @@ export const getColumns = (): TableColumnTypeWithFilter<
       title: "BES Instance",
       render: (_, record) => record.instanceName?.name,
       filterDropdown: (filterProps) => (
-          <SearchWidget
-              placeholder="Provide a BES instance name..."
-              {...filterProps}
-          />
+        <SearchWidget
+          placeholder="Provide a BES instance name..."
+          {...filterProps}
+        />
       ),
       filterIcon: (filtered) => (
-          <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
+        <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
       ),
       applyFilter: (value: FilterValue) => {
         if (value.length === 0) {
