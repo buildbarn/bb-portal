@@ -64,6 +64,15 @@ const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
     build {
       buildUUID
     }
+    metrics {
+      actionSummary {
+        runnerCount {
+          id
+          name
+          actionsExecuted
+        }
+      }
+    }
   }
 `);
 

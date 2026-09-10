@@ -4,6 +4,7 @@ import type React from "react";
 import {
   buildColumn,
   durationColumn,
+  executionRatioColumn,
   invocationIdColumn,
   startedAtColumn,
   statusColumn,
@@ -42,6 +43,7 @@ const BazelInvocationsTable: React.FC<Props> = ({
     startedAtColumn,
     durationColumn,
     statusColumn,
+    executionRatioColumn,
     buildColumn,
   ];
 
