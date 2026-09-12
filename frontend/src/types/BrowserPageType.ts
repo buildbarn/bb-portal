@@ -1,8 +1,3 @@
-import type {
-  Digest,
-  DigestFunction_Value,
-} from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-
 export enum BrowserPageType {
   Action = "action",
   Command = "command",
@@ -21,11 +16,3 @@ export const getBrowserPageTypeFromString = (
   }
   return undefined;
 };
-
-export interface BrowserPageParams {
-  instanceName: string;
-  digestFunction: DigestFunction_Value;
-  browserPageType: BrowserPageType;
-  digest: Digest;
-  otherParams: Array<string>;
-}

@@ -24,10 +24,8 @@ import {
   POSIXResourceUsage,
 } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
-import {
-  type BrowserPageParams,
-  BrowserPageType,
-} from "@/types/BrowserPageType";
+import type { BrowserPageParams } from "@/types/BrowserPageParams";
+import { BrowserPageType } from "@/types/BrowserPageType";
 import { ProtobufTypeUrls } from "@/types/protobufTypeUrls";
 import { getReducedActionDigest_SHA256 } from "@/utils/digestFunctionUtils";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
@@ -53,6 +51,7 @@ export const fetchBrowserActionGrid = async (
   casDirectory: Directory | undefined;
   previousExecutionStats: PreviousExecutionStats | undefined;
   fileSystemAccessProfile: FileSystemAccessProfile | undefined;
+  reducedActionDigest: Digest | undefined;
 }> => {
   const { actionDigest, executeResponse } = await fetchExecuteResponse(
     browserPageParams,
@@ -82,6 +81,7 @@ export const fetchBrowserActionGrid = async (
     casDirectory,
     previousExecutionStats,
     fileSystemAccessProfile,
+    reducedActionDigest,
   ] = await Promise.all([
     // Fetch Command
     action.commandDigest
@@ -118,6 +118,11 @@ export const fetchBrowserActionGrid = async (
       fileSystemAccessCacheClient,
       browserPageParams,
     ),
+
+    // Generate Reduced Action Digest (No fetching, but is async)
+    action.commandDigest && action.platform
+      ? getReducedActionDigest_SHA256(action.commandDigest, action.platform)
+      : undefined,
   ]);
 
   return {
@@ -134,6 +139,7 @@ export const fetchBrowserActionGrid = async (
     casDirectory,
     previousExecutionStats,
     fileSystemAccessProfile,
+    reducedActionDigest,
   };
 };
 

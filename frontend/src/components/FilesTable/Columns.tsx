@@ -6,6 +6,7 @@ export interface FilesTableEntry {
   size: string | undefined;
   filename: string;
   href: string | undefined;
+  style?: React.CSSProperties;
 }
 
 const modeColumn: ColumnType<FilesTableEntry> = {
@@ -25,9 +26,15 @@ const filenameColumn: ColumnType<FilesTableEntry> = {
   title: "Filename",
   render: (_, record) => {
     if (record.href) {
-      return <a href={record.href}>{record.filename}</a>;
+      return (
+        <a href={record.href} style={record.style}>
+          {record.filename}
+        </a>
+      );
     }
-    return <Typography.Text>{record.filename}</Typography.Text>;
+    return (
+      <Typography.Text style={record.style}>{record.filename}</Typography.Text>
+    );
   },
 };
 

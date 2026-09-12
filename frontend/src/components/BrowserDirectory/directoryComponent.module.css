@@ -1,0 +1,27 @@
+.directoryComponent {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  border: 2px solid #88888811;
+  border-radius: 0px;
+}
+
+.directoryComponent:focus-visible {
+  outline-offset: -3px !important;
+}
+
+.fileName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.totalSizeBadge {
+  padding: 4px;
+  border-radius: 8px;
+}
