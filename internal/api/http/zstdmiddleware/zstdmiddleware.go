@@ -35,7 +35,7 @@ func (zw *zstdResponseWriter) Write(b []byte) (int, error) {
 	return zw.writer.Write(b)
 }
 
-// NewZstdMiddleware returns a standard gorilla/mux compatible middleware function
+// NewZstdMiddleware returns a middleware function
 func NewZstdMiddleware(zstdPool zstd.Pool) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

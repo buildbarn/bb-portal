@@ -10,7 +10,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	grpc_codes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -46,9 +45,7 @@ func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		span.SetStatus(codes.Error, err.Error())
 	}
 
-	vars := mux.Vars(r)
-
-	invocationID, err := uuid.Parse(vars["invocation_id"])
+	invocationID, err := uuid.Parse(r.PathValue("invocation_id"))
 	if err != nil {
 		errorOut(err, "Invalid Invocation Id", http.StatusBadRequest)
 		return
