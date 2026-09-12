@@ -794,7 +794,7 @@ var (
 				{bepFile: successfulBazelBuild},
 			},
 			dataExtractors: &dataExtractors{
-				authMetadataExtractors: &bb_portal.AuthMetadataExtractorConfiguration{
+				authMetadataExtractors: &bb_portal.BuildEventStreamService_AuthMetadataExtractorConfiguration{
 					ExternalIdExtractionJmespathExpression:  &jmespath.Expression{Expression: "authenticationMetadata.private.external_id"},
 					DisplayNameExtractionJmespathExpression: &jmespath.Expression{Expression: "authenticationMetadata.private.display_name"},
 					UserInfoExtractionJmespathExpression:    &jmespath.Expression{Expression: "authenticationMetadata.public"},
