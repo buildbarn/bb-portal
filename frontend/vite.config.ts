@@ -7,9 +7,11 @@ import { devtools } from "@tanstack/devtools-vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { goRouteManifestPlugin } from "./routeMapper";
 
 export default defineConfig({
   plugins: [
+    goRouteManifestPlugin(),
     devtools(),
     tanstackRouter({
       target: "react",
@@ -46,6 +48,9 @@ export default defineConfig({
       },
     },
   ],
+  build: {
+    manifest: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
