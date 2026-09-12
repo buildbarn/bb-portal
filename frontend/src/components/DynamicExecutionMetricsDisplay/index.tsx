@@ -1,7 +1,7 @@
 import { ThunderboltOutlined } from "@ant-design/icons";
 import { Table, type TableColumnsType } from "antd";
 import type { BazelInvocationMetricsDynamicExecutionMetricsFragment } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   dynamicExecutionMetrics: BazelInvocationMetricsDynamicExecutionMetricsFragment;

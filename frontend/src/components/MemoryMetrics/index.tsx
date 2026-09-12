@@ -1,9 +1,9 @@
 import { PieChartOutlined } from "@ant-design/icons";
 import { Space, Statistic } from "antd";
 import type React from "react";
+import { PortalCard } from "@/components/PortalCard";
 import type { BazelInvocationMetricsMemoryMetricsFragment } from "@/graphql/__generated__/graphql";
 import { readableFileSize } from "@/utils/filesize";
-import PortalCard from "../PortalCard";
 
 interface Props {
   memoryMetrics: BazelInvocationMetricsMemoryMetricsFragment;

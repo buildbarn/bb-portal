@@ -3,7 +3,7 @@
 import { LayoutOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import type React from "react";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import styles from "./browser.module.css";
 
 export const BrowserWelcomePage: React.FC = () => {
