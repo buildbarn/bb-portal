@@ -5,9 +5,11 @@ import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate
 import { BrowserPageType } from "@/types/BrowserPageType";
 import { readableDurationFromDates } from "@/utils/time";
 import { generateBrowserSplat } from "@/utils/urlGenerator";
-import { historicalExecuteResponseDigestFromOperation } from "../OperationStateDisplay/utils";
-import OperationStatusTag from "../OperationStatusTag";
-import { operationsStateToBrowserSplat } from "./utils";
+import {
+  historicalExecuteResponseDigestFromOperation,
+  operationsStateToBrowserSplat,
+} from "../../OperationStateDisplay/utils";
+import OperationStatusTag from "../../OperationStatusTag";
 
 const operationNameColumn: ColumnType<OperationState> = {
   key: "name",
