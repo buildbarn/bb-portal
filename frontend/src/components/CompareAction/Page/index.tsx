@@ -91,7 +91,7 @@ const CompareActionGrid: React.FC<Params> = ({
   );
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <Space orientation="vertical" style={{ width: "100%" }}>
       <div
         className={[styles.container, screens.lg ? styles.large : ""].join(" ")}
       >
@@ -141,7 +141,7 @@ const CompareActionGrid: React.FC<Params> = ({
       </div>
       <Row>
         {compareSideBySide ? (
-          <Space direction="vertical">
+          <Space orientation="vertical">
             <p>
               <span style={styleMap("unique", token)}>Green</span> highlighted
               objects are unique to the action in that column.
@@ -161,7 +161,7 @@ const CompareActionGrid: React.FC<Params> = ({
             <DirectoryPrefetchDescription prefetchDataExists={true} />
           </Space>
         ) : (
-          <Space direction="vertical">
+          <Space orientation="vertical">
             <p>
               <span style={styleMap("unique", token)}>Green</span> highlighted
               objects are unique to the first action, which has its hash
@@ -187,7 +187,7 @@ const CompareActionGrid: React.FC<Params> = ({
       <Row gutter={24}>
         <Col span={compareSideBySide ? 12 : 24}>
           <Space
-            direction="vertical"
+            orientation="vertical"
             size="middle"
             style={{
               display: "flex",
@@ -206,7 +206,7 @@ const CompareActionGrid: React.FC<Params> = ({
         {compareSideBySide && (
           <Col span={12}>
             <Space
-              direction="vertical"
+              orientation="vertical"
               size="middle"
               style={{
                 display: "flex",
@@ -277,7 +277,7 @@ const CompareActionGrid: React.FC<Params> = ({
       </Row>
       <Row gutter={24}>
         <Col span={compareSideBySide ? 12 : 24}>
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
             <Typography.Title level={2}>Output files</Typography.Title>
             <FilesTable
               entries={compareSideBySide ? outputFiles : allFileData}
@@ -287,7 +287,11 @@ const CompareActionGrid: React.FC<Params> = ({
         </Col>
         {compareSideBySide && (
           <Col span={12}>
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+            <Space
+              orientation="vertical"
+              size="middle"
+              style={{ width: "100%" }}
+            >
               <Typography.Title level={2}>Output files</Typography.Title>
               <FilesTable entries={compareOutputFiles} isPending={false} />
             </Space>

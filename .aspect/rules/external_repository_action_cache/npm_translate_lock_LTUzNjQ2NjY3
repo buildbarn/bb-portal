@@ -2,7 +2,7 @@
 # Input hashes for repository rule npm_translate_lock(name = "npm", pnpm_lock = "@@//frontend:pnpm-lock.yaml").
 # This file should be checked into version control along with the pnpm-lock.yaml file.
 frontend/.npmrc=2124455649
-frontend/package-lock.json=-1601984742
-frontend/package.json=-2053760216
+frontend/package-lock.json=1662360357
+frontend/package.json=745667346
 frontend/patches/vite.patch=-1261363333
-frontend/pnpm-lock.yaml=-689001559
+frontend/pnpm-lock.yaml=-1741805783

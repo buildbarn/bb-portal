@@ -75,7 +75,7 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching workers"
+        title="Error fetching workers"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."
@@ -85,7 +85,7 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
   }
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+    <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
       <Row>
         <WorkersInfo sizeClassQueueName={sizeClassQueueName} />
       </Row>

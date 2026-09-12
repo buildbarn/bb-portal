@@ -3,7 +3,7 @@ import {
   Button,
   Card,
   type CardProps,
-  List,
+  Flex,
   Popover,
   Space,
   theme,
@@ -70,14 +70,12 @@ const ExtraMenu: React.FC<ExtraMenuProps> = ({
   return (
     <Popover
       content={
-        <List
-          dataSource={extraBits}
-          renderItem={(item) => (
-            <List.Item className={styles.item}>{item}</List.Item>
-          )}
-          size="small"
-          className={styles.list}
-        />
+        <Flex vertical gap={8} align="center">
+          {extraBits.map((node, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: We don't have any other appropriate key
+            <React.Fragment key={index}>{node}</React.Fragment>
+          ))}
+        </Flex>
       }
       trigger="click"
       onOpenChange={() => setIsExtraMenuOpened(!isExtraMenuOpen)}
@@ -185,7 +183,7 @@ export const PortalCard: React.FC<Props> = ({
     >
       <Space
         ref={cardRef}
-        direction="vertical"
+        orientation="vertical"
         size="middle"
         className={themeStyles.space}
       >

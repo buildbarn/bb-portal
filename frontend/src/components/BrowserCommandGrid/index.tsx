@@ -38,7 +38,7 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching command"
+        title="Error fetching command"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."
@@ -48,7 +48,7 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
   }
 
   return (
-    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+    <Space orientation="vertical" size="large" style={{ width: "100%" }}>
       <Typography.Title level={2}>Command</Typography.Title>
       <BrowserCommandDescription
         browserPageParams={browserPageParams}
@@ -57,7 +57,7 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
         showTitle={false}
       />
       {browserPageParams.digest && (
-        <Space direction="horizontal">
+        <Space orientation="horizontal">
           <CopyBbClientdCommandButton
             digestFunction={browserPageParams.digestFunction}
             instanceName={browserPageParams.instanceName}

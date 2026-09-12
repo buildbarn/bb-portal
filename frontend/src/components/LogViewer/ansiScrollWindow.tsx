@@ -36,7 +36,7 @@ const AnsiScrollingWindow: React.FC<Props> = ({
   if (!log) {
     return (
       <PortalAlert
-        message="There is no log information to display"
+        title="There is no log information to display"
         type="warning"
         showIcon
         className={styles.alert}

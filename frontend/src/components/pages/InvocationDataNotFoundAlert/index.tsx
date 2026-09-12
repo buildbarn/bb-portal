@@ -9,7 +9,7 @@ export const InvocationDataNotFoundAlert: React.FC<Props> = ({ type }) => {
   return (
     <PortalAlert
       showIcon
-      message={`This invocation has not reported any ${type} yet.`}
+      title={`This invocation has not reported any ${type} yet.`}
     />
   );
 };

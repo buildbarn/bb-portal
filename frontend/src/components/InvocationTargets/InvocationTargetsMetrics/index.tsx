@@ -26,14 +26,22 @@ export const InvocationTargetsMetrics: React.FC<Props> = ({
         <Statistic
           title="Targets Built Successfully"
           value={targetCounts.numSuccessful.totalCount}
-          valueStyle={{ color: "green" }}
+          styles={{
+            content: {
+              color: "green",
+            },
+          }}
         />
       )}
       {targetCounts.numSkipped.totalCount !== undefined && (
         <Statistic
           title="Targets Skipped"
           value={targetCounts.numSkipped.totalCount}
-          valueStyle={{ color: "purple" }}
+          styles={{
+            content: {
+              color: "purple",
+            },
+          }}
         />
       )}
       {targetMetrics?.targetsConfigured !== undefined &&

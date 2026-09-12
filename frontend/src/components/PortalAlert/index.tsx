@@ -9,7 +9,7 @@ const PortalAlert: React.FC<Props> = ({ className, message, ...props }) => {
   return (
     <Alert
       className={[styles.alert, className].join(" ")}
-      message={
+      title={
         message && props.description ? (
           <Typography.Title level={5}>{message}</Typography.Title>
         ) : (

@@ -14,7 +14,7 @@ export const TargetsPage: React.FC<Props> = (props) => {
         <Alert
           key="search-by-label"
           showIcon
-          message="Search by label to further refine your result"
+          title="Search by label to further refine your result"
           type="info"
         />,
       ]}

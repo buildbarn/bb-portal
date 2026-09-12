@@ -661,7 +661,7 @@ export const BrowserDirectory: React.FC<Params> = ({
       />
       <Flex>
         <Space
-          direction="vertical"
+          orientation="vertical"
           size="large"
           className={styles.directoryContainer}
         >
@@ -680,7 +680,7 @@ export const BrowserDirectory: React.FC<Params> = ({
         </Space>
         {!mergedMode && compareData && (
           <Space
-            direction="vertical"
+            orientation="vertical"
             size="large"
             className={styles.directoryContainer}
           >

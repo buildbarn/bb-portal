@@ -54,7 +54,7 @@ export const UserDetailsPage: React.FC<Props> = ({
         <span key="title">User {user.displayName || user.userUUID}</span>,
       ]}
     >
-      <Space direction="vertical" className={themeStyles.space}>
+      <Space orientation="vertical" className={themeStyles.space}>
         {Object.keys(userInfo).length > 0 && (
           <Collapse
             bordered={false}
