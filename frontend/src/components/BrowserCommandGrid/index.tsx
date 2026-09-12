@@ -4,7 +4,10 @@ import type React from "react";
 import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { Command } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
-import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
+import {
+  fetchCasObjectAndParse,
+  useCheckDataExists,
+} from "@/utils/fetchCasObject";
 import { BrowserCommandDescription } from "../BrowserCommandDescription";
 import CopyBbClientdCommandButton from "../BrowserCommandDescription/CopyBbClientdCommandButton";
 import DownloadAsShellScriptButton from "../BrowserCommandDescription/DownloadAsShellScriptButton";
@@ -17,6 +20,12 @@ interface Params {
 }
 
 const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
+  const { exists, isLoading } = useCheckDataExists(
+    browserPageParams.instanceName,
+    [browserPageParams.digest],
+    browserPageParams.digestFunction,
+  );
+
   const { data, isError, isPending, error } = useQuery({
     queryKey: ["browserCommandGrid", browserPageParams],
     queryFn: () =>
@@ -27,7 +36,19 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
         browserPageParams.digest,
         Command,
       ),
+    enabled: exists === true,
   });
+
+  if (!exists && !isLoading) {
+    return (
+      <PortalAlert
+        showIcon
+        type="error"
+        title="Command not found"
+        description="The CAS contains no data for this command."
+      />
+    );
+  }
 
   if (isPending) {
     return <Spin />;
