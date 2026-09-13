@@ -67,8 +67,8 @@ bazel build \
 Linux/amd64 execution platform matching the worker. On Linux, the stack also
 starts a FUSE-backed worker so bb-portal displays both Buildbarn
 build-directory modes. Docker Desktop for macOS cannot provide the shared
-bind-mount propagation that worker requires, so the FUSE Compose profile is
-disabled there. This lets Bazel select
+bind-mount propagation that worker requires, so Bazel excludes the FUSE
+services there. This lets Bazel select
 Linux-compatible execution tools, including host-configured bootstrap tools,
 while leaving the build's target platform unchanged. Jaeger receives traces
 from bb-portal and every Buildbarn runtime component. It stores them in its

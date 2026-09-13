@@ -12,6 +12,11 @@ copy_to_bin(
 )
 
 copy_to_bin(
+    name = "buildbarn_fuse_compose_file",
+    srcs = ["buildbarn/docker-compose.fuse.yml"],
+)
+
+copy_to_bin(
     name = "buildbarn_config_files",
     srcs = glob(["buildbarn/config/**"]),
 )
@@ -101,7 +106,10 @@ docker_compose_yaml(
         "//test/itest/postgres:postgres_image.load",
         "//test/itest/volume_initializer:volume_initializer_image.load",
     ],
-    yamls = [":buildbarn_compose_file"],
+    yamls = [":buildbarn_compose_file"] + select({
+        "@platforms//os:linux": [":buildbarn_fuse_compose_file"],
+        "//conditions:default": [],
+    }),
 )
 
 docker_compose_binary(
@@ -130,13 +138,6 @@ itest_service(
     name = "buildbarn_service",
     args = [
         "--ansi=never",
-    ] + select({
-        "@platforms//os:linux": [
-            "--profile",
-            "fuse",
-        ],
-        "//conditions:default": [],
-    }) + [
         "up",
         "--force-recreate",
         "--remove-orphans",
