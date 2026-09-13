@@ -84,6 +84,18 @@ FRONTEND_SRCS = glob(
     ":node_modules",
 ]
 
+vite_bin.vite_binary(
+    name = "vite_dev_server",
+    chdir = package_name(),
+    data = FRONTEND_SRCS,
+    fixed_args = [
+        "--host=127.0.0.1",
+        "--port=5173",
+        "--strictPort",
+    ],
+    visibility = ["//test/itest:__pkg__"],
+)
+
 vite_build(
     name = "dist",
     srcs = FRONTEND_SRCS,

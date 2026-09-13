@@ -1,0 +1,206 @@
+services:
+  volume-initializer:
+    image: bb-portal/volume-initializer:itest
+    volumes:
+      - storage-ac:/volumes/storage-ac
+      - storage-cas:/volumes/storage-cas
+      - storage-fsac:/volumes/storage-fsac
+      - jaeger-data:/volumes/jaeger
+      - postgres-data:/volumes/postgres
+      - worker-hardlinking:/volumes/worker-hardlinking
+      - ./volumes/worker-fuse:/volumes/worker-fuse
+
+  postgres:
+    image: bb-portal/postgres:itest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: app
+      PGDATA: /var/lib/postgresql/data
+    healthcheck:
+      test: [CMD, /app/postgres, healthcheck]
+      interval: 1s
+      retries: 30
+      start_period: 5s
+      timeout: 5s
+    ports:
+      - 15432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    # Keep startup ordering deterministic when this stack is run as a Bazel test.
+    depends_on:
+      volume-initializer:
+        condition: service_completed_successfully
+
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.20.0@sha256:46a886260e04002d8f45e213fc39063fa11a50446048fdaa64786fc0840cb9f8
+    command: [--config, /etc/jaeger/config.yaml]
+    ports:
+      - 14317:4317
+      - 14318:4318
+      - 26686:16686
+    networks:
+      - default
+      - tracing
+    volumes:
+      - ./config/jaeger.yaml:/etc/jaeger/config.yaml:ro
+      - jaeger-data:/badger
+    depends_on:
+      volume-initializer:
+        condition: service_completed_successfully
+
+  frontend:
+    image: ghcr.io/buildbarn/bb-storage:20260609T094425Z-10acc76
+    command: [/config/frontend.jsonnet]
+    ports:
+      - 18980:8980
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/frontend.jsonnet:/config/frontend.jsonnet:ro
+    # These services retry transient connection failures, but explicit ordering
+    # makes startup reliable when the Compose lifecycle is exercised by bazel test.
+    depends_on:
+      jaeger:
+        condition: service_started
+      scheduler:
+        condition: service_started
+      storage:
+        condition: service_started
+
+  storage:
+    image: ghcr.io/buildbarn/bb-storage:20260609T094425Z-10acc76
+    command: [/config/storage.jsonnet]
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/storage.jsonnet:/config/storage.jsonnet:ro
+      - storage-ac:/storage-ac
+      - storage-cas:/storage-cas
+      - storage-fsac:/storage-fsac
+    depends_on:
+      jaeger:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  scheduler:
+    image: ghcr.io/buildbarn/bb-scheduler:20260527T162223Z-c48dcda
+    command: [/config/scheduler.jsonnet]
+    ports:
+      - 17982:7982
+      - 18984:8984
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/scheduler.jsonnet:/config/scheduler.jsonnet:ro
+    depends_on:
+      jaeger:
+        condition: service_started
+      storage:
+        condition: service_started
+
+  runner-installer:
+    image: ghcr.io/buildbarn/bb-runner-installer:20260527T162223Z-c48dcda
+    platform: linux/amd64
+    volumes:
+      - bb-runner:/bb
+
+  worker-fuse-ubuntu22-04:
+    image: ghcr.io/buildbarn/bb-worker:20260527T162223Z-c48dcda
+    profiles: [fuse]
+    command: [/config/worker-fuse-ubuntu22-04.jsonnet]
+    privileged: true
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/worker-fuse-ubuntu22-04.jsonnet:/config/worker-fuse-ubuntu22-04.jsonnet:ro
+      - type: bind
+        source: ./volumes/worker-fuse
+        target: /worker
+        bind:
+          propagation: shared
+    depends_on:
+      jaeger:
+        condition: service_started
+      scheduler:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  runner-fuse-ubuntu22-04:
+    image: ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b
+    profiles: [fuse]
+    platform: linux/amd64
+    command:
+      - sh
+      - -c
+      - while ! test -f /bb/installed; do sleep 1; done; exec /bb/bb_runner /config/runner-ubuntu22-04.jsonnet
+    networks:
+      - tracing
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/runner-ubuntu22-04.jsonnet:/config/runner-ubuntu22-04.jsonnet:ro
+      - bb-runner:/bb
+      - type: bind
+        source: ./volumes/worker-fuse
+        target: /worker
+        bind:
+          propagation: slave
+    depends_on:
+      jaeger:
+        condition: service_started
+      runner-installer:
+        condition: service_completed_successfully
+      volume-initializer:
+        condition: service_completed_successfully
+      worker-fuse-ubuntu22-04:
+        condition: service_started
+
+  worker-hardlinking-ubuntu22-04:
+    image: ghcr.io/buildbarn/bb-worker:20260527T162223Z-c48dcda
+    command: [/config/worker-hardlinking-ubuntu22-04.jsonnet]
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/worker-hardlinking-ubuntu22-04.jsonnet:/config/worker-hardlinking-ubuntu22-04.jsonnet:ro
+      - worker-hardlinking:/worker
+    depends_on:
+      jaeger:
+        condition: service_started
+      scheduler:
+        condition: service_started
+      volume-initializer:
+        condition: service_completed_successfully
+
+  runner-hardlinking-ubuntu22-04:
+    image: ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b
+    platform: linux/amd64
+    command:
+      - sh
+      - -c
+      - while ! test -f /bb/installed; do sleep 1; done; exec /bb/bb_runner /config/runner-ubuntu22-04.jsonnet
+    # Give the action runner access only to Jaeger's OTLP receiver. The
+    # internal network has no route to the host or the internet.
+    networks:
+      - tracing
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/runner-ubuntu22-04.jsonnet:/config/runner-ubuntu22-04.jsonnet:ro
+      - bb-runner:/bb
+      - worker-hardlinking:/worker
+    depends_on:
+      jaeger:
+        condition: service_started
+      runner-installer:
+        condition: service_completed_successfully
+      volume-initializer:
+        condition: service_completed_successfully
+
+networks:
+  tracing:
+    internal: true
+
+volumes:
+  bb-runner:
+  jaeger-data:
+  postgres-data:
+  storage-ac:
+  storage-cas:
+  storage-fsac:
+  worker-hardlinking:
