@@ -5,7 +5,7 @@ local common = import 'common.libsonnet';
   browserUrl: common.browserUrl,
   maximumMessageSizeBytes: common.maximumMessageSizeBytes,
   scheduler: { address: 'scheduler:8983' },
-  global: common.global('bb-worker'),
+  global: common.global('bb-worker-hardlinking'),
   buildDirectories: [{
     native: {
       buildDirectoryPath: '/worker/build',
@@ -24,12 +24,7 @@ local common = import 'common.libsonnet';
           { name: 'container-image', value: 'docker://ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b' },
         ],
       },
-      workerId: {
-        datacenter: 'local',
-        rack: 'docker-compose',
-        slot: '0',
-        hostname: 'bb-portal-itest',
-      },
+      workerId: { id: 'hardlinking' },
     }],
   }],
   inputDownloadConcurrency: 10,

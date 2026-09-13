@@ -1,6 +1,6 @@
 local common = import 'common.libsonnet';
 
-local localBlobstore(path, keyLocationMapSizeBytes, blocksSizeBytes) = {
+local localBlobstore(path, keyLocationMapSizeBytes, storageSizeBytes) = {
   'local': {
     keyLocationMapOnBlockDevice: {
       file: {
@@ -10,8 +10,8 @@ local localBlobstore(path, keyLocationMapSizeBytes, blocksSizeBytes) = {
     },
     keyLocationMapMaximumGetAttempts: 16,
     keyLocationMapMaximumPutAttempts: 64,
-    oldBlocks: 8,
-    currentBlocks: 24,
+    oldBlocks: 1,
+    currentBlocks: 3,
     // AC and FSAC objects may be updated in place, which requires a single
     // writable generation. This setting is also valid for the CAS.
     newBlocks: 1,
@@ -19,10 +19,10 @@ local localBlobstore(path, keyLocationMapSizeBytes, blocksSizeBytes) = {
       source: {
         file: {
           path: path + '/blocks',
-          sizeBytes: blocksSizeBytes,
+          sizeBytes: storageSizeBytes,
         },
       },
-      spareBlocks: 3,
+      spareBlocks: 1,
     },
     persistent: {
       stateDirectoryPath: path + '/persistent_state',
@@ -39,9 +39,7 @@ local localBlobstore(path, keyLocationMapSizeBytes, blocksSizeBytes) = {
   maximumMessageSizeBytes: common.maximumMessageSizeBytes,
   global: common.global('bb-storage'),
   contentAddressableStorage: {
-    // Prebuilt remote tools such as Node exceed the per-block limit of a
-    // 4-GiB device with this block layout.
-    backend: localBlobstore('/storage-cas', 32 * 1024 * 1024, 8 * 1024 * 1024 * 1024),
+    backend: localBlobstore('/storage-cas', 32 * 1024 * 1024, 4 * 1024 * 1024 * 1024),
     getAuthorizer: { allow: {} },
     putAuthorizer: { allow: {} },
     findMissingAuthorizer: { allow: {} },

@@ -21,6 +21,16 @@ go_library(
 unpack(
     name = "extraced_embedded_postgres",
     src = ":embedded_postgres",
+    visibility = ["//test/itest/postgres:__pkg__"],
+)
+
+genrule(
+    name = "embedded_postgres_image_tar",
+    srcs = [":embedded_postgres"],
+    outs = ["embedded_postgres_image.tar"],
+    cmd = "$(execpath @ape//ape:xz) --decompress --stdout $(execpath :embedded_postgres) > $@",
+    tools = ["@ape//ape:xz"],
+    visibility = ["//test/itest/postgres:__pkg__"],
 )
 
 alias(
@@ -67,4 +77,7 @@ go_test(
     name = "embedded_test",
     srcs = ["embedded_test.go"],
     embed = [":embedded"],
+    deps = [
+        "@com_github_stretchr_testify//require",
+    ],
 )

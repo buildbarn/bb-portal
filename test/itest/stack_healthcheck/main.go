@@ -29,8 +29,8 @@ func main() {
 }
 
 func run() error {
-	if len(os.Args) != 5 {
-		return fmt.Errorf("usage: stack_healthcheck POSTGRESQL_CONNECTION_STRING CAS_ADDRESS SCHEDULER_ADDRESS JAEGER_URL")
+	if len(os.Args) < 6 {
+		return fmt.Errorf("usage: stack_healthcheck POSTGRESQL_CONNECTION_STRING CAS_ADDRESS SCHEDULER_ADDRESS JAEGER_URL WORKER_INSTANCE_PREFIX...")
 	}
 	if err := checkPostgres(os.Args[1]); err != nil {
 		return err
@@ -38,7 +38,7 @@ func run() error {
 	if err := checkCAS(os.Args[2]); err != nil {
 		return err
 	}
-	if err := checkWorker(os.Args[3]); err != nil {
+	if err := checkWorkers(os.Args[3], os.Args[5:]); err != nil {
 		return err
 	}
 	return checkJaeger(os.Args[4])
@@ -66,22 +66,17 @@ func checkCAS(address string) error {
 	}
 	defer connection.Close()
 
-	// A batch of absent digests makes the sharding frontend contact both
-	// storage backends with overwhelming probability, without writing data.
-	digests := make([]*remoteexecution.Digest, 32)
-	for i := range digests {
-		hash := sha256.Sum256([]byte(fmt.Sprintf("bb-portal-itest-health-check-%d", i)))
-		digests[i] = &remoteexecution.Digest{
-			Hash:      hex.EncodeToString(hash[:]),
-			SizeBytes: 1,
-		}
-	}
+	// Query one absent digest to verify the single local storage backend.
+	hash := sha256.Sum256([]byte("bb-portal-itest-health-check"))
 
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 	_, err = remoteexecution.NewContentAddressableStorageClient(connection).FindMissingBlobs(ctx, &remoteexecution.FindMissingBlobsRequest{
 		InstanceName: "hardlinking",
-		BlobDigests:  digests,
+		BlobDigests: []*remoteexecution.Digest{{
+			Hash:      hex.EncodeToString(hash[:]),
+			SizeBytes: 1,
+		}},
 	})
 	if err != nil {
 		return fmt.Errorf("Buildbarn CAS is not ready: %w", err)
@@ -89,7 +84,7 @@ func checkCAS(address string) error {
 	return nil
 }
 
-func checkWorker(address string) error {
+func checkWorkers(address string, workerPrefixes []string) error {
 	connection, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("create scheduler client: %w", err)
@@ -102,16 +97,21 @@ func checkWorker(address string) error {
 	if err != nil {
 		return fmt.Errorf("Buildbarn scheduler is not ready: %w", err)
 	}
+	registered := map[string]bool{}
 	for _, platformQueue := range response.GetPlatformQueues() {
-		if platformQueue.GetName().GetInstanceNamePrefix() == "hardlinking" {
-			for _, sizeClassQueue := range platformQueue.GetSizeClassQueues() {
-				if sizeClassQueue.GetWorkersCount() > 0 {
-					return nil
-				}
+		prefix := platformQueue.GetName().GetInstanceNamePrefix()
+		for _, sizeClassQueue := range platformQueue.GetSizeClassQueues() {
+			if sizeClassQueue.GetWorkersCount() > 0 {
+				registered[prefix] = true
 			}
 		}
 	}
-	return fmt.Errorf("Buildbarn worker is not registered yet")
+	for _, prefix := range workerPrefixes {
+		if !registered[prefix] {
+			return fmt.Errorf("Buildbarn %s worker is not registered yet", prefix)
+		}
+	}
+	return nil
 }
 
 func checkJaeger(address string) error {

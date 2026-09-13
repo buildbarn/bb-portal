@@ -1,53 +1,16 @@
+local storage = { grpc: { client: { address: 'storage:8981' } } };
+
 {
   blobstore: {
-    contentAddressableStorage: {
-      sharding: {
-        shards: {
-          '0': {
-            backend: { grpc: { client: { address: 'storage-0:8981' } } },
-            weight: 1,
-          },
-          '1': {
-            backend: { grpc: { client: { address: 'storage-1:8981' } } },
-            weight: 1,
-          },
-        },
-      },
-    },
+    contentAddressableStorage: storage,
     actionCache: {
       completenessChecking: {
-        backend: {
-          sharding: {
-            shards: {
-              '0': {
-                backend: { grpc: { client: { address: 'storage-0:8981' } } },
-                weight: 1,
-              },
-              '1': {
-                backend: { grpc: { client: { address: 'storage-1:8981' } } },
-                weight: 1,
-              },
-            },
-          },
-        },
+        backend: storage,
         maximumTotalTreeSizeBytes: 64 * 1024 * 1024,
       },
     },
   },
-  fileSystemAccessCache: {
-    sharding: {
-      shards: {
-        '0': {
-          backend: { grpc: { client: { address: 'storage-0:8981' } } },
-          weight: 1,
-        },
-        '1': {
-          backend: { grpc: { client: { address: 'storage-1:8981' } } },
-          weight: 1,
-        },
-      },
-    },
-  },
+  fileSystemAccessCache: storage,
   browserUrl: 'http://127.0.0.1:18081/browser',
   maximumMessageSizeBytes: 16 * 1024 * 1024,
   global(serviceName): {
@@ -70,7 +33,7 @@
     },
     diagnosticsHttpServer: {
       httpServers: [{
-        listenAddresses: [':80'],
+        listenAddresses: [':9980'],
         authenticationPolicy: { allow: {} },
       }],
       enablePrometheus: true,

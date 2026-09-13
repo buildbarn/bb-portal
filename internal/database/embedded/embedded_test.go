@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestCleanupRemovesTemporaryDirectories(t *testing.T) {
@@ -14,12 +16,9 @@ func TestCleanupRemovesTemporaryDirectories(t *testing.T) {
 		dataPath:    dataPath,
 	}
 
-	if err := databaseProvider.Cleanup(); err != nil {
-		t.Fatalf("Cleanup failed: %v", err)
-	}
+	require.NoError(t, databaseProvider.Cleanup())
 	for _, path := range []string{runtimePath, dataPath} {
-		if _, err := os.Stat(path); !errors.Is(err, os.ErrNotExist) {
-			t.Errorf("Temporary directory %q still exists after cleanup", path)
-		}
+		_, err := os.Stat(path)
+		require.Equal(t, true, errors.Is(err, os.ErrNotExist), "Temporary directory %q still exists after cleanup", path)
 	}
 }

@@ -1,0 +1,49 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@rules_img//img:image.bzl", "image_manifest")
+load("@rules_img//img:layer.bzl", "layer_from_binary")
+load("@rules_img//img:load.bzl", "image_load")
+
+go_library(
+    name = "volume_initializer_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/test/itest/volume_initializer",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "volume_initializer",
+    embed = [":volume_initializer_lib"],
+)
+
+go_test(
+    name = "volume_initializer_test",
+    srcs = ["main_test.go"],
+    embed = [":volume_initializer_lib"],
+    deps = ["@com_github_stretchr_testify//require"],
+)
+
+layer_from_binary(
+    name = "volume_initializer_image_layer",
+    binary = ":volume_initializer",
+    include_runfiles = False,
+    path = "app/volume_initializer",
+    tags = ["manual"],
+)
+
+image_manifest(
+    name = "volume_initializer_image",
+    layers = [":volume_initializer_image_layer"],
+    platform = select({
+        "@platforms//cpu:aarch64": "@com_github_buildbarn_bb_storage//tools/platforms:linux_arm64",
+        "@platforms//cpu:x86_64": "@com_github_buildbarn_bb_storage//tools/platforms:linux_amd64",
+    }),
+    tags = ["manual"],
+    user = "0",
+)
+
+image_load(
+    name = "volume_initializer_image.load",
+    image = ":volume_initializer_image",
+    tag = "bb-portal/volume-initializer:itest",
+    visibility = ["//test/itest:__pkg__"],
+)

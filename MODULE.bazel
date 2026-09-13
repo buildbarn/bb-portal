@@ -32,6 +32,7 @@ bazel_dep(name = "rules_img", version = "0.3.12")
 
 bazel_dep(name = "rules_docker_compose", version = "0.3.0", dev_dependency = True)
 bazel_dep(name = "rules_itest", version = "0.0.58", dev_dependency = True)
+bazel_dep(name = "rules_pkg", version = "1.0.1", dev_dependency = True)
 
 bazel_dep(name = "rules_jsonnet", version = "0.7.2")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
@@ -190,6 +191,51 @@ use_repo(docker_compose, "docker_compose_toolchains")
 register_toolchains(
     "@docker_compose_toolchains//:all",
     dev_dependency = True,
+)
+
+# C/C++ runtime and BusyBox shell used by initdb for the Bazel-built embedded
+# PostgreSQL integration-test image.
+image_pull = use_repo_rule("@rules_img//img:pull.bzl", "pull")
+
+image_pull(
+    name = "distroless_cc_debian12_debug",
+    digest = "sha256:bc3546a529388660b583cc85ca6559927652d54391dc8059419d7b4bf3921154",
+    registry = "gcr.io",
+    repository = "distroless/cc-debian12",
+)
+
+# Register the commit-stamped Buildbarn releases as Bazel image inputs. This
+# lets Compose use their readable tags while image loading stays reproducible.
+image_pull(
+    name = "buildbarn_bb_storage_image",
+    digest = "sha256:36201141f924865ddbea1bc518c4f98dd0dbb744181ef34f9f5e864d3dcf43f8",
+    registry = "ghcr.io",
+    repository = "buildbarn/bb-storage",
+    tag = "20260609T094425Z-10acc76",
+)
+
+image_pull(
+    name = "buildbarn_bb_scheduler_image",
+    digest = "sha256:95417d159b5b9f17a6c915fec43603be51c553f68de439a9affcfe811bd0c6da",
+    registry = "ghcr.io",
+    repository = "buildbarn/bb-scheduler",
+    tag = "20260527T162223Z-c48dcda",
+)
+
+image_pull(
+    name = "buildbarn_bb_worker_image",
+    digest = "sha256:4cc65f0dd716fd0942ccc0fdd770421065b7f3bf55062a184c4376e4c0a4a13e",
+    registry = "ghcr.io",
+    repository = "buildbarn/bb-worker",
+    tag = "20260527T162223Z-c48dcda",
+)
+
+image_pull(
+    name = "buildbarn_bb_runner_installer_image",
+    digest = "sha256:0f719066773c365ba902edebb9f7ea8e23b3b4a82002c6dbdbb0c74965bcc34d",
+    registry = "ghcr.io",
+    repository = "buildbarn/bb-runner-installer",
+    tag = "20260527T162223Z-c48dcda",
 )
 
 # SQLC tooling

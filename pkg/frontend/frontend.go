@@ -105,6 +105,8 @@ func setupProxyHandler(router *mux.Router, sourceConfig *bb_portal.FrontendServi
 				return err
 			}
 
+			// ReverseProxy would otherwise retain Vite's shorter Content-Length
+			// and truncate the injected configuration script.
 			r.Body = io.NopCloser(bytes.NewReader(newIndexContent))
 			r.ContentLength = int64(len(newIndexContent))
 			r.Header.Set("Content-Length", strconv.FormatInt(r.ContentLength, 10))
