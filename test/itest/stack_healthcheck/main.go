@@ -30,7 +30,7 @@ func main() {
 
 func run() error {
 	if len(os.Args) < 6 {
-		return fmt.Errorf("usage: stack_healthcheck POSTGRESQL_CONNECTION_STRING CAS_ADDRESS SCHEDULER_ADDRESS JAEGER_URL WORKER_INSTANCE_PREFIX...")
+		return fmt.Errorf("usage: stack_healthcheck POSTGRESQL_CONNECTION_STRING CAS_ADDRESS SCHEDULER_ADDRESS JAEGER_URL WORKER_INSTANCE_PREFIX")
 	}
 	if err := checkPostgres(os.Args[1]); err != nil {
 		return err

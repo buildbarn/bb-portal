@@ -74,7 +74,10 @@ image_load(
 image_manifest(
     name = "buildbarn_bb_runner_installer_image",
     base = "@buildbarn_bb_runner_installer_image",
-    platform = "@com_github_buildbarn_bb_storage//tools/platforms:linux_amd64",
+    platform = select({
+        "@platforms//cpu:aarch64": "@com_github_buildbarn_bb_storage//tools/platforms:linux_arm64",
+        "@platforms//cpu:x86_64": "@com_github_buildbarn_bb_storage//tools/platforms:linux_amd64",
+    }),
     tags = ["manual"],
 )
 
