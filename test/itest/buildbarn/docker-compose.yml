@@ -27,7 +27,7 @@ services:
       - 15432:5432
     volumes:
       - postgres-data:/var/lib/postgresql
-    # Keep startup ordering deterministic when this stack is run as a Bazel test.
+    # Persistent state must be initialized before PostgreSQL consumes it.
     depends_on:
       volume-initializer:
         condition: service_completed_successfully
@@ -57,15 +57,6 @@ services:
     volumes:
       - ./config/common.libsonnet:/config/common.libsonnet:ro
       - ./config/frontend.jsonnet:/config/frontend.jsonnet:ro
-    # These services retry transient connection failures, but explicit ordering
-    # makes startup reliable when the Compose lifecycle is exercised by bazel test.
-    depends_on:
-      jaeger:
-        condition: service_started
-      scheduler:
-        condition: service_started
-      storage:
-        condition: service_started
 
   storage:
     image: ghcr.io/buildbarn/bb-storage:20260609T094425Z-10acc76
@@ -77,8 +68,6 @@ services:
       - storage-cas:/storage-cas
       - storage-fsac:/storage-fsac
     depends_on:
-      jaeger:
-        condition: service_started
       volume-initializer:
         condition: service_completed_successfully
 
@@ -91,11 +80,6 @@ services:
     volumes:
       - ./config/common.libsonnet:/config/common.libsonnet:ro
       - ./config/scheduler.jsonnet:/config/scheduler.jsonnet:ro
-    depends_on:
-      jaeger:
-        condition: service_started
-      storage:
-        condition: service_started
 
   runner-installer:
     image: ghcr.io/buildbarn/bb-runner-installer:20260527T162223Z-c48dcda
@@ -110,10 +94,6 @@ services:
       - ./config/worker-hardlinking-ubuntu22-04.jsonnet:/config/worker-hardlinking-ubuntu22-04.jsonnet:ro
       - worker-hardlinking:/worker
     depends_on:
-      jaeger:
-        condition: service_started
-      scheduler:
-        condition: service_started
       volume-initializer:
         condition: service_completed_successfully
 
@@ -133,8 +113,6 @@ services:
       - bb-runner:/bb
       - worker-hardlinking:/worker
     depends_on:
-      jaeger:
-        condition: service_started
       runner-installer:
         condition: service_completed_successfully
       volume-initializer:

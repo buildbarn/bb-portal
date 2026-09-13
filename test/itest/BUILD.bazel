@@ -179,16 +179,18 @@ itest_service(
     http_health_check_address = "http://127.0.0.1:18081/",
     hygienic = False,
     shutdown_timeout = "15s",
-    deps = [
-        ":bb_portal_frontend",
-        ":buildbarn_service",
-    ],
+    # Schema migration requires PostgreSQL to be ready before startup.
+    deps = [":buildbarn_service"],
 )
 
 itest_service_group(
     name = "bb_portal",
     hygienic = False,
-    services = [":bb_portal_backend"],
+    services = [
+        ":bb_portal_backend",
+        ":bb_portal_frontend",
+        ":buildbarn_service",
+    ],
     visibility = ["//visibility:public"],
 )
 

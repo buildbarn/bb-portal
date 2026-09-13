@@ -12,10 +12,6 @@ services:
         bind:
           propagation: shared
     depends_on:
-      jaeger:
-        condition: service_started
-      scheduler:
-        condition: service_started
       volume-initializer:
         condition: service_completed_successfully
 
@@ -37,11 +33,7 @@ services:
         bind:
           propagation: slave
     depends_on:
-      jaeger:
-        condition: service_started
       runner-installer:
         condition: service_completed_successfully
       volume-initializer:
         condition: service_completed_successfully
-      worker-fuse-ubuntu22-04:
-        condition: service_started

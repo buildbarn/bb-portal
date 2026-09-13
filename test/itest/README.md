@@ -31,8 +31,11 @@ bazel test //test/itest:bb_portal_test
 ```
 
 The `requires-network` tag lives on that test target, where it configures the
-test sandbox. Compose keeps explicit service dependencies so startup order is
-deterministic.
+test sandbox. The service group owns the portal frontend, portal backend, and
+Compose stack. Long-running Compose services remain loosely coupled and become
+ready independently. Dependencies only express hard lifecycle requirements:
+one-shot volume and runner initialization precede their consumers, and the
+Compose stack is healthy before the portal backend migrates PostgreSQL.
 
 To avoid clashing with services already running on the host, every port
 published by Docker Compose uses a `+10000` offset. For example, PostgreSQL is
