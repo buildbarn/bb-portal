@@ -391,6 +391,8 @@
     "https://bcr.bazel.build/modules/rules_img/0.3.11/MODULE.bazel": "85b9d7e2c5d83a321766dbc382c613c2399db680174bdfa32966f477989ee361",
     "https://bcr.bazel.build/modules/rules_img/0.3.12/MODULE.bazel": "6b7df1df94ee7ca59e9ce7d1b3454205e3ce5ee4e4add22207314bdc9a3fb280",
     "https://bcr.bazel.build/modules/rules_img/0.3.12/source.json": "d9a772731a1b5c6bf7cf536a61eb77a8165b8d4e99c0b7df4be6c95b33dab480",
+    "https://bcr.bazel.build/modules/rules_itest/0.0.61/MODULE.bazel": "f65c2cdf2968cda84e075a44ec676997aacc63aa62614863a9e7bd3c73f83659",
+    "https://bcr.bazel.build/modules/rules_itest/0.0.61/source.json": "8fc2a12d5408b0233094da765abc1fd99126f2d97b815caec6f6e01a8018030a",
     "https://bcr.bazel.build/modules/rules_java/4.0.0/MODULE.bazel": "5a78a7ae82cd1a33cef56dc578c7d2a46ed0dca12643ee45edbb8417899e6f74",
     "https://bcr.bazel.build/modules/rules_java/5.1.0/MODULE.bazel": "324b6478b0343a3ce7a9add8586ad75d24076d6d43d2f622990b9c1cfd8a1b15",
     "https://bcr.bazel.build/modules/rules_java/5.3.5/MODULE.bazel": "a4ec4f2db570171e3e5eb753276ee4b389bae16b96207e9d3230895c99644b86",

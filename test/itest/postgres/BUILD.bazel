@@ -19,6 +19,7 @@ go_binary(
     name = "postgres",
     data = ["//internal/database/embedded:extraced_embedded_postgres"],
     embed = [":postgres_lib"],
+    visibility = ["//visibility:public"],
 )
 
 go_test(

@@ -4,6 +4,7 @@ load("@rules_docker_compose//docker_compose:defs.bzl", "docker_compose_binary", 
 load("@rules_img//img:image.bzl", "image_manifest")
 load("@rules_img//img:load.bzl", "image_load")
 load("@rules_itest//:itest.bzl", "itest_service", "itest_service_group", "service_test")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 copy_to_bin(
     name = "buildbarn_compose_file",
@@ -191,8 +192,15 @@ service_test(
     name = "bb_portal_test",
     services = [":bb_portal"],
     tags = ["requires-network"],
-    test = "@rules_itest//:exit0",
+    test = ":exit0",
     visibility = ["//visibility:public"],
+)
+
+# The rules_itest sample exit0 is a cc_binary, which makes //... require a C++
+# toolchain for every requested cross-compilation platform.
+sh_binary(
+    name = "exit0",
+    srcs = ["exit0.sh"],
 )
 
 # A tool-free action that can be executed on the Linux runner even when the

@@ -13,6 +13,7 @@ go_library(
 go_binary(
     name = "volume_initializer",
     embed = [":volume_initializer_lib"],
+    visibility = ["//visibility:public"],
 )
 
 go_test(
