@@ -48,6 +48,10 @@ export const BUILD_NODE_FRAGMENT = gql(/* GraphQL */ `
     id
     buildUUID
     timestamp
+    instanceName {
+      id
+      name
+    }
     tags {
       edges {
         node {

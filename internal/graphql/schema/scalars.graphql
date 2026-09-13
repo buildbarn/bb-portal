@@ -1,6 +1,3 @@
 scalar UUID
-scalar Duration
 scalar Map
 scalar Time
-scalar Any
-scalar Upload

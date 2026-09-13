@@ -21,6 +21,7 @@ import type {
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
 import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import { flattenUserInfo } from "./flattenUserInfo";
 
 interface Props {
   pageSize: number | undefined;
@@ -36,7 +37,7 @@ export const UserDetailsPage: React.FC<Props> = ({
   getPaginationUpdateLink,
 }) => {
   const invocations = parseGraphqlEdgeList(user.bazelInvocations);
-  const userInfo = user.userInfo || {};
+  const userInfo = flattenUserInfo(user.userInfo);
 
   const tableColumns = [
     invocationIdColumn,

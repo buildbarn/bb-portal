@@ -7,7 +7,6 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
@@ -20,19 +19,9 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-// DbCleanupService a service that performs periodic cleanup of the
-// database to remove old data that is no longer needed. This includes:
-//
-//  1. Locking unfinished invocations that have not received any new event
-//     metadata for a certain period of time (invocationMessageTimeout) and
-//     setting their end time if it is not set.
-//  2. Compacting logs by normalizing and compressing them.
-//  3. Deleting incomplete logs that have been compacted.
-//  4. Removing invocations that have completed and whose completion time
-//     is older than invocationRetention.
-//  5. Removing builds that do not have any associated invocations.
-//  6. Removing old TargetKindMappings.
-//  7. Removing unused targets.
+// DbCleanupService a service that performs periodic cleanup of the database to
+// remove old data that is no longer needed, and to compact data in a format
+// more suitable for storage.
 type DbCleanupService struct {
 	db                       database.Client
 	batcher                  Batcher
@@ -86,74 +75,45 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 		ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 		for {
 			dc.counter++
-			// Add 5% jitter to the cleanup interval
-			timeToSleep := dc.cleanupInterval + time.Duration((rand.Float64()*0.1-0.05)*float64(dc.cleanupInterval))
+			startTime := dc.clock.Now()
+
+			dc.performCleanup(ctx)
+
+			// Add 5% jitter to the target interval
+			jitter := time.Duration((rand.Float64()*0.1 - 0.05) * float64(dc.cleanupInterval))
+			targetInterval := dc.cleanupInterval + jitter
+
+			elapsed := dc.clock.Now().Sub(startTime)
+			timeToSleep := max(targetInterval-elapsed, 0)
+
 			select {
 			case <-ctx.Done():
 				return nil
 			case <-time.After(timeToSleep):
-				if err := dc.executeTask(ctx, "LockInvocationsWithNoRecentEvents", "invocations_locked", dc.LockInvocationsWithNoRecentEvents); err != nil {
-					slog.Warn("Failed to lock unfinished invocations with no recent events", "err", err)
-				}
-				if err := dc.executeTask(ctx, "UpdateInvocationEndedAtFromEvents", "updated_invocations", dc.UpdateInvocationEndedAtFromEvents); err != nil {
-					slog.Warn("Failed to update invocation ended_at from event metadata", "err", err)
-				}
-				if err := dc.executeTask(ctx, "CompactLogs", "compacted_logs", dc.CompactLogs); err != nil {
-					slog.Warn("Failed to compact logs", "err", err)
-				}
-				if err := dc.executeTask(ctx, "DeleteIncompleteLogs", "deleted_logs", dc.DeleteIncompleteLogs); err != nil {
-					slog.Warn("Failed to delete incomplete logs", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveOldInvocations", "deleted_invocations", dc.RemoveOldInvocations); err != nil {
-					slog.Warn("Failed to remove old invocations", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveInactiveUsers", "deleted_users", dc.RemoveInactiveUsers); err != nil {
-					slog.Warn("Failed to remove users without invocations")
-				}
-				if err := dc.executeTask(ctx, "RemoveBuildsWithoutInvocations", "deleted_builds", dc.RemoveBuildsWithoutInvocations); err != nil {
-					slog.Warn("Failed to remove builds without invocations", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveTargetKindMappings", "removed_target_kind_mappings", dc.RemoveTargetKindMappings); err != nil {
-					slog.Warn("Failed to remove old TargetKindMappings", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveUnusedTargets", "removed_unused_targets", dc.RemoveUnusedTargets); err != nil {
-					slog.Warn("Failed to remove unused targets", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveOrphanedTestTargets", "removed_test_targets", dc.RemoveOrphanedTestTargets); err != nil {
-					slog.Warn("Failed to remove orphaned test targets", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveUnusedFiles", "removed_files", dc.RemoveUnusedFiles); err != nil {
-					slog.Warn("Failed to remove unused files", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveUnusedFilePaths", "removed_file_paths", dc.RemoveUnusedFilePaths); err != nil {
-					slog.Warn("Failed to remove unused file paths", "err", err)
-				}
-				if err := dc.executeTask(ctx, "RemoveUnusedDigests", "removed_digests", dc.RemoveUnusedDigests); err != nil {
-					slog.Warn("Failed to remove unused digests", "err", err)
-				}
 			}
 		}
 	})
 }
 
-// RemoveBuildsWithoutInvocations removes builds that do not have any
-// associated invocations.
-func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) (int64, error) {
-	deletedBuilds, err := dc.db.Ent().Build.Delete().
-		Where(
-			build.Not(build.HasInvocations()),
-		).
-		Exec(ctx)
-	if err != nil {
-		return 0, util.StatusWrap(err, "Failed to remove builds without invocations")
-	}
-
-	return int64(deletedBuilds), nil
+func (dc *DbCleanupService) performCleanup(ctx context.Context) {
+	dc.executeTask(ctx, "LockInvocationsWithNoRecentEvents", "invocations_locked", dc.LockInvocationsWithNoRecentEvents)
+	dc.executeTask(ctx, "UpdateInvocationEndedAtFromEvents", "updated_invocations", dc.UpdateInvocationEndedAtFromEvents)
+	dc.executeTask(ctx, "CompactLogs", "compacted_logs", dc.CompactLogs)
+	dc.executeTask(ctx, "RemoveIncompleteLogs", "deleted_logs", dc.RemoveIncompleteLogs)
+	dc.executeTask(ctx, "RemoveOldInvocations", "deleted_invocations", dc.RemoveOldInvocations)
+	dc.executeTask(ctx, "RemoveInactiveUsers", "deleted_users", dc.RemoveInactiveUsers)
+	dc.executeTask(ctx, "RemoveBuildsWithoutInvocations", "deleted_builds", dc.RemoveBuildsWithoutInvocations)
+	dc.executeTask(ctx, "RemoveTargetKindMappings", "removed_target_kind_mappings", dc.RemoveTargetKindMappings)
+	dc.executeTask(ctx, "RemoveUnusedTargets", "removed_unused_targets", dc.RemoveUnusedTargets)
+	dc.executeTask(ctx, "RemoveOrphanedTestTargets", "removed_test_targets", dc.RemoveOrphanedTestTargets)
+	dc.executeTask(ctx, "RemoveUnusedFiles", "removed_files", dc.RemoveUnusedFiles)
+	dc.executeTask(ctx, "RemoveUnusedFilePaths", "removed_file_paths", dc.RemoveUnusedFilePaths)
+	dc.executeTask(ctx, "RemoveUnusedDigests", "removed_digests", dc.RemoveUnusedDigests)
 }
 
 // A helper function which records metrics and tracing attributes
 // for the cleanup tasks
-func (dc *DbCleanupService) executeTask(ctx context.Context, taskName, attributeKey string, task func(context.Context) (int64, error)) error {
+func (dc *DbCleanupService) executeTask(ctx context.Context, taskName, attributeKey string, task func(context.Context) (int64, error)) {
 	ctx, span := dc.tracer.Start(ctx, fmt.Sprintf("DbCleanupService.%s", taskName))
 	defer span.End()
 	start := dc.clock.Now()
@@ -166,7 +126,6 @@ func (dc *DbCleanupService) executeTask(ctx context.Context, taskName, attribute
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, fmt.Sprintf("An error occured during cleanup service %s", taskName))
+		slog.Warn(fmt.Sprintf("DbCleanupService operation %s failed", taskName), "err", err)
 	}
-
-	return err
 }

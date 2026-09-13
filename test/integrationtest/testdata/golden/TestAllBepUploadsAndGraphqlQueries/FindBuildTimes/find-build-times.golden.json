@@ -1,0 +1,83 @@
+{
+  "findBazelInvocations": {
+    "edges": [
+      {
+        "node": {
+          "endedAt": "2024-05-03T00:24:29.605Z",
+          "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
+          "startedAt": "2024-05-03T00:24:28.621Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2024-05-03T00:24:16.367Z",
+          "invocationID": "08ae089d-4c85-405c-83fc-dbe9fc1dc942",
+          "startedAt": "2024-05-03T00:24:15.374Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2024-05-03T00:23:40.441Z",
+          "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6",
+          "startedAt": "2024-05-03T00:23:37.843Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2024-05-13T23:43:26.247Z",
+          "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+          "startedAt": "2024-05-13T23:43:23.045Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2024-05-03T00:29:47.784Z",
+          "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
+          "startedAt": "2024-05-03T00:29:47.443Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2026-02-04T08:41:31.302Z",
+          "invocationID": "bb2b45d9-d695-4194-8fdc-01ba50477a92",
+          "startedAt": "2026-02-04T08:41:30.06Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2026-02-04T08:42:52.138Z",
+          "invocationID": "76651929-40d8-4f79-a2de-6a4a5092b76c",
+          "startedAt": "2026-02-04T08:42:48.403Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2026-02-04T09:03:27.366Z",
+          "invocationID": "64719226-555e-494d-9918-0fd25d468b1e",
+          "startedAt": "2026-02-04T09:03:25.376Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2026-03-03T08:05:01.66Z",
+          "invocationID": "8e56d2d7-ca9b-45e6-a08f-85e7749e3c83",
+          "startedAt": "2026-03-03T07:52:14.102Z"
+        }
+      },
+      {
+        "node": {
+          "endedAt": "2026-07-13T07:54:01.866Z",
+          "invocationID": "eb510b31-a9cc-441f-8898-5104ef0025fd",
+          "startedAt": "2026-07-13T07:53:21.304Z"
+        }
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "gaFp0wAAAAAAAAAK",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "gaFp0wAAAAAAAAAB"
+    },
+    "totalCount": 10
+  }
+}

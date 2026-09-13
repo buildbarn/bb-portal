@@ -6,8 +6,9 @@ import (
 	"time"
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
-
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+
+	"github.com/RoaringBitmap/roaring"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/test/testutils"
@@ -15,6 +16,13 @@ import (
 	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/mock/gomock"
 )
+
+func roaringBytes(params ...uint32) []byte {
+	bitmap := roaring.NewBitmap()
+	bitmap.AddMany(params)
+	bytes, _ := bitmap.ToBytes()
+	return bytes
+}
 
 func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)

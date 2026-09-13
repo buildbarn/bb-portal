@@ -11,19 +11,13 @@ import TestGridBtn from "../TestGridBtn";
 import { GET_TESTS_FOR_TARGET } from "./graphql";
 
 interface Props {
-  instanceName: string;
-  label: string;
-  aspect: string;
-  targetKind: string;
+  targetId: string;
   numberOfElements: number;
   direction: "oldToNew" | "newToOld";
 }
 
 const TestGridRow: React.FC<Props> = ({
-  instanceName,
-  label,
-  aspect,
-  targetKind,
+  targetId,
   numberOfElements,
   direction,
 }) => {
@@ -33,12 +27,7 @@ const TestGridRow: React.FC<Props> = ({
       where: {
         hasInvocationTargetWith: {
           hasTargetWith: {
-            hasInstanceNameWith: {
-              name: instanceName,
-            },
-            label: label,
-            aspect: aspect,
-            targetKind: targetKind,
+            id: targetId,
           },
         },
       },
