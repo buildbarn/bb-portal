@@ -16,7 +16,10 @@ copy_to_directory(
     name = "embedded_frontend_files",
     srcs = select({
         ":embed_enabled": ["//frontend:dist"],
-        "//conditions:default": ["none_embed/index.html"],
+        "//conditions:default": [
+            "none_embed/index.html",
+            "none_embed/route-manifest.json",
+        ],
     }),
     # Now there is only one rule creating this path
     out = "embedded_frontend",
@@ -48,11 +51,16 @@ go_library(
 
 go_test(
     name = "frontend_test",
-    srcs = ["frontend_test.go"],
+    srcs = [
+        "embedded_test.go",
+        "frontend_test.go",
+    ],
     embed = [":frontend"],
+    embedsrcs = [":embedded_frontend_files"],  # keep
     deps = [
         "//pkg/proto/configuration/bb_portal",
         "//pkg/proto/configuration/frontend",
         "@com_github_gorilla_mux//:mux",
+        "@com_github_stretchr_testify//require",
     ],
 )
