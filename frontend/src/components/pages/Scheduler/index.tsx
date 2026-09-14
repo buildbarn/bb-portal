@@ -2,7 +2,7 @@ import { CalendarFilled } from "@ant-design/icons";
 import { Row } from "antd";
 import type React from "react";
 import PlatformQueuesTable from "@/components/PlatformQueuesTable";
-import PortalCard from "@/components/PortalCard";
+import { PortalCard } from "@/components/PortalCard";
 import { SchedulerStatistics } from "@/components/SchedulerStatistics";
 
 export const SchedulerPage: React.FC = () => {

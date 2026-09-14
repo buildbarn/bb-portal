@@ -1,7 +1,7 @@
 import { ApartmentOutlined } from "@ant-design/icons";
 import { Space, Table, type TableColumnsType, Typography } from "antd";
 import type { BazelInvocationMetricsBuildGraphEvaluationMetricsFragment } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
+import { PortalCard } from "../PortalCard";
 
 interface Props {
   buildGraphMetrics: BazelInvocationMetricsBuildGraphEvaluationMetricsFragment;
