@@ -51,8 +51,16 @@ go_library(
 
 go_test(
     name = "frontend_test",
-    srcs = ["embedded_test.go"],
+    srcs = [
+        "embedded_test.go",
+        "frontend_test.go",
+    ],
     embed = [":frontend"],
     embedsrcs = [":embedded_frontend_files"],  # keep
-    deps = ["@com_github_stretchr_testify//require"],
+    deps = [
+        "//pkg/proto/configuration/bb_portal",
+        "//pkg/proto/configuration/frontend",
+        "@com_github_gorilla_mux//:mux",
+        "@com_github_stretchr_testify//require",
+    ],
 )

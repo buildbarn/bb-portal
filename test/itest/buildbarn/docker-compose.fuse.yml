@@ -1,0 +1,39 @@
+services:
+  worker-fuse-ubuntu22-04:
+    image: ghcr.io/buildbarn/bb-worker:20260527T162223Z-c48dcda
+    command: [/config/worker-fuse-ubuntu22-04.jsonnet]
+    privileged: true
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/worker-fuse-ubuntu22-04.jsonnet:/config/worker-fuse-ubuntu22-04.jsonnet:ro
+      - type: bind
+        source: ./volumes/worker-fuse
+        target: /worker
+        bind:
+          propagation: shared
+    depends_on:
+      volume-initializer:
+        condition: service_completed_successfully
+
+  runner-fuse-ubuntu22-04:
+    image: ghcr.io/catthehacker/ubuntu:act-22.04@sha256:dd7654ffb01d5b7b54b23b9ce928a1f7f2d08c7b3d7e320b6574b55d7ccde78b
+    command:
+      - sh
+      - -c
+      - while ! test -f /bb/installed; do sleep 1; done; exec /bb/bb_runner /config/runner-ubuntu22-04.jsonnet
+    networks:
+      - tracing
+    volumes:
+      - ./config/common.libsonnet:/config/common.libsonnet:ro
+      - ./config/runner-ubuntu22-04.jsonnet:/config/runner-ubuntu22-04.jsonnet:ro
+      - bb-runner:/bb
+      - type: bind
+        source: ./volumes/worker-fuse
+        target: /worker
+        bind:
+          propagation: slave
+    depends_on:
+      runner-installer:
+        condition: service_completed_successfully
+      volume-initializer:
+        condition: service_completed_successfully
