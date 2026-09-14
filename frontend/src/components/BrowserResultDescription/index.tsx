@@ -1,10 +1,12 @@
-import { Descriptions, Space, Tag } from "antd";
+import { Descriptions, Space, Spin, Tag } from "antd";
 import type React from "react";
 import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
+import { useCheckDataExists } from "@/utils/fetchCasObject";
 import { CasViewer } from "../LogViewer/casViewer";
+import PortalAlert from "../PortalAlert";
 
 interface Params {
   browserPageParams: BrowserPageParams;
@@ -17,6 +19,38 @@ const BrowserResultDescription: React.FC<Params> = ({
   executeResponse,
   posixResourceUsage,
 }) => {
+  const { exists: stdOutExists, isLoading: isLoadingOut } = useCheckDataExists(
+    browserPageParams.instanceName,
+    [
+      {
+        hash: executeResponse?.result?.stdoutDigest?.hash ?? "",
+        sizeBytes: (
+          executeResponse?.result?.stdoutDigest?.sizeBytes ?? ""
+        ).toString(),
+      },
+    ],
+    browserPageParams.digestFunction,
+    executeResponse.result?.stdoutDigest !== undefined,
+  );
+
+  const { exists: stdErrExists, isLoading: isLoadingErr } = useCheckDataExists(
+    browserPageParams.instanceName,
+    [
+      {
+        hash: executeResponse?.result?.stderrDigest?.hash ?? "",
+        sizeBytes: (
+          executeResponse?.result?.stderrDigest?.sizeBytes ?? ""
+        ).toString(),
+      },
+    ],
+    browserPageParams.digestFunction,
+    executeResponse.result?.stdoutDigest !== undefined,
+  );
+
+  if (isLoadingOut && isLoadingErr) {
+    return <Spin />;
+  }
+
   const renderResult = () => {
     if (executeResponse.status !== undefined) {
       return (
@@ -59,7 +93,10 @@ const BrowserResultDescription: React.FC<Params> = ({
       >
         {renderResult()}
       </Descriptions>
-      {executeResponse.result?.stdoutDigest?.hash &&
+
+      {!executeResponse.result?.stdoutDigest?.hash ? null : stdOutExists ===
+        true ? (
+        executeResponse.result?.stdoutDigest?.hash &&
         executeResponse.result?.stdoutDigest?.sizeBytes && (
           <CasViewer
             instanceName={browserPageParams.instanceName}
@@ -74,8 +111,19 @@ const BrowserResultDescription: React.FC<Params> = ({
             title="Standard Output"
             fileName="standard_output.txt"
           />
-        )}
-      {executeResponse.result?.stderrDigest?.hash &&
+        )
+      ) : (
+        <PortalAlert
+          type="error"
+          title="Standard output logs not found"
+          description="The data does not exist"
+          showIcon
+        />
+      )}
+
+      {!executeResponse.result?.stderrDigest?.hash ? null : stdErrExists ===
+        true ? (
+        executeResponse.result?.stderrDigest?.hash &&
         executeResponse.result?.stderrDigest?.sizeBytes && (
           <CasViewer
             instanceName={browserPageParams.instanceName}
@@ -90,7 +138,15 @@ const BrowserResultDescription: React.FC<Params> = ({
             title="Standard Error"
             fileName="standard_error.txt"
           />
-        )}
+        )
+      ) : (
+        <PortalAlert
+          type="error"
+          title="Standard error logs not found"
+          description={`The data does not exist`}
+          showIcon
+        />
+      )}
     </Space>
   );
 };

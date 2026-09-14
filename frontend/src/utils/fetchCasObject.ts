@@ -1,8 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
+import { casClient } from "@/grpc/casClient";
 import type {
   Digest,
   DigestFunction_Value,
+  FindMissingBlobsRequest,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
+import type {
+  ByteStreamClient,
+  DeepPartial,
+} from "@/lib/grpc-client/google/bytestream/bytestream";
 import {
   digestFunctionValueToString,
   includeDigestFunctionInCasFetch,
@@ -62,3 +68,35 @@ export const fetchCasObjectAndParse = async <T>(
 
   return protobufToObject(objectType, combinedChunks, true);
 };
+
+async function checkDataExists(
+  instanceName: string,
+  digests: Digest[],
+  digestFunction: DigestFunction_Value,
+): Promise<boolean> {
+  const requestBody: DeepPartial<FindMissingBlobsRequest> = {
+    instanceName: instanceName,
+    blobDigests: digests,
+    digestFunction: digestFunction,
+  };
+  const response = await casClient.findMissingBlobs(requestBody);
+  return response.missingBlobDigests.length === 0;
+}
+
+export function useCheckDataExists(
+  instanceName: string,
+  digests: Digest[],
+  digestFunction: DigestFunction_Value,
+  enabled: boolean = true,
+) {
+  const { data: exists, isLoading } = useQuery({
+    queryKey: ["checkDataExists", instanceName, digests, digestFunction],
+    queryFn: () => checkDataExists(instanceName, digests, digestFunction),
+    enabled: enabled,
+  });
+
+  return {
+    exists: exists ?? false,
+    isLoading: isLoading,
+  };
+}
