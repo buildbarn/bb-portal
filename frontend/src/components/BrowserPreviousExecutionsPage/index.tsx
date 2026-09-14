@@ -33,7 +33,7 @@ const BrowserPreviousExecutionsPage: React.FC<Params> = ({
       <PortalAlert
         showIcon
         type="error"
-        message="Error fetching pevious executions"
+        title="Error fetching pevious executions"
         description={
           error.message ||
           "Unknown error occurred while fetching data from the server."
@@ -43,7 +43,7 @@ const BrowserPreviousExecutionsPage: React.FC<Params> = ({
   }
 
   return (
-    <Space direction="vertical" size="large" style={{ width: "100%" }}>
+    <Space orientation="vertical" size="large" style={{ width: "100%" }}>
       <Typography.Title level={2}>Previous executions stats</Typography.Title>
       <BrowserPreviousExecutionsDisplay
         browserParams={browserPageParams}

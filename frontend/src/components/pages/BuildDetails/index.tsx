@@ -28,7 +28,7 @@ const getTitleBits = (
   }
   const titleBits = [];
   titleBits.push(
-    <Space direction="horizontal" size={0}>
+    <Space orientation="horizontal" size={0}>
       <Typography.Title level={5}>{`Build ID:`}</Typography.Title>
       <Typography.Text
         copyable
@@ -48,9 +48,9 @@ const getTitleBits = (
     const urlTag = urlTags.length === 1 ? urlTags[0] : undefined;
 
     titleBits.push(
-      <Space direction="horizontal" size={0}>
+      <Space orientation="horizontal" size={0}>
         <Typography.Title level={5}>{`${column.title}:`}</Typography.Title>
-        <Space direction="horizontal">
+        <Space orientation="horizontal">
           <OptionalLinkWrapper url={urlTag?.value}>
             <Typography.Text type="secondary" className={styles.normalWeight}>
               {valueTags.map((tag) => tag.value).join(", ")}
@@ -116,7 +116,7 @@ export const BuildDetailsPage: React.FC<Props> = ({
       titleBits={getTitleBits(build)}
       extraBits={getExtraBits(build)}
     >
-      <Space direction="vertical" style={{ width: "100%" }}>
+      <Space orientation="vertical" style={{ width: "100%" }}>
         {tags && tags.length > 0 && (
           <Flex gap="4px 0" wrap>
             {tags?.map((tag) => (

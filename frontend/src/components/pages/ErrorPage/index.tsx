@@ -10,7 +10,7 @@ interface Props {
 export const ErrorPage: React.FC<Props> = ({ error }) => {
   return (
     <Space
-      direction="vertical"
+      orientation="vertical"
       size="large"
       className={themeStyles.errorPageContainer}
     >

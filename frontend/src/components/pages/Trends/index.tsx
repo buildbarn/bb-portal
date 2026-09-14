@@ -103,7 +103,11 @@ export const TrendsPage: React.FC = () => {
             <Statistic
               title="Total"
               value={data?.findBazelInvocations.totalCount}
-              valueStyle={{ color: "#82ca9d" }}
+              styles={{
+                content: {
+                  color: "#82ca9d",
+                },
+              }}
             />
             <Statistic
               title="Average"
@@ -114,7 +118,11 @@ export const TrendsPage: React.FC = () => {
                       smallestUnit: "ms",
                     })
               }
-              valueStyle={{ color: "#82ca9d" }}
+              styles={{
+                content: {
+                  color: "#82ca9d",
+                },
+              }}
             />
             <Statistic
               title="Median"
@@ -125,7 +133,11 @@ export const TrendsPage: React.FC = () => {
                       smallestUnit: "ms",
                     })
               }
-              valueStyle={{ color: "#8884d8" }}
+              styles={{
+                content: {
+                  color: "#8884d8",
+                },
+              }}
             />
             <Statistic
               title="Max"

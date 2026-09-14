@@ -63,7 +63,7 @@ const AppBar: React.FC<Props> = ({ toggleTheme, prefersDark }) => {
           footer={<FooterBar className={styles.footerBar} />}
         >
           <AppBarMenu mode="inline" />
-          <Divider orientation="center" type="horizontal" />
+          <Divider orientation="horizontal" />
           <AppBarButtons toggleTheme={toggleTheme} prefersDark={prefersDark} />
         </Drawer>
       )}
