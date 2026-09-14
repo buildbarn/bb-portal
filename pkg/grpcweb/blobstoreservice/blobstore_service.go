@@ -7,21 +7,28 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/servefiles"
 	bb_grpcweb "github.com/buildbarn/bb-portal/pkg/grpcweb"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
-	blobstore_configuration "github.com/buildbarn/bb-storage/pkg/blobstore/configuration"
 	"github.com/buildbarn/bb-storage/pkg/blobstore/grpcservers"
-	"github.com/buildbarn/bb-storage/pkg/digest"
-	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
-	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/proto/fsac"
 	"github.com/buildbarn/bb-storage/pkg/proto/iscc"
-	"github.com/buildbarn/bb-storage/pkg/util"
 	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/genproto/googleapis/bytestream"
 	go_grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
+
+// BlobAccess contains the BlobAccessInfo for the ActionCache,
+// ContentAddressableStorage, InitialSizeClassCache,
+// and FileSystemAccessCache
+type BlobAccess struct {
+	UnauthorizedContentAddressableStorage *blobstore.BlobAccess
+	ContentAddressableStorage             *blobstore.BlobAccess
+	ActionCache                           *blobstore.BlobAccess
+	InitialSizeClassCache                 *blobstore.BlobAccess
+	FileSystemAccessCache                 *blobstore.BlobAccess
+}
 
 // NewBlobstoreService initializes and configures a gRPC-Web proxy server the
 // ActionCache, ContentAddressableStorage, InitialSizeClassCache, and
@@ -30,123 +37,56 @@ import (
 // router.
 func NewBlobstoreService(
 	configuration *bb_portal.ApplicationConfiguration,
-	siblingsGroup program.Group,
-	dependenciesGroup program.Group,
-	grpcClientFactory bb_grpc.ClientFactory,
-	instanceNameAuthorizer auth.Authorizer,
 	zstdPool bb_zstd.Pool,
 	router *http.ServeMux,
+	blobAccess *BlobAccess,
 ) error {
-	// Authorizer used to deny all write requests.
-	denyAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
+	if router == nil {
+		return status.Error(codes.NotFound, "Failed to create Graphql endpoint. No http server configured")
+	}
+
+	if blobAccess.ContentAddressableStorage == nil &&
+		blobAccess.ActionCache == nil &&
+		blobAccess.InitialSizeClassCache == nil &&
+		blobAccess.FileSystemAccessCache == nil {
+		return status.Error(codes.InvalidArgument, "No BlobAccess found. Please configure at least one of CAS, AC, ISCC or FSAC")
+	}
 
 	grpcServer := go_grpc.NewServer()
 	grpcWebServer := grpcweb.WrapServer(grpcServer)
 
 	// Content Addressable Storage (CAS).
-	var contentAddressableStorageInfo *blobstore_configuration.BlobAccessInfo
-	if configuration.ContentAddressableStorage != nil {
-		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
-			dependenciesGroup,
-			configuration.ContentAddressableStorage,
-			blobstore_configuration.NewCASBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes), zstdPool),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create Content Addressable Storage")
-		}
-		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
-		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, instanceNameAuthorizer)
-		remoteexecution.RegisterContentAddressableStorageServer(grpcServer, grpcservers.NewContentAddressableStorageServer(blobAccess, configuration.MaximumMessageSizeBytes))
-		bytestream.RegisterByteStreamServer(grpcServer, grpcservers.NewByteStreamServer(blobAccess, 1<<16, zstdPool))
-		router.Handle(
-			bb_grpcweb.GrpcWebEndpointPrefix+"/google.bytestream.ByteStream/",
-			http.StripPrefix(
-				bb_grpcweb.GrpcWebEndpointPrefix,
-				grpcWebServer,
-			),
-		)
-		router.Handle(
-			bb_grpcweb.GrpcWebEndpointPrefix+"/build.bazel.remote.execution.v2.ContentAddressableStorage/",
-			http.StripPrefix(
-				bb_grpcweb.GrpcWebEndpointPrefix,
-				grpcWebServer,
-			),
-		)
+	if blobAccess.ContentAddressableStorage != nil {
+		remoteexecution.RegisterContentAddressableStorageServer(grpcServer, grpcservers.NewContentAddressableStorageServer(*blobAccess.ContentAddressableStorage, configuration.MaximumMessageSizeBytes))
+		bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/build.bazel.remote.execution.v2.ContentAddressableStorage/")
+
+		bytestream.RegisterByteStreamServer(grpcServer, grpcservers.NewByteStreamServer(*blobAccess.ContentAddressableStorage, 1<<16, zstdPool))
+		bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/google.bytestream.ByteStream/")
+
 		// Serve files from the Content Addressable Storage (CAS) over HTTP.
 		serveFilesService := servefiles.NewFileServerService(
-			blobAccess,
+			*blobAccess.ContentAddressableStorage,
 			int(configuration.MaximumMessageSizeBytes),
 		)
 		router.HandleFunc("GET /api/v1/servefile/", servefiles.Dispatcher(serveFilesService))
-
-		contentAddressableStorageInfo = &info
 	}
 
 	// Action Cache (AC).
-	if configuration.ActionCache != nil {
-		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
-			dependenciesGroup,
-			configuration.ActionCache,
-			blobstore_configuration.NewACBlobAccessCreator(contentAddressableStorageInfo, grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create Action Cache")
-		}
-		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
-		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
-		remoteexecution.RegisterActionCacheServer(grpcServer, grpcservers.NewActionCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.Handle(
-			bb_grpcweb.GrpcWebEndpointPrefix+"/build.bazel.remote.execution.v2.ActionCache/",
-			http.StripPrefix(
-				bb_grpcweb.GrpcWebEndpointPrefix,
-				grpcWebServer,
-			),
-		)
+	if blobAccess.ActionCache != nil {
+		remoteexecution.RegisterActionCacheServer(grpcServer, grpcservers.NewActionCacheServer(*blobAccess.ActionCache, int(configuration.MaximumMessageSizeBytes)))
+		bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/build.bazel.remote.execution.v2.ActionCache/")
 	}
 
 	// Initial Size Class Cache (ISCC).
-	if configuration.InitialSizeClassCache != nil {
-		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
-			dependenciesGroup,
-			configuration.InitialSizeClassCache,
-			blobstore_configuration.NewISCCBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create Initial Size Class Cache")
-		}
-		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
-		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
-		iscc.RegisterInitialSizeClassCacheServer(grpcServer, grpcservers.NewInitialSizeClassCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.Handle(
-			bb_grpcweb.GrpcWebEndpointPrefix+"/buildbarn.iscc.InitialSizeClassCache/",
-			http.StripPrefix(
-				bb_grpcweb.GrpcWebEndpointPrefix,
-				grpcWebServer,
-			),
-		)
+	if blobAccess.InitialSizeClassCache != nil {
+		iscc.RegisterInitialSizeClassCacheServer(grpcServer, grpcservers.NewInitialSizeClassCacheServer(*blobAccess.InitialSizeClassCache, int(configuration.MaximumMessageSizeBytes)))
+		bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/buildbarn.iscc.InitialSizeClassCache/")
 	}
 
 	// File System Access Cache (FSAC).
-	if configuration.FileSystemAccessCache != nil {
-		info, err := blobstore_configuration.NewBlobAccessFromConfiguration(
-			dependenciesGroup,
-			configuration.FileSystemAccessCache,
-			blobstore_configuration.NewFSACBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create File System Access Cache")
-		}
-		// Add the instanceNameAuthorizer to the blobAccess and make it readonly. BB-portal should not have write access.
-		blobAccess := blobstore.NewAuthorizingBlobAccess(info.BlobAccess, instanceNameAuthorizer, denyAuthorizer, denyAuthorizer)
-		fsac.RegisterFileSystemAccessCacheServer(grpcServer, grpcservers.NewFileSystemAccessCacheServer(blobAccess, int(configuration.MaximumMessageSizeBytes)))
-		router.Handle(
-			bb_grpcweb.GrpcWebEndpointPrefix+"/buildbarn.fsac.FileSystemAccessCache/",
-			http.StripPrefix(
-				bb_grpcweb.GrpcWebEndpointPrefix,
-				grpcWebServer,
-			),
-		)
+	if blobAccess.FileSystemAccessCache != nil {
+		fsac.RegisterFileSystemAccessCacheServer(grpcServer, grpcservers.NewFileSystemAccessCacheServer(*blobAccess.FileSystemAccessCache, int(configuration.MaximumMessageSizeBytes)))
+		bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/buildbarn.fsac.FileSystemAccessCache/")
 	}
-
 	return nil
 }
