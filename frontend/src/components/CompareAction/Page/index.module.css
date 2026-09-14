@@ -1,0 +1,38 @@
+/* Mobile / Small Screen */
+.container {
+  display: grid;
+  gap: 10px;
+  /* Two columns: left side expands, right side fits the button */
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "left  button"
+    "right button";
+}
+
+.actionLabel {
+  text-align: center;
+}
+
+.left {
+  grid-area: left;
+}
+.right {
+  grid-area: right;
+}
+.button {
+  grid-area: button;
+  align-self: center; /* Centers the button vertically between left and right */
+}
+
+/* Desktop / Large Screen */
+.container.large {
+  grid-template-columns: 1fr auto 1fr; /* Left, Button, Right */
+  grid-template-areas: "left button right";
+
+  .left {
+    text-align: left;
+  }
+  .right {
+    text-align: right;
+  }
+}
