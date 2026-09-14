@@ -1,5 +1,6 @@
 import { Radio, type RadioChangeEvent } from "antd";
 import type React from "react";
+import { ExecutionStage_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 
 interface Props {
   value: OperationStatus;
@@ -12,6 +13,22 @@ export enum OperationStatus {
   QUEUED = "queued",
   COMPLETED = "completed",
 }
+
+const operationStatusMap: Record<
+  OperationStatus,
+  ExecutionStage_Value | undefined
+> = {
+  [OperationStatus.ALL]: undefined,
+  [OperationStatus.EXECUTING]: ExecutionStage_Value.EXECUTING,
+  [OperationStatus.QUEUED]: ExecutionStage_Value.QUEUED,
+  [OperationStatus.COMPLETED]: ExecutionStage_Value.COMPLETED,
+};
+
+export const getExecutionStageFromOperationStatus = (
+  operationState: OperationStatus,
+): ExecutionStage_Value | undefined => {
+  return operationStatusMap[operationState];
+};
 
 export const OperationFilterSelector: React.FC<Props> = ({
   value,
