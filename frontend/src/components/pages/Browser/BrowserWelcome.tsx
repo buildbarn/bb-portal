@@ -1,8 +1,9 @@
 // biome-ignore-all lint/suspicious/noTemplateCurlyInString: It's not supposed to be template strings
 
 import { LayoutOutlined } from "@ant-design/icons";
-import { Typography } from "antd";
+import { Divider, Typography } from "antd";
 import type React from "react";
+import { CacheStatsPanel } from "@/components/CacheStatsPanel";
 import PortalCard from "@/components/PortalCard";
 import styles from "./browser.module.css";
 
@@ -106,6 +107,13 @@ export const BrowserWelcomePage: React.FC = () => {
           </li>
         </ul>
       </Typography.Paragraph>
+
+      <Divider orientation="left" orientationMargin={0}>
+        <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+          Cache Statistics (since last restart)
+        </Typography.Text>
+      </Divider>
+      <CacheStatsPanel />
     </PortalCard>
   );
 };
