@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Install crane
           command: |
-            curl -fsSL "https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz" \
+            curl -fsSL "https://artifacts.compass-tech.net/repository/generic-local/crane/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz" \
               | tar xz -C ~/bin crane
             chmod +x ~/bin/crane
 
