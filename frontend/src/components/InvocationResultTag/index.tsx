@@ -75,6 +75,11 @@ export const INVOCATION_RESULT_TAGS: {
     color: "red",
     text: "Command Line Error",
   },
+  REMOTE_CACHE_EVICTED: {
+    icon: <CloseCircleFilled />,
+    color: "red",
+    text: "Remote Cache Evicted",
+  },
   UNKNOWN_EXIT_CODE: {
     icon: <QuestionCircleFilled />,
     color: "default",
