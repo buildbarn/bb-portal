@@ -18,6 +18,10 @@ export const invocationResultTagFilters = [
   { text: "Interrupted", value: InvocationResult.INTERRUPTED },
   { text: "Analysis Failure", value: InvocationResult.ANALYSIS_FAILURE },
   { text: "Command Line Error", value: InvocationResult.COMMAND_LINE_ERROR },
+  {
+    text: "Remote Cache Evicted",
+    value: InvocationResult.REMOTE_CACHE_EVICTED,
+  },
   { text: "Unknown exit code", value: InvocationResult.UNKNOWN_EXIT_CODE },
   { text: "In Progress", value: InvocationResult.IN_PROGRESS },
   { text: "Disconnected", value: InvocationResult.DISCONNECTED },
