@@ -3,7 +3,9 @@ package dbcleanupservice
 import (
 	"context"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/digest"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/file"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filepath"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
@@ -11,7 +13,7 @@ import (
 // RemoveUnusedFilePaths removes file paths that are no longer referenced by
 // any files.
 func (dc *DbCleanupService) RemoveUnusedFilePaths(ctx context.Context) (int64, error) {
-	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
+	start, count, err := dc.nextSlice(ctx, filepath.Table)
 	if err != nil {
 		return 0, err
 	}
@@ -32,7 +34,7 @@ func (dc *DbCleanupService) RemoveUnusedFilePaths(ctx context.Context) (int64, e
 // RemoveUnusedDigests removes digests that are no longer referenced by
 // any files.
 func (dc *DbCleanupService) RemoveUnusedDigests(ctx context.Context) (int64, error) {
-	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
+	start, count, err := dc.nextSlice(ctx, digest.Table)
 	if err != nil {
 		return 0, err
 	}
@@ -52,7 +54,7 @@ func (dc *DbCleanupService) RemoveUnusedDigests(ctx context.Context) (int64, err
 
 // RemoveUnusedFiles removes files that are no longer used
 func (dc *DbCleanupService) RemoveUnusedFiles(ctx context.Context) (int64, error) {
-	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
+	start, count, err := dc.nextSlice(ctx, file.Table)
 	if err != nil {
 		return 0, err
 	}

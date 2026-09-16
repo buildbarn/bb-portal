@@ -99,7 +99,7 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocationD
 // CompactLogs compacts incomplete build logs by merging log entries for
 // the same invocation.
 func (dc *DbCleanupService) CompactLogs(ctx context.Context) (int64, error) {
-	start, count, err := dc.nextSlice(ctx, "bazel_invocations")
+	start, count, err := dc.nextSlice(ctx, bazelinvocation.Table)
 	if err != nil {
 		return 0, err
 	}
