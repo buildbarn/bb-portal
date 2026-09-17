@@ -61,12 +61,13 @@ type DataExtractors struct {
 }
 
 type buildEventRecorder struct {
-	db             database.Client
-	handledEvents  handledEvents
-	saveDataLevel  *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracer         trace.Tracer
-	dataExtractors *DataExtractors
-	buildKey       string
+	db                database.Client
+	handledEvents     handledEvents
+	saveDataLevel     *bb_portal.BuildEventStreamService_SaveDataLevel
+	tracer            trace.Tracer
+	dataExtractors    *DataExtractors
+	buildKey          string
+	batchRetryTimeout time.Duration
 
 	InstanceName     string
 	InstanceNameDbID int64
@@ -91,6 +92,7 @@ func NewBuildEventRecorder(
 	invocationID string,
 	dataExtractors *DataExtractors,
 	buildKey string,
+	batchRetryTimeout time.Duration,
 ) (BuildEventRecorder, error) {
 	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
 	ctx, span := tracer.Start(
