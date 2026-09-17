@@ -8,6 +8,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database"
@@ -62,6 +63,7 @@ func NewBepUploader(
 				invocationID,
 				dataExtractors,
 				configuration.BuildKey,
+				20*time.Second,
 			)
 			if err != nil {
 				return nil, err
