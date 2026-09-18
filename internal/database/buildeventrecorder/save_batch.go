@@ -71,7 +71,7 @@ func (r *buildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWi
 		),
 	)
 	defer span.End()
-	retryCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
+	retryCtx, cancel := context.WithTimeout(ctx, r.batchRetryTimeout)
 	defer func() { cancel() }()
 
 	batch = filterNilEvents(batch)
@@ -91,7 +91,7 @@ func (r *buildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWi
 			postBatch := r.filterHandledEvents(batch)
 			if len(postBatch) < len(batch) {
 				cancel()
-				retryCtx, cancel = context.WithTimeout(ctx, 1*time.Second)
+				retryCtx, cancel = context.WithTimeout(ctx, r.batchRetryTimeout)
 				backoff = 1 * time.Millisecond
 				batch = postBatch
 				errs = nil

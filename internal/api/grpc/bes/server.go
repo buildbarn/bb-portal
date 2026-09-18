@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"time"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/grpc/codes"
@@ -57,6 +58,7 @@ func NewBuildEventServer(
 				invocationID,
 				dataExtractors,
 				configuration.BuildKey,
+				1*time.Second,
 			)
 			if err != nil {
 				return nil, err
