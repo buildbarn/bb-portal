@@ -5,6 +5,10 @@
 // NOTE: Stop bb_portal before seeding, as the cleanup job may delete
 // seeded data that falls outside the invocation retention window.
 
+local githubActionsExtractor = importstr 'gh-actions.jmespath';
+local gitlabExtractor = importstr 'gitlab.jmespath';
+local semaphoreExtractor = importstr 'semaphore.jmespath';
+
 {
   global: {
     tracing: {
@@ -54,4 +58,11 @@
   invocationsPerInstance: 100,
   targetsPerInvocation: 200,
   timeSpan: '432000s',
+  // Make sure invocationMetadataExtractor and buildKey
+  // matches the  invocation metadata extractor in your
+  // Portal configuration.
+  invocationMetadataExtractor: {
+    expression: githubActionsExtractor,
+  },
+  buildKey: 'build_id',
 }
