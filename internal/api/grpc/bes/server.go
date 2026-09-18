@@ -15,12 +15,9 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
-	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
-	"github.com/buildbarn/bb-storage/pkg/clock"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
-	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 
@@ -38,6 +35,7 @@ func NewBuildEventServer(
 	db database.Client,
 	configuration *bb_portal.BuildEventStreamService,
 	publishAuthorizer auth.Authorizer,
+	dataExtractors *buildeventrecorder.DataExtractors,
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	tracerProvider trace.TracerProvider,
@@ -45,25 +43,6 @@ func NewBuildEventServer(
 	saveDataLevel := configuration.SaveDataLevel
 	if saveDataLevel == nil || saveDataLevel.Level == nil {
 		return nil, fmt.Errorf("No saveDataLevel configured")
-	}
-
-	dataExtractors := &buildeventrecorder.DataExtractors{
-		AuthMetadataExtractors:      nil,
-		InvocationMetadataExtractor: nil,
-	}
-
-	authMetadataExtractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(configuration.AuthMetadataKeyConfiguration, dependenciesGroup)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
-	}
-	dataExtractors.AuthMetadataExtractors = authMetadataExtractors
-
-	if configuration.InvocationMetadataExtractor != nil {
-		invocationMetadataExtractor, err := jmespath.NewExpressionFromConfiguration(configuration.InvocationMetadataExtractor, dependenciesGroup, clock.SystemClock)
-		if err != nil {
-			return nil, util.StatusWrap(err, "Failed to create InvocationMetadataExtractor")
-		}
-		dataExtractors.InvocationMetadataExtractor = invocationMetadataExtractor
 	}
 
 	return &BuildEventServer{
