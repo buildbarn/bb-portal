@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"reflect"
@@ -190,6 +191,14 @@ func main() {
 			}
 		}
 
+		// Serves info about the current user.
+		if router != nil {
+			router.HandleFunc(
+				"GET /api/v1/whoami",
+				whoamiHandler,
+			)
+		}
+
 		// Serve the frontend. This must be the last service created for the
 		// router, as it will handle all unmatched http requests.
 		if configuration.FrontendServiceConfiguration != nil {
@@ -346,4 +355,22 @@ func createBlobAccess(
 		blobAccess.FileSystemAccessCache = &authorizedBackend
 	}
 	return blobAccess, nil
+}
+
+// whoamiHandler is a http handler that returns info about the current user.
+// This is useful when debugging authentication and authorization.
+func whoamiHandler(resp http.ResponseWriter, req *http.Request) {
+	authMetadata := auth.AuthenticationMetadataFromContext(req.Context()).GetRaw()
+
+	payload := struct {
+		AuthenticationMetadata any `json:"authenticationMetadata"`
+	}{
+		AuthenticationMetadata: authMetadata,
+	}
+
+	resp.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(resp).Encode(payload); err != nil {
+		http.Error(resp, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
 }
