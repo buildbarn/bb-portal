@@ -26,6 +26,8 @@ ORDER BY
     label COLLATE "C",
     aspect COLLATE "C",
     target_kind COLLATE "C"
+ON CONFLICT (label, aspect, target_kind, instance_name_targets)
+DO NOTHING
 RETURNING id, label, aspect, target_kind
 `
 
@@ -51,6 +53,9 @@ type CreateTargetsRow struct {
 //
 // instantiations, otherwise golden file generation may have a different
 // order than what's used during the test.
+// Concurrent invocations may both observe the target as missing. Do not update
+// the existing row: that would conflict with foreign-key locks held by batches
+// which are already creating invocation targets for it.
 func (q *Queries) CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error) {
 	rows, err := q.db.QueryContext(ctx, createTargets,
 		arg.InstanceNameID,

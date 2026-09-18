@@ -2,13 +2,17 @@ package buildeventrecorder_test
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/test/testutils"
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
@@ -96,4 +100,117 @@ func TestFindOrCreateInvocation(t *testing.T) {
 		require.Equal(t, codes.FailedPrecondition, st.Code())
 		require.Contains(t, err.Error(), "locked for writing")
 	})
+}
+
+func TestCreateTargetsConcurrently(t *testing.T) {
+	ctx, db, instanceNameID := setupTargetTestDB(t)
+	params := sqlc.CreateTargetsParams{
+		InstanceNameID: instanceNameID,
+		Labels:         []string{"//example:target"},
+		Aspects:        []string{""},
+		TargetKinds:    []string{"example_rule"},
+	}
+
+	type result struct {
+		rows []sqlc.CreateTargetsRow
+		err  error
+	}
+	const importCount = 6
+	start := make(chan struct{})
+	results := make(chan result, importCount)
+	for range importCount {
+		go func() {
+			<-start
+			rows, err := db.Sqlc().CreateTargets(ctx, params)
+			results <- result{rows: rows, err: err}
+		}()
+	}
+	close(start)
+
+	var targetID int64
+	createdCount := 0
+	for range importCount {
+		result := <-results
+		require.NoError(t, result.err)
+		require.LessOrEqual(t, len(result.rows), 1)
+		if len(result.rows) == 1 {
+			createdCount++
+			targetID = result.rows[0].ID
+		}
+	}
+	require.Equal(t, 1, createdCount)
+
+	foundRows, err := db.Sqlc().FindTargets(ctx, sqlc.FindTargetsParams{
+		InstanceNameID: instanceNameID,
+		Labels:         params.Labels,
+		Aspects:        params.Aspects,
+		TargetKinds:    params.TargetKinds,
+	})
+	require.NoError(t, err)
+	require.Len(t, foundRows, 1)
+	require.Equal(t, targetID, foundRows[0].ID)
+
+	targetCount, err := db.Ent().Target.Query().Count(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 1, targetCount)
+}
+
+func TestCreateTargetsDoesNotBlockInvocationTargetForeignKey(t *testing.T) {
+	ctx, db, instanceNameID := setupTargetTestDB(t)
+	params := sqlc.CreateTargetsParams{
+		InstanceNameID: instanceNameID,
+		Labels:         []string{"//example:target"},
+		Aspects:        []string{""},
+		TargetKinds:    []string{"example_rule"},
+	}
+	createdRows, err := db.Sqlc().CreateTargets(ctx, params)
+	require.NoError(t, err)
+	require.Len(t, createdRows, 1)
+
+	instanceName, err := db.Ent().InstanceName.Get(ctx, instanceNameID)
+	require.NoError(t, err)
+	invocation, err := testutils.StartCreateInvocation(db.Ent(), instanceName).Save(ctx)
+	require.NoError(t, err)
+	const configurationID = "config"
+	_, err = db.Ent().Configuration.Create().
+		SetConfigurationID(configurationID).
+		SetBazelInvocation(invocation).
+		Save(ctx)
+	require.NoError(t, err)
+
+	targetTx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = targetTx.Rollback() })
+	conflictingRows, err := targetTx.Sqlc().CreateTargets(ctx, params)
+	require.NoError(t, err)
+	require.Empty(t, conflictingRows)
+
+	insertCtx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+	err = db.Sqlc().CreateInvocationTargetsBulk(insertCtx, sqlc.CreateInvocationTargetsBulkParams{
+		BazelInvocationID: invocation.ID,
+		TargetIds:         []int64{createdRows[0].ID},
+		ConfigurationIds:  []string{configurationID},
+		Successes:         []bool{true},
+		TagsList:          []string{""},
+		FailureMessages:   []string{""},
+		AbortReasons:      []string{"NONE"},
+	})
+	require.NoError(t, err)
+}
+
+func setupTargetTestDB(t *testing.T) (context.Context, database.Client, int64) {
+	t.Helper()
+	ctx := dbauthservice.NewContextWithDbAuthServiceBypass(context.Background())
+	connection, err := dbProvider.CreateDatabase()
+	require.NoError(t, err)
+	connection.SetMaxOpenConns(6)
+	t.Cleanup(func() { require.NoError(t, connection.Close()) })
+
+	db, err := database.New("postgres", connection)
+	require.NoError(t, err)
+	require.NoError(t, db.Ent().Schema.Create(ctx))
+	instanceNameID, err := buildeventrecorder.FindOrCreateInstanceName(ctx, db, "testInstance")
+	require.NoError(t, err)
+	return ctx, db, instanceNameID
 }

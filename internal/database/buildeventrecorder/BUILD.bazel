@@ -76,8 +76,10 @@ go_test(
     deps = [
         ":buildeventrecorder",
         "//ent/gen/ent/runtime",
+        "//internal/database",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
+        "//internal/database/sqlc",
         "//test/testutils",
         "@com_github_google_uuid//:uuid",
         "@com_github_prometheus_client_golang//prometheus",
