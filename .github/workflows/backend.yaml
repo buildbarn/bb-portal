@@ -26,7 +26,7 @@
             {
                "if": "matrix.host.platform_name == 'macos_arm64'",
                "name": "macos_arm64: build and test",
-               "run": "bazel test --test_output=errors //..."
+               "run": "bazel test --test_output=errors --test_tag_filters=-requires-network //..."
             },
             {
                "if": "matrix.host.cross_compile",
