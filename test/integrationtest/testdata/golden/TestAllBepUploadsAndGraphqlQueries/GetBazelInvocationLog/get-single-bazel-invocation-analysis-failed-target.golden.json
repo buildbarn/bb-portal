@@ -1,5 +1,7 @@
 {
   "getBazelInvocation": {
+    "connectionMetadata": null,
+    "exitCodeName": "TESTS_FAILED",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
     "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
     "originalCommandLine": {
