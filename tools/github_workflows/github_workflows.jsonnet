@@ -18,10 +18,10 @@ local install_bazel(os_param, arch_param="x86_64") =
   };
 
 // Build and test for a specific platform
-local bazel_step(platform, if_cond) = {
+local bazel_step(platform, if_cond, options=[]) = {
   name: platform + ": build and test",
   'if': if_cond,
-  run: "bazel test --test_output=errors //...",
+  run: std.join(" ", ["bazel", "test", "--test_output=errors"] + options + ["//..."]),
 };
 
 // Define the list of platforms that need to be cross-compiled
@@ -97,7 +97,12 @@ local build_steps = [
   // Native Tests
   bazel_step("linux_amd64", "matrix.host.platform_name == 'linux_amd64'"),
   bazel_step("linux_arm64", "matrix.host.platform_name == 'linux_arm64'"),
-  bazel_step("macos_arm64", "matrix.host.platform_name == 'macos_arm64'"),
+  // GitHub-hosted macOS runners do not provide Docker.
+  bazel_step(
+    "macos_arm64",
+    "matrix.host.platform_name == 'macos_arm64'",
+    ["--test_tag_filters=-requires-network"],
+  ),
   // Cross Builds
   cross_build_step,
 ];
