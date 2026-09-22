@@ -1,6 +1,6 @@
-import { BuildOutlined } from "@ant-design/icons";
+import { BuildOutlined, SwapOutlined } from "@ant-design/icons";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Typography } from "antd";
+import { Button, Typography } from "antd";
 import { useMemo } from "react";
 import styles from "@/components/AppBar/index.module.css";
 import { BazelInvocationTabBar } from "@/components/BazelInvocationTabBar";
@@ -91,6 +91,19 @@ const getExtraBits = (
     const parsedProfile = getFragmentData(FILE_DETAILS_FRAGMENT, profile);
     extraBits.push(
       <ProfileDropdown profile={parsedProfile} invocationID={invocationID} />,
+    );
+  }
+  if (invocationID) {
+    extraBits.push(
+      <Link
+        key="compare"
+        to="/bazel-invocations/compare"
+        search={{ left: invocationID }}
+      >
+        <Button icon={<SwapOutlined />} size="small">
+          Compare...
+        </Button>
+      </Link>,
     );
   }
   return extraBits;

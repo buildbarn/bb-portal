@@ -30,6 +30,7 @@ import { Route as SchedulerWorkerRouteImport } from './routes/scheduler.worker'
 import { Route as OperationsOperationIDRouteImport } from './routes/operations.$operationID'
 import { Route as BuildsBuildUUIDRouteImport } from './routes/builds.$buildUUID'
 import { Route as BrowserSplatRouteImport } from './routes/browser.$'
+import { Route as BazelInvocationsCompareRouteImport } from './routes/bazel-invocations.compare'
 import { Route as BazelInvocationsInvocationIDRouteImport } from './routes/bazel-invocations.$invocationID'
 import { Route as TargetsTargetIDIndexRouteImport } from './routes/targets.$targetID.index'
 import { Route as BazelInvocationsInvocationIDIndexRouteImport } from './routes/bazel-invocations.$invocationID/index'
@@ -150,6 +151,11 @@ const BrowserSplatRoute = BrowserSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => BrowserRoute,
 } as any)
+const BazelInvocationsCompareRoute = BazelInvocationsCompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => BazelInvocationsRoute,
+} as any)
 const BazelInvocationsInvocationIDRoute =
   BazelInvocationsInvocationIDRouteImport.update({
     id: '/$invocationID',
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/tests': typeof TestsRouteWithChildren
   '/trends': typeof TrendsRoute
   '/bazel-invocations/$invocationID': typeof BazelInvocationsInvocationIDRouteWithChildren
+  '/bazel-invocations/compare': typeof BazelInvocationsCompareRoute
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/trends': typeof TrendsRoute
+  '/bazel-invocations/compare': typeof BazelInvocationsCompareRoute
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/tests': typeof TestsRouteWithChildren
   '/trends': typeof TrendsRoute
   '/bazel-invocations/$invocationID': typeof BazelInvocationsInvocationIDRouteWithChildren
+  '/bazel-invocations/compare': typeof BazelInvocationsCompareRoute
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/trends'
     | '/bazel-invocations/$invocationID'
+    | '/bazel-invocations/compare'
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
@@ -378,6 +388,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/trends'
+    | '/bazel-invocations/compare'
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/tests'
     | '/trends'
     | '/bazel-invocations/$invocationID'
+    | '/bazel-invocations/compare'
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
@@ -603,6 +615,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrowserSplatRouteImport
       parentRoute: typeof BrowserRoute
     }
+    '/bazel-invocations/compare': {
+      id: '/bazel-invocations/compare'
+      path: '/compare'
+      fullPath: '/bazel-invocations/compare'
+      preLoaderRoute: typeof BazelInvocationsCompareRouteImport
+      parentRoute: typeof BazelInvocationsRoute
+    }
     '/bazel-invocations/$invocationID': {
       id: '/bazel-invocations/$invocationID'
       path: '/$invocationID'
@@ -762,12 +781,14 @@ const BazelInvocationsInvocationIDRouteWithChildren =
 
 interface BazelInvocationsRouteChildren {
   BazelInvocationsInvocationIDRoute: typeof BazelInvocationsInvocationIDRouteWithChildren
+  BazelInvocationsCompareRoute: typeof BazelInvocationsCompareRoute
   BazelInvocationsIndexRoute: typeof BazelInvocationsIndexRoute
 }
 
 const BazelInvocationsRouteChildren: BazelInvocationsRouteChildren = {
   BazelInvocationsInvocationIDRoute:
     BazelInvocationsInvocationIDRouteWithChildren,
+  BazelInvocationsCompareRoute: BazelInvocationsCompareRoute,
   BazelInvocationsIndexRoute: BazelInvocationsIndexRoute,
 }
 
