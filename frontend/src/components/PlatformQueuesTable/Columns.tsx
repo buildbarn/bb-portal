@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { type TableColumnsType, Typography } from "antd";
-import type { ColumnType } from "antd/lib/table";
+import type { ColumnType } from "antd/es/table";
 import { WorkerListStatus } from "@/routes/scheduler.worker";
 import PropertyTagList from "../PropertyTagList";
 import type { PlatformQueueTableState } from "./types";

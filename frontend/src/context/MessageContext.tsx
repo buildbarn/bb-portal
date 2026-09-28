@@ -1,4 +1,4 @@
-import type { MessageInstance } from "antd/lib/message/interface";
+import type { MessageInstance } from "antd/es/message/interface";
 import { createContext, useContext } from "react";
 
 interface MessageContextState {

@@ -1,5 +1,5 @@
 import { type TableColumnsType, Typography } from "antd";
-import type { ColumnType } from "antd/lib/table";
+import type { ColumnType } from "antd/es/table";
 import { CodeLink } from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { BrowserPageType } from "@/types/BrowserPageType";
