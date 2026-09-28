@@ -6,7 +6,7 @@ import {
   StopOutlined,
 } from "@ant-design/icons";
 import { Button, theme } from "antd";
-import { Spin } from "antd/lib";
+import { Spin } from "antd/es";
 import React, {
   useCallback,
   useContext,

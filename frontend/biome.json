@@ -30,6 +30,19 @@
       },
       "complexity": {
         "noImportantStyles": "off"
+      },
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["antd/lib", "antd/lib/*"],
+                "message": "Imports for \"antd/lib\" break tree-shaking. Import \"antd/es\" instead."
+              }
+            ]
+          }
+        }
       }
     }
   },

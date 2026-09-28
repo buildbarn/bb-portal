@@ -1,5 +1,5 @@
 import { type TableColumnsType, Typography } from "antd";
-import type { ColumnType } from "antd/lib/table";
+import type { ColumnType } from "antd/es/table";
 
 export interface FilesTableEntry {
   mode: string | undefined;

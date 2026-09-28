@@ -1,5 +1,5 @@
 import { useMatches } from "@tanstack/react-router";
-import type { ItemType } from "antd/lib/menu/interface";
+import type { ItemType } from "antd/es/menu/interface";
 import { useMemo } from "react";
 import type { Empty } from "@/lib/grpc-client/google/protobuf/empty";
 
