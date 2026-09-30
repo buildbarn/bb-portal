@@ -48,6 +48,7 @@ func setupDatabase(
 	configuration *bb_portal.Database,
 	tracerProvider trace.TracerProvider,
 	dependenciesGroup program.Group,
+	zstdPool bb_zstd.Pool,
 ) (database.Client, *dbcleanupservice.DbCleanupService, error) {
 	dialect, connection, err := common.NewSQLConnectionFromConfiguration(configuration, tracerProvider)
 	if err != nil {
@@ -75,6 +76,7 @@ func setupDatabase(
 			dbcleanupservice.NewTimedBatcher(clock.SystemClock, 1*time.Second, 1<<7, 1<<20),
 			configuration.CleanupConfiguration,
 			tracerProvider,
+			zstdPool,
 		)
 		if err != nil {
 			return nil, nil, util.StatusWrap(err, "Failed to create DatabaseCleanupService")
@@ -103,6 +105,9 @@ func main() {
 			return status.Error(codes.Internal, "Otel tracer provider is nil")
 		}
 
+		// Create a process-wide ZSTD compression pool.
+		zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
+
 		// Setup database, if configured
 		var dbClient database.Client
 		var dbCleanupService *dbcleanupservice.DbCleanupService
@@ -112,13 +117,11 @@ func main() {
 				configuration.Database,
 				tracerProvider,
 				dependenciesGroup,
+				zstdPool,
 			); err != nil {
 				return util.StatusWrap(err, "Failed to setup the database")
 			}
 		}
-
-		// Create a process-wide ZSTD compression pool.
-		zstdPool := bb_zstd.NewPoolFromConfiguration(configuration.ZstdPool)
 
 		// Setup blobaccess to CAS, AC, ISCC and FSAC.
 		blobAccess, err := createBlobAccess(
