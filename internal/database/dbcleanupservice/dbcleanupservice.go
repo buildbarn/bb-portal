@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
@@ -33,6 +34,7 @@ type DbCleanupService struct {
 	invocationMessageTimeout time.Duration
 	invocationRetention      time.Duration
 	tracer                   trace.Tracer
+	zstdPool                 bb_zstd.Pool
 }
 
 // NewDbCleanupService creates a new DbCleanupService.
@@ -42,6 +44,7 @@ func NewDbCleanupService(
 	batcher Batcher,
 	cleanupConfiguration *bb_portal.Database_CleanupConfiguration,
 	tracerProvider trace.TracerProvider,
+	zstdPool bb_zstd.Pool,
 ) (*DbCleanupService, error) {
 	if db == nil {
 		return nil, status.Error(code.NotFound, "No Database configured")
@@ -71,6 +74,7 @@ func NewDbCleanupService(
 		invocationMessageTimeout: invocationMessageTimeout.AsDuration(),
 		invocationRetention:      invocationRetention.AsDuration(),
 		tracer:                   tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
+		zstdPool:                 zstdPool,
 	}, nil
 }
 
