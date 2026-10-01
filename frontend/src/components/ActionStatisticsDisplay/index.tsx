@@ -6,13 +6,14 @@ import {
   PieChartOutlined,
   ToolOutlined,
 } from "@ant-design/icons";
-import { Flex, Space, Statistic } from "antd";
+import { Flex, Space, Statistic, Typography } from "antd";
 import type { BazelInvocationMetricsActionSummaryFragment } from "@/graphql/__generated__/graphql";
 import ActionCacheMissMetrics from "../ActionCacheMissMetrics";
 import ActionCacheOverview from "../ActionCacheOverview";
 import ActionRunnerMetrics from "../ActionRunnerMetrics";
 import ActionTypeMetrics from "../ActionTypeMetrics";
 import { PortalCard } from "../PortalCard";
+import { PortalTooltip } from "../PortalTooltip";
 
 type Props = {
   actionSummary: BazelInvocationMetricsActionSummaryFragment;
@@ -65,7 +66,12 @@ const ActionStatisticsDisplay: React.FC<Props> = ({ actionSummary }) => {
             type="inner"
             icon={<DashboardOutlined />}
             style={ACTION_CACHE_OVERVIEW_CARD_STYLE}
-            titleBits={["Action Cache Overview"]}
+            titleBits={[
+              <Space key="title" orientation="horizontal">
+                <Typography.Text>Local Action Cache Overview</Typography.Text>
+                <PortalTooltip text="This shows the local Bazel action cache, and not remote caching. Remote execution cache hits can be viewed in the Action Runners Breakdown" />
+              </Space>,
+            ]}
           >
             <ActionCacheOverview
               acStatistics={actionSummary.actionCacheStatistics}
