@@ -265,6 +265,54 @@ const CompareActionGrid: React.FC<Params> = ({
         )}
       </Row>
       <Row gutter={24}>
+        <Col span={compareSideBySide ? 12 : 24}>
+          <Typography.Title level={2}>
+            <Link
+              to="/browser/$"
+              params={{
+                _splat: generateBrowserSplat(
+                  browserPageParams.instanceName,
+                  browserPageParams.digestFunction,
+                  fileStructureData.digest,
+                  BrowserPageType.Directory,
+                ),
+              }}
+              search={{
+                fileSystemAccessProfile:
+                  fileStructureData?.fileSystemAccessProfileReference,
+              }}
+              style={{ textDecoration: "underline" }}
+            >
+              Input files
+            </Link>
+          </Typography.Title>
+        </Col>
+        {compareSideBySide && (
+          <Col span={12}>
+            <Typography.Title level={2}>
+              <Link
+                to="/browser/$"
+                params={{
+                  _splat: generateBrowserSplat(
+                    compareParams.instanceName,
+                    compareParams.digestFunction,
+                    compareFileStructureData.digest,
+                    BrowserPageType.Directory,
+                  ),
+                }}
+                search={{
+                  fileSystemAccessProfile:
+                    compareFileStructureData?.fileSystemAccessProfileReference,
+                }}
+                style={{ textDecoration: "underline" }}
+              >
+                Input files
+              </Link>
+            </Typography.Title>
+          </Col>
+        )}
+      </Row>
+      <Row gutter={24}>
         <Col span={24} style={{ marginTop: 12, marginBottom: 12 }}>
           <BrowserDirectory
             baseData={fileStructureData}
