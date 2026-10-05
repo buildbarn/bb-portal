@@ -22,11 +22,14 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/blobstoreservice"
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/schedulerservice"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
-	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	bb_portal "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
+	"github.com/buildbarn/bb-storage/pkg/blobstore/chunk"
 	blobstore_configuration "github.com/buildbarn/bb-storage/pkg/blobstore/configuration"
+	"github.com/buildbarn/bb-storage/pkg/capabilities"
+	"github.com/buildbarn/bb-storage/pkg/cas/reader"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/global"
@@ -244,15 +247,15 @@ func main() {
 	})
 }
 
-func newStorageBlobAccess(
+func newStorageBlobAccess[T any](
 	dependenciesGroup program.Group,
 	configuration *bb_portal.StorageBlobAccessConfiguration,
-	creator blobstore_configuration.BlobAccessCreator,
+	creator blobstore_configuration.BlobAccessCreator[T],
 	grpcClientFactory bb_grpc.ClientFactory,
-) (blobstore_configuration.BlobAccessInfo, blobstore.BlobAccess, error) {
+) (blobstore_configuration.BlobAccessInfo[T], blobstore.BlobAccess[T], error) {
 	info, err := blobstore_configuration.NewBlobAccessFromConfiguration(dependenciesGroup, configuration.Backend, creator)
 	if err != nil {
-		return blobstore_configuration.BlobAccessInfo{},
+		return blobstore_configuration.BlobAccessInfo[T]{},
 			nil,
 			util.StatusWrap(err, "Failed to create new blob access from configuration")
 	}
@@ -263,7 +266,7 @@ func newStorageBlobAccess(
 		grpcClientFactory,
 	)
 	if err != nil {
-		return blobstore_configuration.BlobAccessInfo{},
+		return blobstore_configuration.BlobAccessInfo[T]{},
 			nil,
 			util.StatusWrap(err, "Failed to create Get() authorizer")
 	}
@@ -283,24 +286,51 @@ func createBlobAccess(
 	blobAccess := &blobstoreservice.BlobAccess{}
 
 	// Content Addressable Storage (CAS).
-	var contentAddressableStorageInfo *blobstore_configuration.BlobAccessInfo
-	if configuration.ContentAddressableStorage != nil {
-		info, authorizedBackend, err := newStorageBlobAccess(
+	var chunkBytesReader reader.Reader[[]byte]
+	var chunkStorage blobstore.BlobAccess[*chunk.Chunk]
+	var chunkMappingStorage blobstore.BlobAccess[chunk.Mapping]
+	var chunkMappingFetcher chunk.MappingFetcher
+	var cdcParametersFetcher capabilities.CDCParametersFetcher
+	var digestKeyFormat digest.KeyFormat
+	if casConfiguration := configuration.ContentAddressableStorageServer; casConfiguration != nil {
+		var err error
+		chunkBytesReader, chunkStorage, chunkMappingStorage, chunkMappingFetcher, cdcParametersFetcher, digestKeyFormat, err = blobstore_configuration.NewCASFromConfiguration(
 			dependenciesGroup,
-			configuration.ContentAddressableStorage,
-			blobstore_configuration.NewCASBlobAccessCreator(
-				grpcClientFactory,
-				int(configuration.MaximumMessageSizeBytes),
-				zstdPool,
-			),
+			casConfiguration.ContentAddressableStorage,
 			grpcClientFactory,
+			int(configuration.MaximumMessageSizeBytes),
+			zstdPool,
 		)
 		if err != nil {
 			return nil, util.StatusWrap(err, "Failed to create Content Addressable Storage")
 		}
-		contentAddressableStorageInfo = &info
-		blobAccess.UnauthorizedContentAddressableStorage = &info.BlobAccess
-		blobAccess.ContentAddressableStorage = &authorizedBackend
+
+		// The raw storages are handed to specialized blob accesses,
+		// such as the Action Cache, which perform authorization at
+		// their own API boundaries. The user-facing gRPC servers
+		// obtain authorized versions here.
+		getAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(
+			casConfiguration.GetAuthorizer,
+			dependenciesGroup,
+			grpcClientFactory,
+		)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to create Get() authorizer for Content Addressable Storage")
+		}
+		putAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return false })
+		authorizedChunkStorage := blobstore.NewAuthorizingBlobAccess(chunkStorage, getAuthorizer, putAuthorizer, getAuthorizer)
+		authorizedChunkMappingStorage := blobstore.NewAuthorizingBlobAccess(chunkMappingStorage, getAuthorizer, putAuthorizer, getAuthorizer)
+
+		blobAccess.ContentAddressableStorage = &blobstoreservice.ContentAddressableStorage{
+			ChunkStorage:                    authorizedChunkStorage,
+			ChunkMappingStorage:             authorizedChunkMappingStorage,
+			UnauthorizedChunkStorage:        chunkStorage,
+			UnauthorizedChunkMappingStorage: chunkMappingStorage,
+			CdcParametersFetcher:            cdcParametersFetcher,
+			GetAuthorizer:                   getAuthorizer,
+			PutChunkMappingAuthorizer:       putAuthorizer,
+			MaximumChunkCount:               int(casConfiguration.MaximumChunkCount),
+		}
 	}
 
 	// Action Cache (AC).
@@ -309,7 +339,12 @@ func createBlobAccess(
 			dependenciesGroup,
 			configuration.ActionCache,
 			blobstore_configuration.NewACBlobAccessCreator(
-				contentAddressableStorageInfo,
+				chunkBytesReader,
+				chunkStorage,
+				chunkMappingStorage,
+				chunkMappingFetcher,
+				cdcParametersFetcher,
+				digestKeyFormat,
 				grpcClientFactory,
 				int(configuration.MaximumMessageSizeBytes),
 			),

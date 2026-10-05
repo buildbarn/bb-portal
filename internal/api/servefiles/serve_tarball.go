@@ -12,11 +12,12 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/filesystem/path"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.Writer, digestFunction digest.Function, directory *remoteexecution.Directory, directoryPath *path.Trace, getDirectory func(context.Context, digest.Digest) (*remoteexecution.Directory, error), filesSeen map[string]string) error {
+func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.Writer, digestFunction digest.Function, directory *remoteexecution.Directory, directoryPath *path.Trace, cdcParams *remoteexecution.RepMaxCdcParams, getDirectory func(context.Context, digest.Digest) (*remoteexecution.Directory, error), filesSeen map[string]string) error {
 	// Emit child directories.
 	for _, directoryNode := range directory.Directories {
 		childName, ok := path.NewComponent(directoryNode.Name)
@@ -40,7 +41,7 @@ func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.
 		if err != nil {
 			return err
 		}
-		if err := s.generateTarballDirectory(ctx, w, digestFunction, childDirectory, childPath, getDirectory, filesSeen); err != nil {
+		if err := s.generateTarballDirectory(ctx, w, digestFunction, childDirectory, childPath, cdcParams, getDirectory, filesSeen); err != nil {
 			return err
 		}
 	}
@@ -116,8 +117,18 @@ func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.
 				return err
 			}
 
-			if err := s.blobAccess.Get(ctx, childDigest).IntoWriter(w); err != nil {
+			chunkDigests, err := s.getChunkMapping(ctx, cdcParams, childDigest)
+			if err != nil {
 				return err
+			}
+			for _, chunkDigest := range chunkDigests {
+				chunkBytes, err := s.chunkBytesReader.Read(ctx, chunkDigest)
+				if err != nil {
+					return util.StatusWrapf(err, "Failed to fetch chunk %s of blob %s", chunkDigest, childDigest)
+				}
+				if _, err := w.Write(chunkBytes); err != nil {
+					return err
+				}
 			}
 
 			filesSeen[childKey] = childPathString
@@ -126,13 +137,13 @@ func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.
 	return nil
 }
 
-func (s FileServerService) generateTarball(ctx context.Context, w http.ResponseWriter, digest digest.Digest, directory *remoteexecution.Directory, getDirectory func(context.Context, digest.Digest) (*remoteexecution.Directory, error)) {
+func (s FileServerService) generateTarball(ctx context.Context, w http.ResponseWriter, digest digest.Digest, directory *remoteexecution.Directory, cdcParams *remoteexecution.RepMaxCdcParams, getDirectory func(context.Context, digest.Digest) (*remoteexecution.Directory, error)) {
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s.tar.gz\"", digest.GetHashString()))
 	w.Header().Set("Content-Type", "application/gzip")
 	gzipWriter := gzip.NewWriter(w)
 	tarWriter := tar.NewWriter(gzipWriter)
 	filesSeen := map[string]string{}
-	if err := s.generateTarballDirectory(ctx, tarWriter, digest.GetDigestFunction(), directory, nil, getDirectory, filesSeen); err != nil {
+	if err := s.generateTarballDirectory(ctx, tarWriter, digest.GetDigestFunction(), directory, nil, cdcParams, getDirectory, filesSeen); err != nil {
 		// TODO(edsch): Any way to propagate this to the client?
 		log.Print(err)
 		panic(http.ErrAbortHandler)
@@ -145,6 +156,12 @@ func (s FileServerService) generateTarball(ctx context.Context, w http.ResponseW
 		log.Print(err)
 		panic(http.ErrAbortHandler)
 	}
+}
+
+// getDirectoryMessage reads a Directory message from the Content
+// Addressable Storage (CAS), up to maximumMessageSizeBytes large.
+func (s FileServerService) getDirectoryMessage(ctx context.Context, d digest.Digest) (*remoteexecution.Directory, error) {
+	return s.directoryReader.Read(ctx, d)
 }
 
 // HandleDirectory serves a directory as a tarball.
@@ -166,18 +183,22 @@ func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Requ
 	}
 
 	ctx := common.ExtractContextFromRequest(req)
-	directoryMessage, err := s.blobAccess.Get(ctx, directoryDigest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
+	if err := s.authorizeInstanceName(ctx, directoryDigest.GetInstanceName()); err != nil {
+		http.Error(w, "Digest not found", http.StatusForbidden)
+		return
+	}
+	directory, err := s.getDirectoryMessage(ctx, directoryDigest)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
 	}
-	directory := directoryMessage.(*remoteexecution.Directory)
 
-	s.generateTarball(ctx, w, directoryDigest, directory, func(ctx context.Context, digest digest.Digest) (*remoteexecution.Directory, error) {
-		directoryMessage, err := s.blobAccess.Get(ctx, digest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
-		if err != nil {
-			return nil, err
-		}
-		return directoryMessage.(*remoteexecution.Directory), nil
+	cdcParams, err := s.cdcParametersFetcher.FetchCDCParameters(ctx, directoryDigest.GetInstanceName())
+	if err != nil {
+		http.Error(w, "Could not determine chunking parameters", http.StatusInternalServerError)
+		return
+	}
+	s.generateTarball(ctx, w, directoryDigest, directory, cdcParams, func(ctx context.Context, digest digest.Digest) (*remoteexecution.Directory, error) {
+		return s.getDirectoryMessage(ctx, digest)
 	})
 }

@@ -2,24 +2,27 @@ package servefiles
 
 import (
 	"bufio"
-	"io"
+	"context"
 	"log"
 	"mime"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 
+	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/builder"
+	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
+	"github.com/buildbarn/bb-storage/pkg/blobstore/chunk"
+	"github.com/buildbarn/bb-storage/pkg/capabilities"
+	"github.com/buildbarn/bb-storage/pkg/cas"
+	"github.com/buildbarn/bb-storage/pkg/cas/reader"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 )
 
 var digestFunctionStrings = map[string]remoteexecution.DigestFunction_Value{}
@@ -124,17 +127,63 @@ func getDigestFromParams(params digestParams) (digest.Digest, error) {
 // Addressable Storage (CAS) over HTTP. It also serves shell scripts generated
 // from Command messages, and directories as Tarballs.
 type FileServerService struct {
-	blobAccess              blobstore.BlobAccess
-	maximumMessageSizeBytes int
+	chunkMappingStorage  blobstore.BlobAccess[chunk.Mapping]
+	chunkBytesReader     reader.Reader[[]byte]
+	commandReader        reader.Reader[*remoteexecution.Command]
+	directoryReader      reader.Reader[*remoteexecution.Directory]
+	cdcParametersFetcher capabilities.CDCParametersFetcher
+	authorizer           auth.Authorizer
 }
 
-// NewFileServerService creates a new ServeFilesService
-// with an authorizing CAS if ServeFilesCasConfiguration is configured.
-func NewFileServerService(blobAccess blobstore.BlobAccess, maximumMessageSizeBytes int) *FileServerService {
+// NewFileServerService creates a new ServeFilesService that reads blobs
+// directly from the raw Chunk Storage (CS) and Chunk Mapping Storage
+// (CMS). Every request is authorized with the provided authorizer, so
+// the underlying storages do not need to be wrapped in
+// AuthorizingBlobAccess.
+func NewFileServerService(chunkStorage blobstore.BlobAccess[*chunk.Chunk], chunkMappingStorage blobstore.BlobAccess[chunk.Mapping], commandReader reader.Reader[*remoteexecution.Command], directoryReader reader.Reader[*remoteexecution.Directory], cdcParametersFetcher capabilities.CDCParametersFetcher, authorizer auth.Authorizer) *FileServerService {
 	return &FileServerService{
-		blobAccess,
-		int(maximumMessageSizeBytes),
+		chunkMappingStorage:  chunkMappingStorage,
+		chunkBytesReader:     cas.NewChunkBytesReader(chunkStorage),
+		commandReader:        commandReader,
+		directoryReader:      directoryReader,
+		cdcParametersFetcher: cdcParametersFetcher,
+		authorizer:           authorizer,
 	}
+}
+
+// authorizeInstanceName checks whether the request is allowed to access
+// the given instance name.
+func (s FileServerService) authorizeInstanceName(ctx context.Context, instanceName digest.InstanceName) error {
+	if err := auth.AuthorizeSingleInstanceName(ctx, s.authorizer, instanceName); err != nil {
+		return util.StatusWrap(err, "Authorization")
+	}
+	return nil
+}
+
+// getChunkMapping returns the ordered chunk digests that compose the
+// blob with the given digest. Blobs that fit in a single chunk have no
+// chunk mapping in storage; the blob is the chunk itself.
+func (s FileServerService) getChunkMapping(ctx context.Context, cdcParams *remoteexecution.RepMaxCdcParams, d digest.Digest) ([]digest.Digest, error) {
+	if cas.IsSingleChunk(cdcParams, d) {
+		if d.GetSizeBytes() == 0 {
+			// The empty blob is always present and yields no
+			// data.
+			return nil, nil
+		}
+		// Blobs that fit in a single chunk have no chunk mappings in
+		// storage; the blob is the chunk itself. Its contents cannot
+		// mismatch its digest, so a read suffices as an existence
+		// check.
+		if _, err := s.chunkBytesReader.Read(ctx, d); err != nil {
+			return nil, err
+		}
+		return []digest.Digest{d}, nil
+	}
+	chunkMapping, err := s.chunkMappingStorage.Get(ctx, d)
+	if err != nil {
+		return nil, err
+	}
+	return chunkMapping.GetDigests(), nil
 }
 
 // HandleFile serves a file from the Content Addressable Storage (CAS) over HTTP.
@@ -146,16 +195,21 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request, 
 	}
 
 	ctx := common.ExtractContextFromRequest(req)
-	r := s.blobAccess.Get(ctx, digest).ToReader()
-	defer r.Close()
+	if err := s.authorizeInstanceName(ctx, digest.GetInstanceName()); err != nil {
+		http.Error(w, "Digest not found", http.StatusForbidden)
+		return
+	}
+	cdcParams, err := s.cdcParametersFetcher.FetchCDCParameters(ctx, digest.GetInstanceName())
+	if err != nil {
+		http.Error(w, "Could not determine chunking parameters", http.StatusInternalServerError)
+		return
+	}
 
-	// Attempt to read the first chunk of data to see whether we can
-	// trigger an error. Only when no error occurs, we start setting
-	// response headers.
-	var first [4096]byte
-	n, err := r.Read(first[:])
-	if err != nil && err != io.EOF {
-		http.Error(w, "Could not send file", http.StatusInternalServerError)
+	// Determine the chunk mapping before emitting the headers, so that
+	// failures can still be reported as an HTTP error.
+	chunkDigests, err := s.getChunkMapping(ctx, cdcParams, digest)
+	if err != nil {
+		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
 	}
 
@@ -165,16 +219,20 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request, 
 		contentType = mime.TypeByExtension(urlPath[extensionStartIndex:])
 	}
 	if contentType == "" {
-		if utf8.ValidString(string(first[:])) {
-			contentType = "text/plain; charset=utf-8"
-		} else {
-			contentType = "application/octet-stream"
-		}
+		contentType = "application/octet-stream"
 	}
 
 	w.Header().Set("Content-Type", contentType)
-	w.Write(first[:n])
-	io.Copy(w, r)
+	for _, chunkDigest := range chunkDigests {
+		chunkBytes, err := s.chunkBytesReader.Read(ctx, chunkDigest)
+		if err != nil {
+			log.Print(util.StatusWrapf(err, "Failed to fetch chunk %s of blob %s", chunkDigest, digest))
+			panic(http.ErrAbortHandler)
+		}
+		if _, err := w.Write(chunkBytes); err != nil {
+			return
+		}
+	}
 }
 
 // HandleCommand serves a Command message from the Content Addressable Storage
@@ -196,13 +254,15 @@ func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Reques
 		return
 	}
 	ctx := common.ExtractContextFromRequest(req)
-
-	commandMessage, err := s.blobAccess.Get(ctx, digest).ToProto(&remoteexecution.Command{}, s.maximumMessageSizeBytes)
+	if err := s.authorizeInstanceName(ctx, digest.GetInstanceName()); err != nil {
+		http.Error(w, "Digest not found", http.StatusForbidden)
+		return
+	}
+	command, err := s.commandReader.Read(ctx, digest)
 	if err != nil {
 		http.Error(w, "Not found", http.StatusNotFound)
 		return
 	}
-	command := commandMessage.(*remoteexecution.Command)
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	bw := bufio.NewWriter(w)

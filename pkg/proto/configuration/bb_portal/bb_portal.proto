@@ -268,6 +268,38 @@ message StorageBlobAccessConfiguration {
   // storage.
 }
 
+// Configuration for serving the Content Addressable Storage (CAS).
+// Mirrors
+// buildbarn.configuration.bb_storage.ContentAddressableStorageServerConfiguration,
+// except that the raw Chunk Storage (CS) and Chunk Mapping Storage (CMS)
+// are shared with specialized blob accesses, such as the Action Cache,
+// which perform authorization at their own API boundaries.
+message ContentAddressableStorageServerConfiguration {
+  // Configurations for the constituent Blob Accesses that make up the
+  // ContentAddressableStorageServer.
+  buildbarn.configuration.blobstore.ContentAddressableStorageConfiguration
+      content_addressable_storage = 1;
+
+  // The authorizer for determining whether a client may read from
+  // storage. Access to this authorizer pertains to the
+  // ByteStream.Read(), BatchReadBlobs(), FindMissingBlobs() and
+  // GetChunkMapping() operations.
+  buildbarn.configuration.auth.AuthorizerConfiguration get_authorizer = 2;
+
+  // bb-portal does not allow writes to storage, so no put authorizer
+  // is needed.
+
+  // The maximum number of chunks that a client may splice into a blob.
+  // Requests exceeding this limit are rejected. This places an
+  // effective upper limit on the size of blobs that can be stored by
+  // this content addressable storage server. On average this is
+  // approximately maximum_chunk_count * min_chunk_size_bytes * 1.338.
+  //
+  // Recommended value: 100000 (corresponds to approximately 32GiB at a
+  // 256KiB min_chunk_size_bytes).
+  int64 maximum_chunk_count = 3;
+}
+
 message ApplicationConfiguration {
   // Configuration for the main HTTP server for the application. All HTTP
   // traffic is routed through this server, including gRPC-Web traffic from the
@@ -308,7 +340,13 @@ message ApplicationConfiguration {
   // behaviour.
   FrontendService frontend_service_configuration = 10;
 
-  StorageBlobAccessConfiguration content_addressable_storage = 11;
+  // Config for serving the Content Addressable Storage (CAS), consisting
+  // of a Chunk Storage (CS) and Chunk Mapping Storage (CMS). The raw
+  // storages are also handed to specialized blob accesses, such as the
+  // Action Cache, which authorize at their own API boundaries. If
+  // omitted, the CAS parts of the backend will not be started.
+  ContentAddressableStorageServerConfiguration
+      content_addressable_storage_server = 11;
   StorageBlobAccessConfiguration action_cache = 12;
   StorageBlobAccessConfiguration initial_size_class_cache = 13;
   StorageBlobAccessConfiguration file_system_access_cache = 14;

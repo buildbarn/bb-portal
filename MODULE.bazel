@@ -35,7 +35,7 @@ bazel_dep(name = "rules_shell", version = "0.8.0")
 
 git_override(
     module_name = "bazel_remote_apis",
-    commit = "becdd8f9ff811df88a22d3eadd6341753d51d167",
+    commit = "76ddd98e1f92c0e2e71d0d3aa6906eca31754c03",
     # https://github.com/bazelbuild/remote-apis/pull/378
     patches = ["//:patches/bazel_remote_apis/upstream-pr-378.diff"],
     remote = "https://github.com/bazelbuild/remote-apis.git",
@@ -43,19 +43,19 @@ git_override(
 
 git_override(
     module_name = "com_github_buildbarn_bb_remote_execution",
-    commit = "ea2a5febf0bad6bfd53a90ea1eafe962e876acaa",
+    commit = "5adb988814610d1ebb7b0abc7c6041fbf8f6b841",
     remote = "https://github.com/buildbarn/bb-remote-execution.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_storage",
-    commit = "027bd797f1ec7631b49c4f459c06dee995f7e2f9",
+    commit = "0f148371ed7ed4e882a70378a610203df9059e05",
     remote = "https://github.com/buildbarn/bb-storage.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_go_xdr",
-    commit = "236788cf9e8948a1e8875c7dd243e2be180cdfd7",
+    commit = "a2095890273efee7f8bb2b0007914f8b66398c57",
     remote = "https://github.com/buildbarn/go-xdr.git",
 )
 

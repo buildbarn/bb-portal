@@ -26,10 +26,10 @@ require (
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20260528135316-84fa6c32aee6
-	github.com/bazelbuild/remote-apis v0.0.0-20260331222004-becdd8f9ff81
+	github.com/bazelbuild/remote-apis v0.0.0-20260908115904-76ddd98e1f92
 	github.com/bazelbuild/rules_go v0.64.1
-	github.com/buildbarn/bb-remote-execution v0.0.0-20261004161155-ea2a5febf0ba
-	github.com/buildbarn/bb-storage v0.0.0-20261002053832-027bd797f1ec
+	github.com/buildbarn/bb-remote-execution v0.0.0-20261006122851-5adb98881461
+	github.com/buildbarn/bb-storage v0.0.0-20261006094214-0f148371ed7e
 	github.com/fergusstrange/embedded-postgres v1.34.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
@@ -97,6 +97,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.24.5 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
+	github.com/buildbarn/go-cdc v0.0.10 // indirect
 	github.com/buildbarn/go-sha256tree v0.0.0-20250310211320-0f70f20e855b // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
