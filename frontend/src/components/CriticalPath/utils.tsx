@@ -1,8 +1,7 @@
 import z from "zod";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
-import { casByteStreamClient } from "@/grpc/casByteStreamClient";
-import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { fetchCasObject } from "@/utils/fetchCasObject";
+import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
+import { generateFileUrl } from "@/utils/urlGenerator";
 
 const criticalEventSchema = z.object({
   name: z.string(),
@@ -15,22 +14,37 @@ const criticalPathSchema = criticalEventSchema.array();
 export type CriticalPath = z.infer<typeof criticalPathSchema>;
 export type CriticalEvent = z.infer<typeof criticalEventSchema>;
 
-export const getCriticalPath = async (
+const fetchProfileBytes = async (
   profile: FileDetailsFragment,
-): Promise<CriticalPath | undefined> => {
-  try {
-    const res = await fetchCasObject(
-      casByteStreamClient,
+): Promise<Uint8Array> => {
+  const res = await fetch(
+    generateFileUrl(
       profile.digest.rev2InstanceName,
-      digestFunction_ValueFromJSON(profile.digest.digestFunction.toUpperCase()),
+      digestFunctionValueFromString(profile.digest.digestFunction),
       {
         hash: profile.digest.hash,
         sizeBytes: profile.digest.sizeBytes.toString(),
       },
-    );
+      profile.filePath.path,
+    ),
+  );
+  if (!res.ok) {
+    throw new Error(`Failed to fetch profile: ${res.statusText}`);
+  }
+  return new Uint8Array(await res.arrayBuffer());
+};
+
+const isGzipProfile = (profile: FileDetailsFragment) =>
+  profile.filePath.path.endsWith(".gz");
+
+export const getCriticalPath = async (
+  profile: FileDetailsFragment,
+): Promise<CriticalPath | undefined> => {
+  try {
+    const bytes = await fetchProfileBytes(profile);
     let jsonData = null;
-    if (profile.filePath.path.endsWith(".gz")) {
-      const compressedStream = new Response(new Uint8Array(res)).body;
+    if (isGzipProfile(profile)) {
+      const compressedStream = new Response(bytes.slice().buffer).body;
 
       const decompressionStream = new DecompressionStream("gzip");
       const decompressedStream =
@@ -39,7 +53,7 @@ export const getCriticalPath = async (
       jsonData = await decompressedResponse.json();
     } else {
       // We assume the file is a JSON file if not .gz.
-      const text = new TextDecoder().decode(res);
+      const text = new TextDecoder().decode(bytes);
       jsonData = JSON.parse(text);
     }
 

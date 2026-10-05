@@ -1,8 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { casByteStreamClient } from "@/grpc/casByteStreamClient";
-import { digestFunction_ValueFromJSON } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
-import { fetchCasObject } from "@/utils/fetchCasObject";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { LogViewerCard, SIZE_BYTE_LIMIT } from ".";
 
@@ -11,21 +8,27 @@ export const fetchLog = async (
   digestFunction: string,
   hash: string,
   sizeBytes: number,
+  fileName: string,
 ): Promise<string | undefined> => {
   if (sizeBytes > SIZE_BYTE_LIMIT) {
     return undefined;
   }
 
-  const data = await fetchCasObject(
-    casByteStreamClient,
-    instanceName,
-    digestFunction_ValueFromJSON(digestFunction.toUpperCase()),
-    {
-      hash,
-      sizeBytes: sizeBytes.toString(),
-    },
+  const res = await fetch(
+    generateFileUrl(
+      instanceName,
+      digestFunctionValueFromString(digestFunction),
+      {
+        hash,
+        sizeBytes: sizeBytes.toString(),
+      },
+      fileName,
+    ),
   );
-  return new TextDecoder().decode(data);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch log: ${res.statusText}`);
+  }
+  return await res.text();
 };
 
 interface Props {
@@ -50,7 +53,13 @@ const CasViewer: React.FC<Props> = ({
     queryKey: ["casLog", hash],
     enabled: sizeBytes <= SIZE_BYTE_LIMIT,
     queryFn: async () => {
-      return await fetchLog(instanceName, digestFunction, hash, sizeBytes);
+      return await fetchLog(
+        instanceName,
+        digestFunction,
+        hash,
+        sizeBytes,
+        fileName,
+      );
     },
   });
 
