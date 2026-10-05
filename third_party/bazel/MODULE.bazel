@@ -6,8 +6,8 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 
 http_archive(
     name = "com_github_bazelbuild_bazel",
-    sha256 = "229e999cec4f408946d368af6c33c5137fe999e9966538562f8c90b0de7aa0ad",
-    urls = ["https://github.com/bazelbuild/bazel/releases/download/9.1.0/bazel-9.1.0-dist.zip"],
+    sha256 = "81af02b33128ec1922c6b60212df3fb6150baa96bb33d32ffa020e5fed47fefc",
+    urls = ["https://github.com/bazelbuild/bazel/releases/download/9.2.0/bazel-9.2.0-dist.zip"],
 )
 
 # Dependencies of com_github_bazelbuild_bazel

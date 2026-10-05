@@ -3,10 +3,6 @@ load("@rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_to_json")
 jsonnet_to_json(
     name = "github_workflows",
     src = "github_workflows.jsonnet",
-    outs = [
-        "backend.yaml",
-        "frontend.yaml",
-        "publish-docker.yaml",
-    ],
-    visibility = ["//visibility:public"],
+    out_dir = "outputs",
+    visibility = ["//:__pkg__"],
 )
