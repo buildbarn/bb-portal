@@ -1,4 +1,4 @@
-import { theme } from "antd";
+import { Spin, Typography, theme } from "antd";
 import type React from "react";
 import {
   ResponsiveContainer,
@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import type { CriticalEvent } from "./parseCriticalPath";
+import { type CriticalEvent, ProfileTooLargeError } from "./parseCriticalPath";
 import { useCriticalPaths } from "./useCriticalPaths";
 
 interface Props {
@@ -25,13 +25,42 @@ export const CriticalPathDisplay: React.FC<Props> = ({
 }) => {
   const { token } = theme.useToken();
   const [criticalPath] = useCriticalPaths([profile]);
-  if (!criticalPath || criticalPath.length === 0) {
-    return null;
+  if (criticalPath.isPending) {
+    return (
+      <Spin size="small">
+        <div
+          style={{
+            width: "100%",
+            height: 40,
+          }}
+        />
+      </Spin>
+    );
   }
+  if (criticalPath.error instanceof ProfileTooLargeError) {
+    return (
+      <Typography.Text type="warning">
+        Profile too large, please open with perfetto
+      </Typography.Text>
+    );
+  }
+  if (criticalPath.isError || !criticalPath.data) {
+    return (
+      <Typography.Text type="secondary">No profile available</Typography.Text>
+    );
+  }
+  if (criticalPath.data.length === 0) {
+    return (
+      <Typography.Text type="secondary">
+        No critical path in profile
+      </Typography.Text>
+    );
+  }
+  const criticalPathEvents = criticalPath.data;
   let chartItems: ChartItem[] = [];
   let totalDuration = 0;
 
-  criticalPath.forEach((item) => {
+  criticalPathEvents.forEach((item) => {
     if (totalDuration < item.ts + item.dur) {
       totalDuration = item.ts + item.dur;
     }

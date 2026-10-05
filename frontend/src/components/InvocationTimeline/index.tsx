@@ -78,7 +78,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
             invocationStatus,
             command: entry.originalCommandLine,
             tags: parseGraphqlEdgeList(entry.tags),
-            criticalTraceEvents: criticalPaths[index],
+            criticalTraceEvents: criticalPaths[index]?.data,
           };
         })
         .filter((_entry, index) => !!invocations[index].startedAt)
