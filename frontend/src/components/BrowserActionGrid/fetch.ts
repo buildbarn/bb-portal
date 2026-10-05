@@ -23,7 +23,6 @@ import {
   MonetaryResourceUsage,
   POSIXResourceUsage,
 } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
-import type { ByteStreamClient } from "@/lib/grpc-client/google/bytestream/bytestream";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import { BrowserPageType } from "@/types/BrowserPageType";
 import { ProtobufTypeUrls } from "@/types/protobufTypeUrls";
@@ -34,7 +33,6 @@ import { protobufToObject } from "@/utils/protobufToObject";
 export const fetchBrowserActionGrid = async (
   browserPageParams: BrowserPageParams,
   actionCacheClient: ActionCacheClient,
-  casByteStreamClient: ByteStreamClient,
   initialSizeClassCacheClient: InitialSizeClassCacheClient,
   fileSystemAccessCacheClient: FileSystemAccessCacheClient,
 ): Promise<{
@@ -55,12 +53,10 @@ export const fetchBrowserActionGrid = async (
 }> => {
   const { actionDigest, executeResponse } = await fetchExecuteResponse(
     browserPageParams,
-    casByteStreamClient,
     actionCacheClient,
   );
 
   const action = await fetchCasObjectAndParse(
-    casByteStreamClient,
     browserPageParams.instanceName,
     browserPageParams.digestFunction,
     actionDigest,
@@ -86,7 +82,6 @@ export const fetchBrowserActionGrid = async (
     // Fetch Command
     action.commandDigest
       ? fetchCasObjectAndParse(
-          casByteStreamClient,
           browserPageParams.instanceName,
           browserPageParams.digestFunction,
           action.commandDigest,
@@ -97,7 +92,6 @@ export const fetchBrowserActionGrid = async (
     // Fetch Directory
     action.inputRootDigest
       ? fetchCasObjectAndParse(
-          casByteStreamClient,
           browserPageParams.instanceName,
           browserPageParams.digestFunction,
           action.inputRootDigest,
@@ -257,7 +251,6 @@ function extractMetadataFromExecuteResponse(
 
 async function fetchExecuteResponse(
   browserPageParams: BrowserPageParams,
-  casByteStreamClient: ByteStreamClient,
   actionCacheClient: ActionCacheClient,
 ): Promise<{
   actionDigest: Digest;
@@ -268,7 +261,6 @@ async function fetchExecuteResponse(
     BrowserPageType.HistoricalExecuteResponse
   ) {
     const historicalExecuteresponse = await fetchCasObjectAndParse(
-      casByteStreamClient,
       browserPageParams.instanceName,
       browserPageParams.digestFunction,
       browserPageParams.digest,

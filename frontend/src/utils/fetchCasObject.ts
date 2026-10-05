@@ -5,56 +5,24 @@ import type {
   DigestFunction_Value,
   FindMissingBlobsRequest,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import type {
-  ByteStreamClient,
-  DeepPartial,
-} from "@/lib/grpc-client/google/bytestream/bytestream";
-import {
-  digestFunctionValueToString,
-  includeDigestFunctionInCasFetch,
-} from "@/utils/digestFunctionUtils";
 import { protobufToObject } from "@/utils/protobufToObject";
+import { generateFileUrl } from "@/utils/urlGenerator";
 
-export const fetchCasObject = async (
-  casByteStreamClient: ByteStreamClient,
+export const fetchCasBytes = async (
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): Promise<Uint8Array> => {
-  const resourceName = [
-    instanceName ? `/${instanceName}` : "",
-    "/blobs",
-    includeDigestFunctionInCasFetch(digestFunction)
-      ? `/${digestFunctionValueToString(digestFunction)}`
-      : "",
-    `/${digest.hash}/${digest.sizeBytes}`,
-  ].join("");
-
-  const responseStream = casByteStreamClient.read({
-    resourceName,
-    readOffset: "0",
-    readLimit: "0",
-  });
-
-  const chunks: Uint8Array[] = [];
-  let totalBytes = 0;
-  for await (const chunk of responseStream) {
-    chunks.push(chunk.data);
-    totalBytes += chunk.data.length;
+  const res = await fetch(
+    generateFileUrl(instanceName, digestFunction, digest, ""),
+  );
+  if (!res.ok) {
+    throw new Error(`Failed to fetch CAS object: ${res.statusText}`);
   }
-
-  // Copy each chunk once; concatenating plain arrays froze the page for seconds on large blobs.
-  const combined = new Uint8Array(totalBytes);
-  let offset = 0;
-  for (const chunk of chunks) {
-    combined.set(chunk, offset);
-    offset += chunk.length;
-  }
-  return combined;
+  return new Uint8Array(await res.arrayBuffer());
 };
 
 export const fetchCasObjectAndParse = async <T>(
-  casByteStreamClient: ByteStreamClient,
   instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
@@ -63,14 +31,9 @@ export const fetchCasObjectAndParse = async <T>(
     toJSON: (input: T) => unknown;
   },
 ): Promise<T> => {
-  const combinedChunks = await fetchCasObject(
-    casByteStreamClient,
-    instanceName,
-    digestFunction,
-    digest,
-  );
+  const bytes = await fetchCasBytes(instanceName, digestFunction, digest);
 
-  return protobufToObject(objectType, combinedChunks, true);
+  return protobufToObject(objectType, bytes, true);
 };
 
 async function checkDataExists(
@@ -78,7 +41,7 @@ async function checkDataExists(
   digests: Digest[],
   digestFunction: DigestFunction_Value,
 ): Promise<boolean> {
-  const requestBody: DeepPartial<FindMissingBlobsRequest> = {
+  const requestBody: FindMissingBlobsRequest = {
     instanceName: instanceName,
     blobDigests: digests,
     digestFunction: digestFunction,

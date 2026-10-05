@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Space, Spin, Typography } from "antd";
 import type React from "react";
-import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { Command } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageParams";
 import {
@@ -30,7 +29,6 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
     queryKey: ["browserCommandGrid", browserPageParams],
     queryFn: () =>
       fetchCasObjectAndParse(
-        casByteStreamClient,
         browserPageParams.instanceName,
         browserPageParams.digestFunction,
         browserPageParams.digest,

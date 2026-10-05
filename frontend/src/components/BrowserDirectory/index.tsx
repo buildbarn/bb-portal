@@ -1,7 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Flex, Space } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import {
   type Action,
   type Digest,
@@ -195,7 +194,6 @@ export const BrowserDirectory: React.FC<Params> = ({
         return existingEntry;
       } else {
         const newEntry: Promise<DirectoryData> = fetchCasObjectAndParse(
-          casByteStreamClient,
           instanceName,
           digestFunction,
           digest,

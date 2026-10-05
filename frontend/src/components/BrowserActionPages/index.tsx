@@ -5,7 +5,6 @@ import type React from "react";
 import { useState } from "react";
 import { PortalCard } from "@/components/PortalCard";
 import { actionCacheClient } from "@/grpc/actionCacheClient";
-import { casByteStreamClient } from "@/grpc/casByteStreamClient";
 import { fileSystemAccessCacheClient } from "@/grpc/fileSystemAccessCacheClient";
 import { initialSizeClassCacheClient } from "@/grpc/initialSizeClassCacheClient";
 import type { BrowserSearchParams } from "@/routes/browser.$";
@@ -40,7 +39,6 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
       return fetchBrowserActionGrid(
         params,
         actionCacheClient,
-        casByteStreamClient,
         initialSizeClassCacheClient,
         fileSystemAccessCacheClient,
       );
@@ -59,7 +57,6 @@ export const BrowserActionPages: React.FC<Params> = ({ params, search }) => {
       return fetchBrowserActionGrid(
         { ...search.comparedAction, browserPageType: BrowserPageType.Action },
         actionCacheClient,
-        casByteStreamClient,
         initialSizeClassCacheClient,
         fileSystemAccessCacheClient,
       );

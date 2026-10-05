@@ -1,7 +1,7 @@
 import {
   Action,
   Digest,
-  DigestFunction_Value,
+  type DigestFunction_Value,
   digestFunction_ValueFromJSON,
   digestFunction_ValueToJSON,
   type Platform,
@@ -23,20 +23,6 @@ export const digestFunctionValueToString = (
   value: DigestFunction_Value,
 ): string => {
   return digestFunction_ValueToJSON(value).toLowerCase();
-};
-
-export const includeDigestFunctionInCasFetch = (
-  digestFunction: DigestFunction_Value,
-): boolean => {
-  return ![
-    DigestFunction_Value.MD5,
-    DigestFunction_Value.MURMUR3,
-    DigestFunction_Value.SHA1,
-    DigestFunction_Value.SHA256,
-    DigestFunction_Value.SHA384,
-    DigestFunction_Value.SHA512,
-    DigestFunction_Value.VSO,
-  ].includes(digestFunction);
 };
 
 // Currently we only support SHA256, as some of the other
