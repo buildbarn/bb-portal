@@ -27,9 +27,9 @@ require (
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20260528135316-84fa6c32aee6
 	github.com/bazelbuild/remote-apis v0.0.0-20260331222004-becdd8f9ff81
-	github.com/bazelbuild/rules_go v0.63.0
-	github.com/buildbarn/bb-remote-execution v0.0.0-20260614164626-1ae1eed2501f
-	github.com/buildbarn/bb-storage v0.0.0-20260805174928-33530b6bb903
+	github.com/bazelbuild/rules_go v0.64.1
+	github.com/buildbarn/bb-remote-execution v0.0.0-20261004161155-ea2a5febf0ba
+	github.com/buildbarn/bb-storage v0.0.0-20261002053832-027bd797f1ec
 	github.com/fergusstrange/embedded-postgres v1.34.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
@@ -50,7 +50,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.45.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067
-	golang.org/x/sync v0.21.0
+	golang.org/x/sync v0.22.0
 	google.golang.org/genproto v0.0.0-20260610212136-7ab31c22f7ad
 	google.golang.org/genproto/googleapis/bytestream v0.0.0-20260610212136-7ab31c22f7ad
 	google.golang.org/grpc v1.81.1
@@ -168,15 +168,15 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.45.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.10.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
+	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/exp v0.0.0-20260611194520-c48552f49976 // indirect
-	golang.org/x/mod v0.37.0 // indirect
-	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/mod v0.38.0 // indirect
+	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
-	golang.org/x/tools v0.46.0 // indirect
+	golang.org/x/tools v0.48.0 // indirect
 	google.golang.org/api v0.284.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260610212136-7ab31c22f7ad // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260610212136-7ab31c22f7ad // indirect

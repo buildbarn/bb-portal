@@ -19,7 +19,7 @@ export const protobufPackage = "buildbarn.cas";
  *
  * This message is written into the ContentAddressableStorage by
  * bb_worker by the CachingBuildExecutor. The digest is returned to the
- * user by providing a URL to bb_browser as a message in the
+ * user by providing a URL to bb-portal as a message in the
  * ExecuteResponse.
  *
  * Additionally, this message is attached to CompletedActions that are
