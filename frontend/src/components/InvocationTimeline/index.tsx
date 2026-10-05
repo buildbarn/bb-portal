@@ -56,7 +56,6 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
   const invocationsInfo: InvocationInfo[] = useMemo(
     () =>
       [...invocations]
-        .filter((entry) => !!entry.startedAt)
         .map((entry, index) => {
           const invocationStatus = getInvocationResultTagEnum(
             entry.exitCodeName || undefined,
@@ -82,6 +81,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
             criticalTraceEvents: criticalPaths[index],
           };
         })
+        .filter((_entry, index) => !!invocations[index].startedAt)
         .sort((a, b) => {
           for (const columnName of env.additionalBuildInvocationColumns) {
             const aValue =
