@@ -11,8 +11,8 @@ import {
 } from "recharts";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
+import type { CriticalEvent } from "./parseCriticalPath";
 import { useCriticalPaths } from "./useCriticalPaths";
-import type { CriticalEvent } from "./utils";
 
 interface Props {
   profile: FileDetailsFragment;

@@ -2,7 +2,7 @@ import type { SVGProps } from "react";
 import type { CartesianTickItem } from "recharts/types/util/types";
 import type { InvocationTag } from "@/graphql/__generated__/graphql";
 import type { CommandLineData } from "../CommandLine";
-import type { CriticalPath } from "../CriticalPath/utils";
+import type { CriticalPath } from "../CriticalPath/parseCriticalPath";
 import type { InvocationResult } from "../InvocationResultTag/enum";
 
 export interface TickProps extends SVGProps<SVGTextElement> {

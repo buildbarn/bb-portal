@@ -1,6 +1,7 @@
 import { useQueries } from "@tanstack/react-query";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
-import { type CriticalPath, getCriticalPath } from "./utils";
+import type { CriticalPath } from "./parseCriticalPath";
+import { getCriticalPath } from "./utils";
 
 // Profiles are immutable, so a critical path derived from a profile digest
 // never needs to be refetched within a session.
