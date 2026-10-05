@@ -17,7 +17,12 @@ const getCriticalPathQueryKey = (profile: FileDetailsFragment) => [
 
 export const useCriticalPaths = (
   profiles: Array<FileDetailsFragment | null | undefined>,
-): Array<CriticalPath | undefined> => {
+): Array<{
+  data: CriticalPath | undefined;
+  isPending: boolean;
+  isError: boolean;
+  error: Error | null;
+}> => {
   return useQueries({
     queries: profiles.map((profile) => {
       const enabled = profile != null;
@@ -36,6 +41,12 @@ export const useCriticalPaths = (
         staleTime: CRITICAL_PATH_STALE_TIME,
       };
     }),
-    combine: (results) => results.map((result) => result.data),
+    combine: (results) =>
+      results.map((result) => ({
+        data: result.data,
+        isPending: result.isPending,
+        isError: result.isError,
+        error: result.error,
+      })),
   });
 };

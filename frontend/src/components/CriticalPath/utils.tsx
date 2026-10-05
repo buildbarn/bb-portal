@@ -1,7 +1,11 @@
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
 import { generateFileUrl } from "@/utils/urlGenerator";
-import type { CriticalPath } from "./parseCriticalPath";
+import {
+  type CriticalPath,
+  isProfileTooLarge,
+  ProfileTooLargeError,
+} from "./parseCriticalPath";
 import type {
   ParseCriticalPathRequest,
   ParseCriticalPathResponse,
@@ -114,11 +118,19 @@ const getWorkerEntry = (): WorkerEntry => {
 export const getCriticalPath = async (
   profile: FileDetailsFragment,
 ): Promise<CriticalPath | undefined> => {
+  const isGzip = isGzipProfile(profile);
+  if (isProfileTooLarge(profile.digest.sizeBytes, isGzip)) {
+    // The profile is too large to parse in the browser. Fail without
+    // fetching; the UI directs users to the Perfetto viewer instead.
+    throw new ProfileTooLargeError(
+      "Profile too large, please open with perfetto",
+    );
+  }
   const url = getProfileUrl(profile);
   const request: ParseCriticalPathRequest = {
     id: nextRequestId++,
     url,
-    isGzip: isGzipProfile(profile),
+    isGzip,
   };
   const { worker, pending } = getWorkerEntry();
   try {
