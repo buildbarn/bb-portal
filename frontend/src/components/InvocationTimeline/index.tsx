@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { theme } from "antd";
 import { useMemo, useState } from "react";
@@ -23,7 +22,7 @@ import {
   readableDurationFromMilliseconds,
 } from "@/utils/time";
 import CommandLinePreview from "../CommandLinePreview";
-import { getCriticalPath } from "../CriticalPath/utils";
+import { useCriticalPaths } from "../CriticalPath/useCriticalPaths";
 import { INVOCATION_RESULT_TAGS } from "../InvocationResultTag";
 import {
   getInvocationResultTagEnum,
@@ -46,21 +45,13 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
     string | null
   >(null);
 
-  const { data: criticalPaths = [] } = useQuery({
-    queryKey: ["criticalPaths", invocations?.map((inv) => inv.id)],
-    queryFn: async () => {
-      const promises = invocations.map(async (invocation) => {
-        if (!invocation.profile) {
-          return undefined;
-        }
-        return getCriticalPath(
-          getFragmentData(FILE_DETAILS_FRAGMENT, invocation.profile),
-        );
-      });
-      return await Promise.all(promises);
-    },
-    staleTime: Infinity,
-  });
+  const criticalPaths = useCriticalPaths(
+    invocations.map((invocation) =>
+      invocation.profile
+        ? getFragmentData(FILE_DETAILS_FRAGMENT, invocation.profile)
+        : undefined,
+    ),
+  );
 
   const invocationsInfo: InvocationInfo[] = useMemo(
     () =>

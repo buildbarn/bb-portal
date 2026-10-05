@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { theme } from "antd";
 import type React from "react";
 import {
@@ -12,7 +11,8 @@ import {
 } from "recharts";
 import type { FileDetailsFragment } from "@/graphql/__generated__/graphql";
 import { readableDurationFromMilliseconds } from "@/utils/time";
-import { type CriticalEvent, getCriticalPath } from "./utils";
+import { useCriticalPaths } from "./useCriticalPaths";
+import type { CriticalEvent } from "./utils";
 
 interface Props {
   profile: FileDetailsFragment;
@@ -24,15 +24,8 @@ export const CriticalPathDisplay: React.FC<Props> = ({
   hideTinyActions,
 }) => {
   const { token } = theme.useToken();
-  const {
-    data: criticalPath,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["criticalPath", profile.digest.hash],
-    queryFn: () => getCriticalPath(profile),
-  });
-  if (!criticalPath || isLoading || isError || criticalPath.length === 0) {
+  const [criticalPath] = useCriticalPaths([profile]);
+  if (!criticalPath || criticalPath.length === 0) {
     return null;
   }
   let chartItems: ChartItem[] = [];
