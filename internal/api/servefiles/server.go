@@ -172,6 +172,7 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request, 
 		}
 	}
 
+	w.Header().Set("Content-Security-Policy", "sandbox allow-scripts")
 	w.Header().Set("Content-Type", contentType)
 	w.Write(first[:n])
 	io.Copy(w, r)
