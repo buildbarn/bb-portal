@@ -56,6 +56,12 @@ WHERE ctid IN (
                 WHERE "target_id" = "targets"."id"
             )
         )
+        AND (
+            NOT EXISTS (
+                SELECT 1 FROM "test_targets" 
+                WHERE "target_id" = "targets"."id"
+            )
+        )
     FOR UPDATE SKIP LOCKED
     LIMIT sqlc.arg(batch_limit)::bigint
 );

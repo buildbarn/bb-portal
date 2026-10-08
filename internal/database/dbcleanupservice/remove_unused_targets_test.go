@@ -168,4 +168,76 @@ func TestRemoveUnusedTargets(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, count)
 	})
+
+	t.Run("MultipleTargetsWithOneForeignKeyEach", func(t *testing.T) {
+		db := testutils.SetupTestDB(t, dbProvider)
+		client := db.Ent()
+
+		instanceName := testutils.CreateInstanceName(ctx, t, client, "instance")
+
+		t1 := client.Target.Create().SetInstanceName(instanceName).SetLabel("1").SetAspect("1").SetTargetKind("1").SaveX(ctx)
+		t2 := client.Target.Create().SetInstanceName(instanceName).SetLabel("2").SetAspect("2").SetTargetKind("1").SaveX(ctx)
+		t3 := client.Target.Create().SetInstanceName(instanceName).SetLabel("3").SetAspect("3").SetTargetKind("1").SaveX(ctx)
+		_ = client.Target.Create().SetInstanceName(instanceName).SetLabel("4").SetAspect("4").SetTargetKind("1").SaveX(ctx)
+
+		invocation := testutils.StartCreateInvocation(client, instanceName).SaveX(ctx)
+		invocationTarget := client.InvocationTarget.Create().
+			SetBazelInvocation(invocation).
+			SetTarget(t1).
+			SetAbortReason(invocationtarget.AbortReasonNONE).
+			SaveX(ctx)
+		targetKindMapping := client.TargetKindMapping.Create().
+			SetBazelInvocation(invocation).
+			SetTarget(t2).
+			SaveX(ctx)
+		testTarget := client.TestTarget.Create().
+			SetTarget(t3).
+			SaveX(ctx)
+
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		deleted, err := cleanup.RemoveUnusedTargets(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+
+		count, err := client.Target.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 3, count)
+
+		client.TestTarget.DeleteOne(testTarget).ExecX(ctx)
+
+		cleanup, err = getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		deleted, err = cleanup.RemoveUnusedTargets(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+
+		count, err = client.Target.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 2, count)
+
+		client.TargetKindMapping.DeleteOne(targetKindMapping).ExecX(ctx)
+
+		cleanup, err = getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		deleted, err = cleanup.RemoveUnusedTargets(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+
+		count, err = client.Target.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 1, count)
+
+		client.InvocationTarget.DeleteOne(invocationTarget).ExecX(ctx)
+
+		cleanup, err = getNewDbCleanupService(db, clock, traceProvider)
+		require.NoError(t, err)
+		deleted, err = cleanup.RemoveUnusedTargets(ctx)
+		require.NoError(t, err)
+		require.EqualValues(t, 1, deleted)
+
+		count, err = client.Target.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 0, count)
+	})
 }
