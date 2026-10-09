@@ -22,6 +22,7 @@ import FIND_BUILD_DURATIONS from "./index.graphql";
 export const TrendsPage: React.FC = () => {
   const [variables, _setVariables] = useState<FindBuildTimesQueryVariables>({
     first: 1000,
+    where: { startedAtNotNil: true, endedAtNotNil: true },
   });
 
   const { loading, data, previousData, error } = useQuery(
@@ -63,8 +64,6 @@ export const TrendsPage: React.FC = () => {
       to: x.endedAt,
       duration: new Date(x.endedAt).getTime() - new Date(x.startedAt).getTime(),
     };
-    // if there are empty/nil dates they get set to max epoch start time
-    // which throws the graph off.
     if (point.duration > 0) {
       dataPoints.push(point);
     }
