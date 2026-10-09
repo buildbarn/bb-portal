@@ -378,7 +378,7 @@ const DirectoryNode = React.forwardRef<
             type="text"
             href={file.linkOptions}
             target="_blank"
-            download={true}
+            download={false}
             {...commonProps}
           >
             {innerContent}
