@@ -39,8 +39,22 @@
   padding: 6px 0.6em;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  /* The card reserves a fixed title width, which lets everything in the title
+     row be squeezed. Only the title itself should give way. */
+  min-width: 0;
+}
+
 .titleWrapper {
   text-overflow: "[…]";
   overflow: hidden;
   margin-right: 12px;
+  min-width: 0;
+}
+
+.liveTag {
+  flex: none;
+  margin-inline-end: 0;
 }

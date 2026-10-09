@@ -11,6 +11,39 @@ export const escapeRegex = (query: string) => {
   return new RegExp(escapedQuery, "gi");
 };
 
+// Shared so that repeated searches without a query keep the same identity.
+const NO_MATCHES: number[] = [];
+
+// Indices of the lines matching `query`, one entry per occurrence, up to
+// `limit` occurrences.
+export const findMatchIndices = (
+  items: string[],
+  query: string,
+  limit: number,
+): number[] => {
+  // An empty query escapes to an empty pattern, which matches at every
+  // position of every line rather than nowhere.
+  if (query === "") {
+    return NO_MATCHES;
+  }
+
+  const result: number[] = [];
+  const escapedQuery = escapeRegex(query);
+  for (let i = 0; i < items.length; i++) {
+    const cleanItem = items[i].replace(ansiRegex(), "");
+
+    for (const _ of cleanItem.matchAll(escapedQuery)) {
+      result.push(i);
+
+      if (result.length >= limit) {
+        return result;
+      }
+    }
+  }
+
+  return result;
+};
+
 // Regex for ANSI escape codes (colors, formatting, etc)
 // Example: "\x1B[31mError\x1B[0m" ignores the color codes
 export const ansiRegex = () => {

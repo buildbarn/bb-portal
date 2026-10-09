@@ -1,5 +1,7 @@
 {
   "getBazelInvocation": {
+    "connectionMetadata": null,
+    "exitCodeName": "SUCCESS",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjc=",
     "invocationID": "76651929-40d8-4f79-a2de-6a4a5092b76c",
     "originalCommandLine": {
