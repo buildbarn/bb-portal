@@ -27,7 +27,13 @@ const filenameColumn: ColumnType<FilesTableEntry> = {
   render: (_, record) => {
     if (record.href) {
       return (
-        <a href={record.href} style={record.style}>
+        <a
+          href={record.href}
+          style={record.style}
+          target="_blank"
+          rel="noopener"
+          download={false}
+        >
           {record.filename}
         </a>
       );
