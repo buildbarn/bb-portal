@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { BrowserPage } from "@/components/pages/Browser";
+import { BrowserWelcomePage } from "@/components/pages/Browser/BrowserWelcome";
 import { NotFoundError } from "@/main";
 import { BrowserPageSchema } from "@/types/BrowserPageParams";
 import { generatePageTitle } from "@/utils/generatePageTitle";
@@ -35,23 +36,29 @@ export const Route = createFileRoute("/browser/$")({
     // REv2 grpc client. This prevents the client from being loaded for
     // every route as we only need it when actually loading the browser
     // page.
-    const { parseBrowserPageSlug } = await import("@/types/BrowserPageParams");
-    const browserPageParams = parseBrowserPageSlug(
-      (params._splat || "").split("/"),
+    const { browserPageUrlShape, validateBrowserPageSlug } = await import(
+      "@/types/BrowserPageParams"
     );
-    const result = BrowserPageSchema.safeParse(browserPageParams);
-    if (!result.data) {
-      throw new NotFoundError("page", result.error?.message);
+    const result = validateBrowserPageSlug((params._splat || "").split("/"));
+    if (result.success || result.incomplete) {
+      return result;
     }
-    return result.data;
+    throw new NotFoundError(
+      "page",
+      `${result.error}. Expected ${browserPageUrlShape}.`,
+    );
   },
   head: (_ctx) => {
-    const browserPageParams = _ctx.loaderData;
-    if (browserPageParams === undefined) {
+    const result = _ctx.loaderData;
+    if (result === undefined) {
       return {
         meta: [{ title: generatePageTitle(["Browser", "Page Not Found"]) }],
       };
     }
+    if (!result.success) {
+      return { meta: [{ title: generatePageTitle(["Browser"]) }] };
+    }
+    const browserPageParams = result.data;
 
     const pageName = browserPageParams.browserPageType
       .split("_")
@@ -74,6 +81,13 @@ export const Route = createFileRoute("/browser/$")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const browserPageParams = Route.useLoaderData();
-  return <BrowserPage params={browserPageParams} search={search} />;
+  const result = Route.useLoaderData();
+  if (!result.success) {
+    return (
+      <BrowserWelcomePage
+        note={`${result.error}. Complete the URL: ${result.suggestion}`}
+      />
+    );
+  }
+  return <BrowserPage params={result.data} search={search} />;
 }
