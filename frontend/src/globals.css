@@ -52,3 +52,9 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
 }
+
+/* Recharts draws its default tooltip on a hardcoded white background; follow the Ant theme so dark mode stays readable. */
+.recharts-default-tooltip {
+  background-color: var(--ant-color-bg-elevated) !important;
+  border-color: var(--ant-color-border-secondary) !important;
+}
