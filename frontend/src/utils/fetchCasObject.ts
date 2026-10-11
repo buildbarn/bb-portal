@@ -37,16 +37,20 @@ export const fetchCasObject = async (
   });
 
   const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
   for await (const chunk of responseStream) {
     chunks.push(chunk.data);
+    totalBytes += chunk.data.length;
   }
 
-  return new Uint8Array(
-    chunks.reduce(
-      (acc: number[], chunk) => acc.concat(Array.from(chunk)),
-      [] as number[],
-    ),
-  );
+  // Copy each chunk once; concatenating plain arrays froze the page for seconds on large blobs.
+  const combined = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    combined.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return combined;
 };
 
 export const fetchCasObjectAndParse = async <T>(
