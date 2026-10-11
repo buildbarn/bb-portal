@@ -226,6 +226,11 @@ message SchedulerService {
   // Authorizer that determines which workers and operations the user is
   // allowed to see.
   buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 4;
+
+  // Authorizer that determines which instance name prefixes the user is
+  // allowed to add and remove drains in. If unset, drains cannot be
+  // modified through the web UI.
+  buildbarn.configuration.auth.AuthorizerConfiguration drain_authorizer = 5;
 }
 
 message GraphqlApiService {

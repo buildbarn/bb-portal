@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/stretchr/testify/require"
 
@@ -16,11 +17,16 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
+	"github.com/buildbarn/bb-storage/pkg/testutil"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func TestFilterPlatformQueues(t *testing.T) {
@@ -591,7 +597,7 @@ func TestListOperations(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, nil, 2)
 
 	operations := []*buildqueuestate.OperationState{
 		{
@@ -936,7 +942,7 @@ func TestIsAllowedToKillOperation(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, nil, 2)
 
 	t.Run("EmptyOperationName", func(t *testing.T) {
 		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
@@ -1004,7 +1010,7 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
 	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, killOperationsAuthorizer, nil, 2)
 
 	t.Run("MethodNotAllowed", func(t *testing.T) {
 		req, err := http.NewRequest("POST", "/api/checkPermissions/killOperation/op1", nil)
@@ -1123,5 +1129,523 @@ func TestCensorWorkerState(t *testing.T) {
 		}
 		censorWorkerState(ctx, a, "allowed", worker)
 		require.Nil(t, worker.CurrentOperation)
+	})
+}
+
+func newContextWithPermittedInstanceNames(names ...string) context.Context {
+	values := make([]*structpb.Value, 0, len(names))
+	for _, name := range names {
+		values = append(values, structpb.NewStringValue(name))
+	}
+	return auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+		Private: structpb.NewStructValue(&structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{Values: values}),
+			},
+		}),
+	})))
+}
+
+func newPermittedInstanceNamesAuthorizer() auth.Authorizer {
+	return auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
+	)
+}
+
+func newSizeClassQueueName(instanceNamePrefix string) *buildqueuestate.SizeClassQueueName {
+	return &buildqueuestate.SizeClassQueueName{
+		PlatformQueueName: &buildqueuestate.PlatformQueueName{
+			InstanceNamePrefix: instanceNamePrefix,
+		},
+		SizeClass: 1,
+	}
+}
+
+func TestGetInstanceNamePrefixFromSizeClassQueueName(t *testing.T) {
+	t.Run("NilSizeClassQueueName", func(t *testing.T) {
+		_, err := getInstanceNamePrefixFromSizeClassQueueName(nil)
+		testutil.RequireEqualStatus(t, status.Error(codes.InvalidArgument, "Request does not contain a valid InstanceNamePrefix"), err)
+	})
+
+	t.Run("NilPlatformQueueName", func(t *testing.T) {
+		_, err := getInstanceNamePrefixFromSizeClassQueueName(&buildqueuestate.SizeClassQueueName{})
+		testutil.RequireEqualStatus(t, status.Error(codes.InvalidArgument, "Request does not contain a valid InstanceNamePrefix"), err)
+	})
+
+	t.Run("EmptyPrefix", func(t *testing.T) {
+		instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(newSizeClassQueueName(""))
+		require.NoError(t, err)
+		require.Equal(t, "", instanceNamePrefix)
+	})
+
+	t.Run("Prefix", func(t *testing.T) {
+		instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(newSizeClassQueueName("a/b"))
+		require.NoError(t, err)
+		require.Equal(t, "a/b", instanceNamePrefix)
+	})
+}
+
+func TestCensorQueuedOperationState(t *testing.T) {
+	a := newPermittedInstanceNamesAuthorizer()
+	ctx := newContextWithPermittedInstanceNames("allowed", "allowed/foo")
+
+	newOperation := func(instanceNameSuffix string) *buildqueuestate.OperationState {
+		return &buildqueuestate.OperationState{
+			Name:               "op1",
+			Priority:           3,
+			ExpectedDuration:   &durationpb.Duration{Seconds: 5},
+			QueuedTimestamp:    &timestamppb.Timestamp{Seconds: 1000},
+			Timeout:            &timestamppb.Timestamp{Seconds: 2000},
+			ActionDigest:       &remoteexecution.Digest{Hash: "abc", SizeBytes: 12},
+			TargetId:           "//foo:bar",
+			InstanceNameSuffix: instanceNameSuffix,
+			DigestFunction:     remoteexecution.DigestFunction_SHA256,
+			Stage:              &buildqueuestate.OperationState_Queued{Queued: &emptypb.Empty{}},
+		}
+	}
+
+	t.Run("AllowedSuffix", func(t *testing.T) {
+		operation := newOperation("foo")
+		censorQueuedOperationState(ctx, a, "allowed", operation)
+		testutil.RequireEqualProto(t, newOperation("foo"), operation)
+	})
+
+	t.Run("AllowedEmptySuffix", func(t *testing.T) {
+		operation := newOperation("")
+		censorQueuedOperationState(ctx, a, "allowed", operation)
+		testutil.RequireEqualProto(t, newOperation(""), operation)
+	})
+
+	t.Run("DisallowedSuffix", func(t *testing.T) {
+		operation := newOperation("bar")
+		censorQueuedOperationState(ctx, a, "allowed", operation)
+		testutil.RequireEqualProto(t, &buildqueuestate.OperationState{
+			Priority:         3,
+			ExpectedDuration: &durationpb.Duration{Seconds: 5},
+			QueuedTimestamp:  &timestamppb.Timestamp{Seconds: 1000},
+			Stage:            &buildqueuestate.OperationState_Queued{Queued: &emptypb.Empty{}},
+		}, operation)
+	})
+
+	t.Run("JoinMatchesIsPrefixSuffixAllowed", func(t *testing.T) {
+		for _, tc := range []struct{ prefix, suffix string }{
+			{"", ""},
+			{"", "allowed"},
+			{"", "foo"},
+			{"allowed", ""},
+			{"allowed", "foo"},
+			{"allowed", "bar"},
+			{"forbidden", "foo"},
+		} {
+			operation := newOperation(tc.suffix)
+			censorQueuedOperationState(ctx, a, tc.prefix, operation)
+			require.Equal(t, isPrefixSuffixAllowed(ctx, a, tc.prefix, tc.suffix), operation.ActionDigest != nil, "prefix %#v suffix %#v", tc.prefix, tc.suffix)
+		}
+	})
+}
+
+func TestListInvocationChildren(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(newContextWithPermittedInstanceNames("allowed"), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	readAuthorizer := newPermittedInstanceNamesAuthorizer()
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, readAuthorizer, nil, 2)
+
+	t.Run("Allowed", func(t *testing.T) {
+		req := &buildqueuestate.ListInvocationChildrenRequest{
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: newSizeClassQueueName("allowed"),
+				Ids:                []*anypb.Any{{TypeUrl: "type.googleapis.com/foo", Value: []byte{1, 2, 3}}},
+			},
+			Filter: buildqueuestate.ListInvocationChildrenRequest_QUEUED,
+		}
+		clientResponse := &buildqueuestate.ListInvocationChildrenResponse{
+			Children: []*buildqueuestate.InvocationChildState{
+				{Id: &anypb.Any{TypeUrl: "type.googleapis.com/foo", Value: []byte{9}}, State: &buildqueuestate.InvocationState{QueuedChildrenCount: 2}},
+				{Id: &anypb.Any{TypeUrl: "type.googleapis.com/foo", Value: []byte{4}}, State: &buildqueuestate.InvocationState{QueuedChildrenCount: 1}},
+			},
+		}
+		bqsClient.EXPECT().ListInvocationChildren(gomock.Any(), req).Return(clientResponse, nil)
+
+		resp, err := bqsServer.ListInvocationChildren(ctx, req)
+		require.NoError(t, err)
+		require.Same(t, clientResponse, resp)
+	})
+
+	t.Run("DeniedPrefix", func(t *testing.T) {
+		_, err := bqsServer.ListInvocationChildren(ctx, &buildqueuestate.ListInvocationChildrenRequest{
+			InvocationName: &buildqueuestate.InvocationName{SizeClassQueueName: newSizeClassQueueName("forbidden")},
+		})
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to list invocation children for instance name prefix forbidden"), err)
+	})
+
+	t.Run("MissingInvocationName", func(t *testing.T) {
+		_, err := bqsServer.ListInvocationChildren(ctx, &buildqueuestate.ListInvocationChildrenRequest{})
+		require.Equal(t, codes.InvalidArgument, status.Code(err))
+	})
+
+	t.Run("InvocationNotFound", func(t *testing.T) {
+		bqsClient.EXPECT().ListInvocationChildren(gomock.Any(), gomock.Any()).Return(nil, status.Error(codes.NotFound, "Invocation not found"))
+
+		_, err := bqsServer.ListInvocationChildren(ctx, &buildqueuestate.ListInvocationChildrenRequest{
+			InvocationName: &buildqueuestate.InvocationName{SizeClassQueueName: newSizeClassQueueName("allowed")},
+		})
+		testutil.RequireEqualStatus(t, status.Error(codes.NotFound, "Failed to list invocation children: Invocation not found"), err)
+	})
+}
+
+func TestListQueuedOperations(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(newContextWithPermittedInstanceNames("allowed", "allowed/foo"), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	readAuthorizer := newPermittedInstanceNamesAuthorizer()
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, readAuthorizer, nil, 2)
+
+	invocationName := &buildqueuestate.InvocationName{SizeClassQueueName: newSizeClassQueueName("allowed")}
+	startAfter := &buildqueuestate.ListQueuedOperationsRequest_StartAfter{
+		Priority:         1,
+		ExpectedDuration: &durationpb.Duration{Seconds: 2},
+		QueuedTimestamp:  &timestamppb.Timestamp{Seconds: 3},
+	}
+
+	t.Run("ClampsPageSize", func(t *testing.T) {
+		bqsClient.EXPECT().ListQueuedOperations(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, req *buildqueuestate.ListQueuedOperationsRequest, opts ...any) (*buildqueuestate.ListQueuedOperationsResponse, error) {
+				testutil.RequireEqualProto(t, &buildqueuestate.ListQueuedOperationsRequest{
+					InvocationName: invocationName,
+					PageSize:       2,
+					StartAfter:     startAfter,
+				}, req)
+				return &buildqueuestate.ListQueuedOperationsResponse{PaginationInfo: &buildqueuestate.PaginationInfo{}}, nil
+			},
+		)
+
+		_, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+			InvocationName: invocationName,
+			PageSize:       100,
+			StartAfter:     startAfter,
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("KeepsSmallerPageSize", func(t *testing.T) {
+		bqsClient.EXPECT().ListQueuedOperations(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(ctx context.Context, req *buildqueuestate.ListQueuedOperationsRequest, opts ...any) (*buildqueuestate.ListQueuedOperationsResponse, error) {
+				require.Equal(t, uint32(1), req.PageSize)
+				require.Nil(t, req.StartAfter)
+				return &buildqueuestate.ListQueuedOperationsResponse{PaginationInfo: &buildqueuestate.PaginationInfo{}}, nil
+			},
+		)
+
+		_, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+			InvocationName: invocationName,
+			PageSize:       1,
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("CensorsOperations", func(t *testing.T) {
+		bqsClient.EXPECT().ListQueuedOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListQueuedOperationsResponse{
+			QueuedOperations: []*buildqueuestate.OperationState{
+				{
+					Name:               "op1",
+					Priority:           1,
+					ActionDigest:       &remoteexecution.Digest{Hash: "abc", SizeBytes: 1},
+					TargetId:           "//allowed",
+					InstanceNameSuffix: "foo",
+					DigestFunction:     remoteexecution.DigestFunction_SHA256,
+				},
+				{
+					Name:               "op2",
+					Priority:           2,
+					ActionDigest:       &remoteexecution.Digest{Hash: "def", SizeBytes: 2},
+					TargetId:           "//forbidden",
+					InstanceNameSuffix: "bar",
+					DigestFunction:     remoteexecution.DigestFunction_SHA256,
+				},
+			},
+			PaginationInfo: &buildqueuestate.PaginationInfo{StartIndex: 4, TotalEntries: 10},
+		}, nil)
+
+		resp, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+			InvocationName: invocationName,
+			PageSize:       2,
+		})
+		require.NoError(t, err)
+		testutil.RequireEqualProto(t, &buildqueuestate.ListQueuedOperationsResponse{
+			QueuedOperations: []*buildqueuestate.OperationState{
+				{
+					Name:               "op1",
+					Priority:           1,
+					ActionDigest:       &remoteexecution.Digest{Hash: "abc", SizeBytes: 1},
+					TargetId:           "//allowed",
+					InstanceNameSuffix: "foo",
+					DigestFunction:     remoteexecution.DigestFunction_SHA256,
+				},
+				{
+					Priority: 2,
+				},
+			},
+			PaginationInfo: &buildqueuestate.PaginationInfo{StartIndex: 4, TotalEntries: 10},
+		}, resp)
+	})
+
+	t.Run("DeniedPrefix", func(t *testing.T) {
+		_, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+			InvocationName: &buildqueuestate.InvocationName{SizeClassQueueName: newSizeClassQueueName("forbidden")},
+			PageSize:       2,
+		})
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to list queued operations for instance name prefix forbidden"), err)
+	})
+
+	t.Run("MissingInvocationName", func(t *testing.T) {
+		_, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{PageSize: 2})
+		require.Equal(t, codes.InvalidArgument, status.Code(err))
+	})
+
+	t.Run("ClientError", func(t *testing.T) {
+		bqsClient.EXPECT().ListQueuedOperations(gomock.Any(), gomock.Any()).Return(nil, status.Error(codes.NotFound, "Invocation not found"))
+
+		_, err := bqsServer.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+			InvocationName: invocationName,
+			PageSize:       2,
+		})
+		testutil.RequireEqualStatus(t, status.Error(codes.NotFound, "Failed to list queued operations: Invocation not found"), err)
+	})
+}
+
+func TestListDrains(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(newContextWithPermittedInstanceNames("allowed"), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	readAuthorizer := newPermittedInstanceNamesAuthorizer()
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, readAuthorizer, nil, 2)
+
+	t.Run("Allowed", func(t *testing.T) {
+		req := &buildqueuestate.ListDrainsRequest{SizeClassQueueName: newSizeClassQueueName("allowed")}
+		clientResponse := &buildqueuestate.ListDrainsResponse{
+			Drains: []*buildqueuestate.DrainState{
+				{WorkerIdPattern: map[string]string{"hostname": "a"}, CreatedTimestamp: &timestamppb.Timestamp{Seconds: 1}},
+				{WorkerIdPattern: map[string]string{"hostname": "b"}, CreatedTimestamp: &timestamppb.Timestamp{Seconds: 2}},
+			},
+		}
+		bqsClient.EXPECT().ListDrains(gomock.Any(), req).Return(clientResponse, nil)
+
+		resp, err := bqsServer.ListDrains(ctx, req)
+		require.NoError(t, err)
+		require.Same(t, clientResponse, resp)
+	})
+
+	t.Run("DeniedPrefix", func(t *testing.T) {
+		_, err := bqsServer.ListDrains(ctx, &buildqueuestate.ListDrainsRequest{SizeClassQueueName: newSizeClassQueueName("forbidden")})
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to list drains for instance name prefix forbidden"), err)
+	})
+
+	t.Run("MissingSizeClassQueueName", func(t *testing.T) {
+		_, err := bqsServer.ListDrains(ctx, &buildqueuestate.ListDrainsRequest{})
+		require.Equal(t, codes.InvalidArgument, status.Code(err))
+	})
+
+	t.Run("ClientError", func(t *testing.T) {
+		bqsClient.EXPECT().ListDrains(gomock.Any(), gomock.Any()).Return(nil, status.Error(codes.NotFound, "No workers exist"))
+
+		_, err := bqsServer.ListDrains(ctx, &buildqueuestate.ListDrainsRequest{SizeClassQueueName: newSizeClassQueueName("allowed")})
+		testutil.RequireEqualStatus(t, status.Error(codes.NotFound, "Failed to list drains: No workers exist"), err)
+	})
+}
+
+func testAddOrRemoveDrain(
+	t *testing.T,
+	expect func(bqsClient *mock.MockBuildQueueStateClient) *gomock.Call,
+	call func(ctx context.Context, bqsServer *BuildQueueStateServerImpl, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error),
+	errorMessage string,
+) {
+	ctrl, ctx := gomock.WithContext(newContextWithPermittedInstanceNames("readable", "drainable", "both"), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	readAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) && instanceName != 'drainable'"),
+	)
+	drainAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) && instanceName != 'readable'"),
+	)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, readAuthorizer, drainAuthorizer, 2)
+	newRequest := func(instanceNamePrefix string) *buildqueuestate.AddOrRemoveDrainRequest {
+		return &buildqueuestate.AddOrRemoveDrainRequest{
+			SizeClassQueueName: newSizeClassQueueName(instanceNamePrefix),
+			WorkerIdPattern:    map[string]string{"hostname": "worker-1", "thread": "3"},
+		}
+	}
+
+	t.Run("NoDrainAuthorizer", func(t *testing.T) {
+		bqsServer := NewBuildQueueStateServerImpl(bqsClient, readAuthorizer, readAuthorizer, nil, 2)
+		_, err := call(ctx, bqsServer, newRequest("both"))
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to modify drains for instance name prefix both"), err)
+	})
+
+	t.Run("ReadAllowedDrainDenied", func(t *testing.T) {
+		_, err := call(ctx, bqsServer, newRequest("readable"))
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to modify drains for instance name prefix readable"), err)
+	})
+
+	t.Run("ReadDeniedDrainAllowed", func(t *testing.T) {
+		_, err := call(ctx, bqsServer, newRequest("drainable"))
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, "Not allowed to modify drains for instance name prefix drainable"), err)
+	})
+
+	t.Run("Allowed", func(t *testing.T) {
+		expect(bqsClient).DoAndReturn(
+			func(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest, opts ...any) (*emptypb.Empty, error) {
+				testutil.RequireEqualProto(t, newRequest("both"), req)
+				return &emptypb.Empty{}, nil
+			},
+		)
+		resp, err := call(ctx, bqsServer, newRequest("both"))
+		require.NoError(t, err)
+		testutil.RequireEqualProto(t, &emptypb.Empty{}, resp)
+	})
+
+	t.Run("ClientError", func(t *testing.T) {
+		expect(bqsClient).Return(nil, status.Error(codes.PermissionDenied, "Authorization failed"))
+		_, err := call(ctx, bqsServer, newRequest("both"))
+		testutil.RequireEqualStatus(t, status.Error(codes.PermissionDenied, errorMessage+": Authorization failed"), err)
+	})
+
+	t.Run("MissingSizeClassQueueName", func(t *testing.T) {
+		_, err := call(ctx, bqsServer, &buildqueuestate.AddOrRemoveDrainRequest{})
+		require.Equal(t, codes.InvalidArgument, status.Code(err))
+	})
+}
+
+func TestAddDrain(t *testing.T) {
+	testAddOrRemoveDrain(
+		t,
+		func(bqsClient *mock.MockBuildQueueStateClient) *gomock.Call {
+			return bqsClient.EXPECT().AddDrain(gomock.Any(), gomock.Any())
+		},
+		func(ctx context.Context, bqsServer *BuildQueueStateServerImpl, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
+			return bqsServer.AddDrain(ctx, req)
+		},
+		"Failed to add drain",
+	)
+}
+
+func TestRemoveDrain(t *testing.T) {
+	testAddOrRemoveDrain(
+		t,
+		func(bqsClient *mock.MockBuildQueueStateClient) *gomock.Call {
+			return bqsClient.EXPECT().RemoveDrain(gomock.Any(), gomock.Any())
+		},
+		func(ctx context.Context, bqsServer *BuildQueueStateServerImpl, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
+			return bqsServer.RemoveDrain(ctx, req)
+		},
+		"Failed to remove drain",
+	)
+}
+
+func TestIsAllowedToModifyDrains(t *testing.T) {
+	ctx := newContextWithPermittedInstanceNames("readable", "drainable", "both")
+	readAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) && instanceName != 'drainable'"),
+	)
+	drainAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) && instanceName != 'readable'"),
+	)
+
+	t.Run("NoDrainAuthorizer", func(t *testing.T) {
+		bqsServer := NewBuildQueueStateServerImpl(nil, readAuthorizer, readAuthorizer, nil, 2)
+		require.False(t, bqsServer.IsAllowedToModifyDrains(ctx, "both"))
+	})
+
+	bqsServer := NewBuildQueueStateServerImpl(nil, readAuthorizer, readAuthorizer, drainAuthorizer, 2)
+
+	t.Run("ReadDenied", func(t *testing.T) {
+		require.False(t, bqsServer.IsAllowedToModifyDrains(ctx, "drainable"))
+	})
+
+	t.Run("DrainDenied", func(t *testing.T) {
+		require.False(t, bqsServer.IsAllowedToModifyDrains(ctx, "readable"))
+	})
+
+	t.Run("BothDenied", func(t *testing.T) {
+		require.False(t, bqsServer.IsAllowedToModifyDrains(ctx, "forbidden"))
+	})
+
+	t.Run("Allowed", func(t *testing.T) {
+		require.True(t, bqsServer.IsAllowedToModifyDrains(ctx, "both"))
+	})
+}
+
+func TestCheckModifyDrainsAuthorization(t *testing.T) {
+	ctx := newContextWithPermittedInstanceNames("allowed", "a/b")
+	readAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	drainAuthorizer := newPermittedInstanceNamesAuthorizer()
+	bqsServer := NewBuildQueueStateServerImpl(nil, readAuthorizer, readAuthorizer, drainAuthorizer, 2)
+
+	check := func(t *testing.T, bqsServer *BuildQueueStateServerImpl, instanceNamePrefix string) *httptest.ResponseRecorder {
+		req, err := http.NewRequest("GET", "/api/v1/checkPermissions/modifyDrains/"+instanceNamePrefix, nil)
+		require.NoError(t, err)
+
+		req = req.WithContext(ctx)
+		req.SetPathValue("instanceNamePrefix", instanceNamePrefix)
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckModifyDrainsAuthorization(rr, req)
+		return rr
+	}
+
+	t.Run("MethodNotAllowed", func(t *testing.T) {
+		req, err := http.NewRequest("POST", "/api/v1/checkPermissions/modifyDrains/allowed", nil)
+		require.NoError(t, err)
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckModifyDrainsAuthorization(rr, req)
+
+		require.Equal(t, http.StatusMethodNotAllowed, rr.Code)
+		require.Equal(t, "Method not allowed\n", rr.Body.String())
+	})
+
+	t.Run("Allowed", func(t *testing.T) {
+		rr := check(t, bqsServer, "allowed")
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": true}`, rr.Body.String())
+	})
+
+	t.Run("Denied", func(t *testing.T) {
+		rr := check(t, bqsServer, "forbidden")
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": false}`, rr.Body.String())
+	})
+
+	t.Run("NoDrainAuthorizer", func(t *testing.T) {
+		rr := check(t, NewBuildQueueStateServerImpl(nil, readAuthorizer, readAuthorizer, nil, 2), "allowed")
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": false}`, rr.Body.String())
+	})
+
+	t.Run("EmptyPrefix", func(t *testing.T) {
+		rr := check(t, bqsServer, "")
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": true}`, rr.Body.String())
+	})
+
+	t.Run("MultiSegmentPrefix", func(t *testing.T) {
+		rr := check(t, bqsServer, "a/b")
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": true}`, rr.Body.String())
+	})
+
+	t.Run("Route", func(t *testing.T) {
+		router := http.NewServeMux()
+		router.HandleFunc("GET /api/v1/checkPermissions/modifyDrains/{instanceNamePrefix...}", bqsServer.CheckModifyDrainsAuthorization)
+		for path, expected := range map[string]string{
+			"/api/v1/checkPermissions/modifyDrains/":          `{"allowed": true}`,
+			"/api/v1/checkPermissions/modifyDrains/allowed":   `{"allowed": true}`,
+			"/api/v1/checkPermissions/modifyDrains/a/b":       `{"allowed": true}`,
+			"/api/v1/checkPermissions/modifyDrains/a":         `{"allowed": false}`,
+			"/api/v1/checkPermissions/modifyDrains/forbidden": `{"allowed": false}`,
+		} {
+			req := httptest.NewRequest("GET", path, nil).WithContext(ctx)
+			rr := httptest.NewRecorder()
+			router.ServeHTTP(rr, req)
+			require.Equal(t, http.StatusOK, rr.Code, path)
+			require.JSONEq(t, expected, rr.Body.String(), path)
+		}
 	})
 }
