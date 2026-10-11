@@ -7,7 +7,8 @@ import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import themeStyles from "@/theme/theme.module.css";
 import type { SizeClassQueueNameSearch } from "@/utils/invocationName";
 import getColumns from "./Columns";
-import { drainKey, modifyDrainsPermissionUrl } from "./utils";
+import { useAddDrain, useCanModifyDrains } from "./hooks";
+import { drainKey } from "./utils";
 
 interface Props {
   sizeClassQueueName: SizeClassQueueNameSearch;
@@ -23,15 +24,7 @@ const DrainsTable: React.FC<Props> = ({ sizeClassQueueName }) => {
     queryFn: () => buildQueueStateClient.listDrains({ sizeClassQueueName }),
   });
 
-  const { data: allowedToModifyDrains } = useQuery({
-    queryKey: ["modifyDrainsButtonState", instanceNamePrefix],
-    queryFn: async (): Promise<boolean> => {
-      const response = await fetch(
-        modifyDrainsPermissionUrl(instanceNamePrefix),
-      );
-      return (await response.json()).allowed;
-    },
-  });
+  const allowedToModifyDrains = useCanModifyDrains(instanceNamePrefix);
   const canModify = allowedToModifyDrains === true;
 
   const onSuccess = () => {
@@ -40,13 +33,10 @@ const DrainsTable: React.FC<Props> = ({ sizeClassQueueName }) => {
       exact: true,
     });
     queryClient.invalidateQueries({ queryKey: ["listPlatformQueues"] });
+    queryClient.invalidateQueries({ queryKey: ["listWorkers"] });
   };
 
-  const addDrainMutation = useMutation({
-    mutationFn: (workerIdPattern: Record<string, string>) =>
-      buildQueueStateClient.addDrain({ sizeClassQueueName, workerIdPattern }),
-    onSuccess,
-  });
+  const addDrainMutation = useAddDrain();
 
   const removeDrainMutation = useMutation({
     mutationFn: (workerIdPattern: Record<string, string>) =>
@@ -76,7 +66,10 @@ const DrainsTable: React.FC<Props> = ({ sizeClassQueueName }) => {
       {canModify && (
         <AddDrainForm
           onSubmit={(workerIdPattern, onAdded) =>
-            addDrainMutation.mutate(workerIdPattern, { onSuccess: onAdded })
+            addDrainMutation.mutate(
+              { sizeClassQueueName, workerIdPattern },
+              { onSuccess: onAdded },
+            )
           }
           loading={addDrainMutation.isPending}
         />

@@ -1,14 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { SchedulerDrainsPage } from "@/components/pages/SchedulerDrains";
+import { SchedulerQueueChooserPage } from "@/components/pages/SchedulerQueueChooser";
 import { generatePageTitle } from "@/utils/generatePageTitle";
-import { SizeClassQueueNameSchema } from "@/utils/invocationName";
+import {
+  SizeClassQueueNameSchema,
+  type SizeClassQueueNameSearch,
+} from "@/utils/invocationName";
 
 const DrainSearchSchema = z.object({
-  sizeClassQueueName: SizeClassQueueNameSchema,
+  sizeClassQueueName: SizeClassQueueNameSchema.optional().catch(undefined),
 });
 
-export type DrainSearchParams = z.infer<typeof DrainSearchSchema>;
+export type DrainSearchParams = {
+  sizeClassQueueName: SizeClassQueueNameSearch;
+};
 
 export const Route = createFileRoute("/scheduler/drain")({
   component: RouteComponent,
@@ -18,7 +24,7 @@ export const Route = createFileRoute("/scheduler/drain")({
       {
         title: generatePageTitle([
           "Drains",
-          _ctx.match.search.sizeClassQueueName.platformQueueName
+          _ctx.match.search.sizeClassQueueName?.platformQueueName
             .instanceNamePrefix,
         ]),
       },
@@ -28,6 +34,10 @@ export const Route = createFileRoute("/scheduler/drain")({
 
 function RouteComponent() {
   const { sizeClassQueueName } = Route.useSearch();
+
+  if (!sizeClassQueueName) {
+    return <SchedulerQueueChooserPage title="Drains" />;
+  }
 
   return <SchedulerDrainsPage sizeClassQueueName={sizeClassQueueName} />;
 }

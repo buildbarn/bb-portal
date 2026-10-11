@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { SchedulerInvocationPage } from "@/components/pages/SchedulerInvocation";
+import { SchedulerQueueChooserPage } from "@/components/pages/SchedulerQueueChooser";
 import { QueuedOperationsCursorSchema } from "@/components/QueuedOperationsTable/utils";
 import { generatePageTitle } from "@/utils/generatePageTitle";
-import { InvocationNameSchema } from "@/utils/invocationName";
+import {
+  InvocationNameSchema,
+  type InvocationNameSearch,
+} from "@/utils/invocationName";
 
 export enum InvocationChildrenFilter {
   QUEUED = "queued",
@@ -12,14 +16,17 @@ export enum InvocationChildrenFilter {
 }
 
 const InvocationSearchSchema = z.object({
-  invocationName: InvocationNameSchema,
+  invocationName: InvocationNameSchema.optional().catch(undefined),
   childrenFilter: z
     .enum(InvocationChildrenFilter)
     .catch(InvocationChildrenFilter.ACTIVE),
   cursor: QueuedOperationsCursorSchema.optional(),
 });
 
-export type InvocationSearchParams = z.infer<typeof InvocationSearchSchema>;
+export type InvocationSearchParams = Omit<
+  z.infer<typeof InvocationSearchSchema>,
+  "invocationName"
+> & { invocationName: InvocationNameSearch };
 
 export const Route = createFileRoute("/scheduler/invocation")({
   component: RouteComponent,
@@ -29,7 +36,7 @@ export const Route = createFileRoute("/scheduler/invocation")({
       {
         title: generatePageTitle([
           "Invocation",
-          _ctx.match.search.invocationName.sizeClassQueueName.platformQueueName
+          _ctx.match.search.invocationName?.sizeClassQueueName.platformQueueName
             .instanceNamePrefix,
         ]),
       },
@@ -39,6 +46,10 @@ export const Route = createFileRoute("/scheduler/invocation")({
 
 function RouteComponent() {
   const { invocationName, childrenFilter, cursor } = Route.useSearch();
+
+  if (!invocationName) {
+    return <SchedulerQueueChooserPage title="Invocation" />;
+  }
 
   return (
     <SchedulerInvocationPage

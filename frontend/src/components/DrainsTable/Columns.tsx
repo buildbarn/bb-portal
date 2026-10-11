@@ -1,8 +1,8 @@
-import { Button, Popconfirm, type TableColumnsType, Tag } from "antd";
-import PropertyTagList from "@/components/PropertyTagList";
+import { Button, Popconfirm, type TableColumnsType } from "antd";
+import { DrainPattern } from "@/components/DrainActions";
 import type { DrainState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { readableDurationFromDates } from "@/utils/time";
-import { drainKey, patternToPropertyList } from "./utils";
+import { drainKey } from "./utils";
 
 const getColumns = (
   canModify: boolean,
@@ -12,13 +12,9 @@ const getColumns = (
   {
     key: "workerIdPattern",
     title: "Worker ID pattern",
-    render: (_, record) => {
-      const propertyList = patternToPropertyList(record.workerIdPattern);
-      if (propertyList.length === 0) {
-        return <Tag>all workers</Tag>;
-      }
-      return <PropertyTagList propertyList={propertyList} />;
-    },
+    render: (_, record) => (
+      <DrainPattern workerIdPattern={record.workerIdPattern} />
+    ),
   },
   {
     key: "age",

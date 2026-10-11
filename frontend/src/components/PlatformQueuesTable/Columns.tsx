@@ -8,7 +8,10 @@ import {
   type SizeClassQueueNameSearch,
 } from "@/utils/invocationName";
 import { readableDurationFromDates } from "@/utils/time";
+import MenuText from "../MenuText";
 import PropertyTagList from "../PropertyTagList";
+import { type BulkDrain, bulkDrainMenu } from "./bulkDrain";
+import DrainsCell from "./DrainsCell";
 import type { PlatformQueueTableState } from "./types";
 
 const timeFormat = { precision: 1, smallestUnit: "s" } as const;
@@ -32,23 +35,39 @@ const cellMergingLogic = (value: PlatformQueueTableState) => {
   return { rowSpan: 0 };
 };
 
-const instanceNamePrefixColumn: ColumnType<PlatformQueueTableState> = {
+const instanceNamePrefixColumn = (
+  bulk: BulkDrain | undefined,
+): ColumnType<PlatformQueueTableState> => ({
   key: "instanceNamePrefix",
   title: "Instance name prefix",
   onCell: cellMergingLogic,
-  render: (_, record) => (
-    <Typography.Text>{record.name?.instanceNamePrefix}</Typography.Text>
-  ),
-};
+  render: (_, record) => {
+    const instanceNamePrefix = record.name?.instanceNamePrefix ?? "";
+    return (
+      <MenuText items={bulkDrainMenu(bulk, { instanceNamePrefix })}>
+        {instanceNamePrefix}
+      </MenuText>
+    );
+  },
+});
 
-const platformPropertiesColumn: ColumnType<PlatformQueueTableState> = {
+const platformPropertiesColumn = (
+  bulk: BulkDrain | undefined,
+): ColumnType<PlatformQueueTableState> => ({
   key: "platformProperties",
   title: "Platform properties",
   onCell: cellMergingLogic,
   render: (_, record) => (
-    <PropertyTagList propertyList={record.name?.platform?.properties} />
+    <PropertyTagList
+      propertyList={record.name?.platform?.properties}
+      tagMenu={
+        bulk &&
+        (({ name, value }) =>
+          bulkDrainMenu(bulk, { property: { name, value } }))
+      }
+    />
   ),
-};
+});
 
 const sizeClassColumn: ColumnType<PlatformQueueTableState> = {
   key: "sizeClass",
@@ -257,22 +276,22 @@ const drainsColumn: ColumnType<PlatformQueueTableState> = {
   key: "drains",
   title: "Drains",
   render: (_, record) => (
-    <Link
-      to="/scheduler/drain"
-      search={{ sizeClassQueueName: sizeClassQueueNameSearch(record) }}
-    >
-      {record.sizeClassQueues[0].drainsCount ?? 0}
-    </Link>
+    <DrainsCell
+      sizeClassQueueName={sizeClassQueueNameSearch(record)}
+      drainsCount={record.sizeClassQueues[0].drainsCount ?? 0}
+      workersCount={record.sizeClassQueues[0].workersCount}
+    />
   ),
 };
 
 const getColumns = (
   operatorMode: boolean,
+  bulk: BulkDrain | undefined,
 ): TableColumnsType<PlatformQueueTableState> => {
   if (operatorMode) {
     return [
-      instanceNamePrefixColumn,
-      platformPropertiesColumn,
+      instanceNamePrefixColumn(bulk),
+      platformPropertiesColumn(bulk),
       sizeClassColumn,
       timeoutColumn,
       rootInvocationColumn,
@@ -281,8 +300,8 @@ const getColumns = (
     ];
   }
   return [
-    instanceNamePrefixColumn,
-    platformPropertiesColumn,
+    instanceNamePrefixColumn(undefined),
+    platformPropertiesColumn(undefined),
     sizeClassColumn,
     queuedOperationsColumn,
     executingWorkersColumn,

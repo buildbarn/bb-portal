@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import type React from "react";
 import InvocationInfo from "@/components/InvocationInfo";
+import { useQueueDrainMenus } from "@/components/PlatformQueuesTable/bulkDrain";
 import PortalAlert from "@/components/PortalAlert";
 import WorkersInfo from "@/components/WorkersInfo";
 import WorkersTable from "@/components/WorkersTable";
@@ -22,6 +23,7 @@ import {
   type InvocationIdSearch,
   invocationIdSearchToAny,
 } from "@/utils/invocationName";
+import { useOperatorMode } from "@/utils/operatorMode";
 
 const LIST_WORKERS_PAGE_SIZE = 100;
 
@@ -90,6 +92,11 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
       ),
     placeholderData: (previousData, _) => previousData,
   });
+  const [operatorMode] = useOperatorMode();
+  const { drainMenus, contextHolder } = useQueueDrainMenus(
+    sizeClassQueueName,
+    operatorMode,
+  );
 
   if (isError) {
     return (
@@ -114,12 +121,19 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
             invocationName={{ sizeClassQueueName, ids: invocationIds }}
           />
         ) : (
-          <WorkersInfo sizeClassQueueName={sizeClassQueueName} />
+          <>
+            {contextHolder}
+            <WorkersInfo
+              sizeClassQueueName={sizeClassQueueName}
+              drainMenus={drainMenus}
+            />
+          </>
         )}
       </Row>
       <Row>
         <WorkersTable
           workerStatusFilter={workerStatusFilter}
+          sizeClassQueueName={sizeClassQueueName}
           data={data?.workers.map((value: WorkerState) => {
             // Size class queue is not included in
             // workerState, so we set it manually.

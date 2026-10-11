@@ -1,0 +1,3 @@
+.drainMatch:not(:hover) > td {
+  background: var(--drain-match-bg) !important;
+}
