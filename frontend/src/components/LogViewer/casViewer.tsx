@@ -48,6 +48,7 @@ const CasViewer: React.FC<Props> = ({
 }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["casLog", hash],
+    enabled: sizeBytes <= SIZE_BYTE_LIMIT,
     queryFn: async () => {
       return await fetchLog(instanceName, digestFunction, hash, sizeBytes);
     },
