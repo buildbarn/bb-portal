@@ -8,6 +8,7 @@ interface Props {
   goToFirstPage: () => void;
   goToNextPage: () => void;
   pageSize: number;
+  noun?: string;
 }
 
 const WorkersTablePageSelector: React.FC<Props> = ({
@@ -15,6 +16,7 @@ const WorkersTablePageSelector: React.FC<Props> = ({
   goToFirstPage,
   goToNextPage,
   pageSize,
+  noun = "workers",
 }) => {
   return (
     <Space>
@@ -24,7 +26,7 @@ const WorkersTablePageSelector: React.FC<Props> = ({
         onClick={goToFirstPage}
       />
       <Typography.Text>
-        {`Showing workers [${paginationInfo.startIndex}, ${Math.min(paginationInfo.startIndex + pageSize, paginationInfo.totalEntries)}) of ${paginationInfo.totalEntries} in total.`}
+        {`Showing ${noun} [${paginationInfo.startIndex}, ${Math.min(paginationInfo.startIndex + pageSize, paginationInfo.totalEntries)}) of ${paginationInfo.totalEntries} in total.`}
       </Typography.Text>
       <Button
         type="primary"

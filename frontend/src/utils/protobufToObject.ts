@@ -61,6 +61,8 @@ export function protobufToObjectWithTypeField(
         "@type": typeUrl,
         ...protobufToObject(MonetaryResourceUsage, value, keepDefaultValues),
       };
+    case ProtobufTypeUrls.BACKGROUND_LEARNING:
+      return { "@type": typeUrl };
     default:
       console.error(`Unknown typeUrl: ${typeUrl}`);
       return {};

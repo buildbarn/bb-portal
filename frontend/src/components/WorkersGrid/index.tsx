@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import type React from "react";
+import InvocationInfo from "@/components/InvocationInfo";
 import PortalAlert from "@/components/PortalAlert";
 import WorkersInfo from "@/components/WorkersInfo";
 import WorkersTable from "@/components/WorkersTable";
@@ -17,6 +18,10 @@ import {
   WorkerListStatus,
   type WorkerSearchParams,
 } from "@/routes/scheduler.worker";
+import {
+  type InvocationIdSearch,
+  invocationIdSearchToAny,
+} from "@/utils/invocationName";
 
 const LIST_WORKERS_PAGE_SIZE = 100;
 
@@ -24,6 +29,7 @@ const fetchWorkers = async (
   client: BuildQueueStateClient,
   workerStatusFilter: WorkerListStatus,
   sizeClassQueueName: SizeClassQueueName,
+  invocationIds: InvocationIdSearch[] | undefined,
   paginationCursor?: WorkerState["id"],
 ) => {
   const requestBody: DeepPartial<ListWorkersRequest> = {
@@ -35,6 +41,10 @@ const fetchWorkers = async (
     requestBody.startAfter = { workerId: paginationCursor };
   }
 
+  const invocationName = {
+    sizeClassQueueName: sizeClassQueueName,
+    ids: (invocationIds ?? []).map(invocationIdSearchToAny),
+  };
   switch (workerStatusFilter) {
     case WorkerListStatus.ALL:
       requestBody.filter = {
@@ -43,9 +53,12 @@ const fetchWorkers = async (
       break;
     case WorkerListStatus.EXECUTING:
       requestBody.filter = {
-        executing: {
-          sizeClassQueueName: sizeClassQueueName,
-        },
+        executing: invocationName,
+      };
+      break;
+    case WorkerListStatus.IDLE_SYNCHRONIZING:
+      requestBody.filter = {
+        idleSynchronizing: invocationName,
       };
       break;
   }
@@ -56,15 +69,23 @@ const fetchWorkers = async (
 const WorkersGrid: React.FC<WorkerSearchParams> = ({
   workerStatusFilter,
   sizeClassQueueName,
+  invocationIds,
   cursor,
 }) => {
   const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
-    queryKey: ["listWorkers", workerStatusFilter, sizeClassQueueName, cursor],
+    queryKey: [
+      "listWorkers",
+      workerStatusFilter,
+      sizeClassQueueName,
+      workerStatusFilter === WorkerListStatus.ALL ? undefined : invocationIds,
+      cursor,
+    ],
     queryFn: () =>
       fetchWorkers(
         buildQueueStateClient,
         workerStatusFilter,
         sizeClassQueueName,
+        invocationIds,
         cursor,
       ),
     placeholderData: (previousData, _) => previousData,
@@ -87,7 +108,14 @@ const WorkersGrid: React.FC<WorkerSearchParams> = ({
   return (
     <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
       <Row>
-        <WorkersInfo sizeClassQueueName={sizeClassQueueName} />
+        {workerStatusFilter !== WorkerListStatus.ALL &&
+        invocationIds?.length ? (
+          <InvocationInfo
+            invocationName={{ sizeClassQueueName, ids: invocationIds }}
+          />
+        ) : (
+          <WorkersInfo sizeClassQueueName={sizeClassQueueName} />
+        )}
       </Row>
       <Row>
         <WorkersTable

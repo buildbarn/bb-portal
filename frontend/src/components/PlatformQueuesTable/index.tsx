@@ -3,11 +3,13 @@ import { Table } from "antd";
 import type React from "react";
 import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import themeStyles from "@/theme/theme.module.css";
+import { useOperatorMode } from "@/utils/operatorMode";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
 import type { PlatformQueueTableState } from "./types";
 
 const PlatformQueuesTable: React.FC = () => {
+  const [operatorMode] = useOperatorMode();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["listPlatformQueues"],
     queryFn: async (): Promise<PlatformQueueTableState[]> => {
@@ -46,7 +48,7 @@ const PlatformQueuesTable: React.FC = () => {
 
   return (
     <Table
-      columns={getColumns()}
+      columns={getColumns(operatorMode)}
       loading={isLoading}
       bordered={true}
       style={{ width: "100%" }}
