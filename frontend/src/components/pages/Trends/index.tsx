@@ -1,8 +1,9 @@
 import { ClockCircleFilled, LineChartOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client/react";
-import { Row, Space, Statistic } from "antd";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Row, Select, Space, Statistic } from "antd";
 import type React from "react";
-import { useState } from "react";
+import { useMemo } from "react";
 import {
   Area,
   AreaChart,
@@ -22,16 +23,41 @@ import dayjs from "@/lib/dayjs";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import FIND_BUILD_DURATIONS from "./index.graphql";
 
+const TRENDS_DEFAULT_LIMIT = 1000;
+const TRENDS_LIMITS = [100, 500, 1000, 5000];
+
+// Hours to look back, or undefined for every invocation still kept.
+export const TRENDS_WINDOWS: Record<string, { label: string; hours?: number }> =
+  {
+    all: { label: "All kept" },
+    "24h": { label: "Last 24 hours", hours: 24 },
+    "7d": { label: "Last 7 days", hours: 7 * 24 },
+    "30d": { label: "Last 30 days", hours: 30 * 24 },
+  };
+
 export const TrendsPage: React.FC = () => {
-  const [variables, _setVariables] = useState<FindBuildTimesQueryVariables>({
-    first: 1000,
-    where: { startedAtNotNil: true, endedAtNotNil: true },
-    // Newest first; without an order the API returns the oldest invocations still kept.
-    orderBy: {
-      direction: OrderDirection.Desc,
-      field: BazelInvocationOrderField.StartedAt,
-    },
-  });
+  const search = useSearch({ from: "/trends" });
+  const limit = search.limit ?? TRENDS_DEFAULT_LIMIT;
+  const timeWindow = search.window ?? "all";
+  const navigate = useNavigate({ from: "/trends" });
+  const variables = useMemo<FindBuildTimesQueryVariables>(() => {
+    const hours = TRENDS_WINDOWS[timeWindow]?.hours;
+    return {
+      first: limit,
+      where: {
+        startedAtNotNil: true,
+        endedAtNotNil: true,
+        ...(hours && {
+          startedAtGT: dayjs().subtract(hours, "hour").toISOString(),
+        }),
+      },
+      // Newest first; without an order the API returns the oldest invocations still kept.
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: BazelInvocationOrderField.StartedAt,
+      },
+    };
+  }, [limit, timeWindow]);
 
   const { loading, data, previousData, error } = useQuery(
     FIND_BUILD_DURATIONS,
@@ -123,6 +149,32 @@ export const TrendsPage: React.FC = () => {
         icon={<ClockCircleFilled />}
         titleBits={[
           <span key="invocation-durations">Invocation Durations</span>,
+        ]}
+        extraBits={[
+          <Select
+            key="window"
+            style={{ minWidth: 150 }}
+            value={timeWindow}
+            onChange={(value) =>
+              navigate({ search: (prev) => ({ ...prev, window: value }) })
+            }
+            options={Object.entries(TRENDS_WINDOWS).map(([value, w]) => ({
+              value,
+              label: w.label,
+            }))}
+          />,
+          <Select
+            key="limit"
+            style={{ minWidth: 190 }}
+            value={limit}
+            onChange={(value) =>
+              navigate({ search: (prev) => ({ ...prev, limit: value }) })
+            }
+            options={TRENDS_LIMITS.map((value) => ({
+              value,
+              label: `Latest ${value} invocations`,
+            }))}
+          />,
         ]}
       >
         <Row>
