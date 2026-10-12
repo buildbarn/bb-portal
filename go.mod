@@ -1,6 +1,6 @@
 module github.com/buildbarn/bb-portal
 
-go 1.27.1
+go 1.27.2
 
 // Existing patches don't apply against newer go-fuse.
 replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
@@ -27,7 +27,7 @@ require (
 	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20260528135316-84fa6c32aee6
 	github.com/bazelbuild/remote-apis v0.0.0-20260331222004-becdd8f9ff81
-	github.com/bazelbuild/rules_go v0.64.1
+	github.com/bazelbuild/rules_go v0.64.2
 	github.com/buildbarn/bb-remote-execution v0.0.0-20261004161155-ea2a5febf0ba
 	github.com/buildbarn/bb-storage v0.0.0-20261002053832-027bd797f1ec
 	github.com/fergusstrange/embedded-postgres v1.34.0
