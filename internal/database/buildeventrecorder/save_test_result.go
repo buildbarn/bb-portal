@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database"
@@ -12,6 +11,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/invocation/files"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/jackc/pgx/v5/pgtype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
@@ -95,7 +95,7 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 		Statuses:             make([]string, len(batch)),
 		StatusDetailss:       make([]string, len(batch)),
 		CachedLocallys:       make([]bool, len(batch)),
-		TestAttemptStarts:    make([]time.Time, len(batch)),
+		TestAttemptStarts:    make([]pgtype.Timestamptz, len(batch)),
 		TestAttemptDurations: make([]int64, len(batch)),
 		Warnings:             make([]string, len(batch)),
 		Strategies:           make([]string, len(batch)),
@@ -129,7 +129,7 @@ func createTestResultsBulk(ctx context.Context, invocationDbID, instanceNameDbID
 		}
 
 		if testResult.TestAttemptStart != nil && testResult.TestAttemptStart.AsTime().IsZero() == false {
-			params.TestAttemptStarts[i] = testResult.TestAttemptStart.AsTime()
+			params.TestAttemptStarts[i] = pgtype.Timestamptz{Time: testResult.TestAttemptStart.AsTime(), Valid: true}
 		}
 		if testResult.TestAttemptDuration != nil && testResult.TestAttemptDuration.AsDuration() != 0 {
 			params.TestAttemptDurations[i] = int64(testResult.TestAttemptDuration.AsDuration().Milliseconds())

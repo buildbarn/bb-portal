@@ -127,7 +127,12 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) (int64, error) {
 
 		errs := make([]error, 0, len(invocations))
 		for _, inv := range invocations {
-			err = dc.normalizeInvocation(ctx, inv.ID, inv.InvocationID)
+			invocationID, err := uuid.FromBytes(inv.InvocationID.Bytes[:])
+			if err != nil {
+				errs = append(errs, util.StatusWrap(err, "Failed to parse invocation UUID"))
+				continue
+			}
+			err = dc.normalizeInvocation(ctx, inv.ID, invocationID)
 			if err != nil {
 				errs = append(errs, err)
 			}

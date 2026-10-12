@@ -38,7 +38,7 @@ func newTx(ctx context.Context, dialect string, conn *sql.DB, opts *sql.TxOption
 	drv := entsql.NewDriver(ret.dialect, entsql.Conn{ExecQuerier: ret.tx})
 	txDrv := &savepointDriver{Driver: drv}
 	ret.ent = ent.NewClient(ent.Driver(txDrv))
-	ret.sqlc = sqlc.New(ret.tx)
+	ret.sqlc = sqlc.New(NewSqlcDBTX(ret.tx))
 	return &ret, nil
 }
 

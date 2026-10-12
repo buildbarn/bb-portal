@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stretchr/testify/require"
 )
 
@@ -40,7 +41,7 @@ func setupSeedDB(t *testing.T) (*seedsqlc.Queries, database.Client) {
 	require.NoError(t, err)
 	require.NoError(t, db.Ent().Schema.Create(context.Background()))
 
-	return seedsqlc.New(conn), db
+	return seedsqlc.New(database.NewSqlcDBTX(conn)), db
 }
 
 func testSeedParameters() Parameters {
@@ -118,7 +119,7 @@ func TestSeedSequenceAdvancement(t *testing.T) {
 	// Inserting new rows via the application querier should not collide
 	// with the explicitly assigned seed identifiers.
 	authenticatedUser, err := db.Sqlc().CreateAuthenticatedUser(ctx, sqlc.CreateAuthenticatedUserParams{
-		UserUuid:   uuid.NewSHA1(uuid.NameSpaceURL, []byte("new_user")),
+		UserUuid:   pgtype.UUID{Bytes: uuid.NewSHA1(uuid.NameSpaceURL, []byte("new_user")), Valid: true},
 		ExternalID: "new_user",
 	})
 	require.NoError(t, err)
@@ -140,7 +141,7 @@ func TestSeedUsesClosedConnection(t *testing.T) {
 	db, err := database.New("postgres", conn)
 	require.NoError(t, err)
 	require.NoError(t, db.Ent().Schema.Create(ctx))
-	seedDB := seedsqlc.New(conn)
+	seedDB := seedsqlc.New(database.NewSqlcDBTX(conn))
 
 	require.NoError(t, PerformSeed(ctx, seedDB, testSeedParameters()))
 

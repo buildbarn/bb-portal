@@ -41,6 +41,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_buildbarn_bb_storage//pkg/zstd",
         "@com_github_google_uuid//:uuid",
+        "@com_github_jackc_pgx_v5//pgtype",
         "@io_opentelemetry_go_otel//attribute",
         "@io_opentelemetry_go_otel//codes",
         "@io_opentelemetry_go_otel_trace//:trace",

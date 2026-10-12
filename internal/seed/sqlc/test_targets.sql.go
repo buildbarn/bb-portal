@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const seedAdvanceInvocationTargetsSequence = `-- name: SeedAdvanceInvocationTargetsSequence :exec
@@ -19,7 +17,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceInvocationTargetsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceInvocationTargetsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceInvocationTargetsSequence)
 	return err
 }
 
@@ -31,7 +29,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceTestResultsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceTestResultsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceTestResultsSequence)
 	return err
 }
 
@@ -43,7 +41,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceTestSummariesSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceTestSummariesSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceTestSummariesSequence)
 	return err
 }
 
@@ -72,17 +70,17 @@ type SeedCreateInvocationTargetsParams struct {
 }
 
 func (q *Queries) SeedCreateInvocationTargets(ctx context.Context, arg SeedCreateInvocationTargetsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateInvocationTargets,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Successes),
-		pq.Array(arg.AbortReasons),
-		pq.Array(arg.BazelInvocationIds),
-		pq.Array(arg.TargetIds),
+	result, err := q.db.Exec(ctx, seedCreateInvocationTargets,
+		arg.Ids,
+		arg.Successes,
+		arg.AbortReasons,
+		arg.BazelInvocationIds,
+		arg.TargetIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateTestResults = `-- name: SeedCreateTestResults :execrows
@@ -125,22 +123,22 @@ type SeedCreateTestResultsParams struct {
 }
 
 func (q *Queries) SeedCreateTestResults(ctx context.Context, arg SeedCreateTestResultsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateTestResults,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Runs),
-		pq.Array(arg.Shards),
-		pq.Array(arg.Attempts),
-		pq.Array(arg.Statuses),
-		pq.Array(arg.CachedLocallys),
-		pq.Array(arg.TestAttemptDurationInMss),
-		pq.Array(arg.Strategies),
-		pq.Array(arg.CachedRemotelys),
-		pq.Array(arg.TestSummaryIds),
+	result, err := q.db.Exec(ctx, seedCreateTestResults,
+		arg.Ids,
+		arg.Runs,
+		arg.Shards,
+		arg.Attempts,
+		arg.Statuses,
+		arg.CachedLocallys,
+		arg.TestAttemptDurationInMss,
+		arg.Strategies,
+		arg.CachedRemotelys,
+		arg.TestSummaryIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateTestSummaries = `-- name: SeedCreateTestSummaries :execrows
@@ -180,19 +178,19 @@ type SeedCreateTestSummariesParams struct {
 }
 
 func (q *Queries) SeedCreateTestSummaries(ctx context.Context, arg SeedCreateTestSummariesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateTestSummaries,
-		pq.Array(arg.Ids),
-		pq.Array(arg.OverallStatuses),
-		pq.Array(arg.TotalRunCounts),
-		pq.Array(arg.RunCounts),
-		pq.Array(arg.AttemptCounts),
-		pq.Array(arg.ShardCounts),
-		pq.Array(arg.TotalNumCacheds),
-		pq.Array(arg.TotalRunDurationInMss),
-		pq.Array(arg.InvocationTargetIds),
+	result, err := q.db.Exec(ctx, seedCreateTestSummaries,
+		arg.Ids,
+		arg.OverallStatuses,
+		arg.TotalRunCounts,
+		arg.RunCounts,
+		arg.AttemptCounts,
+		arg.ShardCounts,
+		arg.TotalNumCacheds,
+		arg.TotalRunDurationInMss,
+		arg.InvocationTargetIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

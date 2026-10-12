@@ -24,7 +24,7 @@ LIMIT 1
 // An idempotent function for creating an instance name. If the instance
 // name already exists, it will return the existing id.
 func (q *Queries) CreateInstanceName(ctx context.Context, name string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, createInstanceName, name)
+	row := q.db.QueryRow(ctx, createInstanceName, name)
 	var id int64
 	err := row.Scan(&id)
 	return id, err

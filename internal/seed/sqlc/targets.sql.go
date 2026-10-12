@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const seedAdvanceTargetsSequence = `-- name: SeedAdvanceTargetsSequence :exec
@@ -19,7 +17,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceTargetsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceTargetsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceTargetsSequence)
 	return err
 }
 
@@ -31,7 +29,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceTestTargetsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceTestTargetsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceTestTargetsSequence)
 	return err
 }
 
@@ -60,17 +58,17 @@ type SeedCreateTargetsParams struct {
 }
 
 func (q *Queries) SeedCreateTargets(ctx context.Context, arg SeedCreateTargetsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateTargets,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Labels),
-		pq.Array(arg.Aspects),
-		pq.Array(arg.TargetKinds),
-		pq.Array(arg.InstanceNameIds),
+	result, err := q.db.Exec(ctx, seedCreateTargets,
+		arg.Ids,
+		arg.Labels,
+		arg.Aspects,
+		arg.TargetKinds,
+		arg.InstanceNameIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateTestTargets = `-- name: SeedCreateTestTargets :execrows
@@ -89,9 +87,9 @@ type SeedCreateTestTargetsParams struct {
 }
 
 func (q *Queries) SeedCreateTestTargets(ctx context.Context, arg SeedCreateTestTargetsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateTestTargets, pq.Array(arg.Ids), pq.Array(arg.TargetIds))
+	result, err := q.db.Exec(ctx, seedCreateTestTargets, arg.Ids, arg.TargetIds)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -20,8 +21,8 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sqlc-dev/pqtype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
@@ -168,30 +169,27 @@ func FindOrCreateAuthenticatedUser(
 		return nil, nil
 	}
 
-	var displayName sql.NullString
+	var displayName pgtype.Text
 	if userSummary.DisplayName != nil {
-		displayName = sql.NullString{
+		displayName = pgtype.Text{
 			String: *userSummary.DisplayName,
 			Valid:  true,
 		}
 	}
 
-	var userInfo pqtype.NullRawMessage
+	var userInfo []byte
 	if userSummary.UserInfo != nil {
 		userInfoRaw, err := json.Marshal(userSummary.UserInfo)
 		if err != nil {
 			return nil, util.StatusWrap(err, "Failed to marshal UserInfo")
 		}
-		userInfo = pqtype.NullRawMessage{
-			RawMessage: userInfoRaw,
-			Valid:      true,
-		}
+		userInfo = userInfoRaw
 	}
 
 	authenticatedUserDb, err := db.Sqlc().CreateAuthenticatedUser(
 		ctx,
 		sqlc.CreateAuthenticatedUserParams{
-			UserUuid:    uuid.NewSHA1(uuid.NameSpaceURL, []byte(userSummary.ExternalID)),
+			UserUuid:    pgtype.UUID{Bytes: uuid.NewSHA1(uuid.NameSpaceURL, []byte(userSummary.ExternalID)), Valid: true},
 			ExternalID:  userSummary.ExternalID,
 			DisplayName: displayName,
 			UserInfo:    userInfo,
@@ -231,19 +229,19 @@ func FindOrCreateInvocation(
 	authenticatedUserDbID *int64,
 	invocationsGaugeVec *prometheus.GaugeVec,
 ) (int64, error) {
-	var userID sql.NullInt64
+	var userID pgtype.Int8
 	if authenticatedUserDbID != nil {
-		userID = sql.NullInt64{Int64: int64(*authenticatedUserDbID), Valid: true}
+		userID = pgtype.Int8{Int64: int64(*authenticatedUserDbID), Valid: true}
 	}
 
 	invocationDb, err := db.Sqlc().CreateBazelInvocation(ctx, sqlc.CreateBazelInvocationParams{
-		InvocationID:        invocationUUID,
+		InvocationID:        pgtype.UUID{Bytes: invocationUUID, Valid: true},
 		InstanceNameID:      instanceNameDbID,
 		AuthenticatedUserID: userID,
-		CreatedTimestamp:    time.Now(),
+		CreatedTimestamp:    pgtype.Timestamptz{Time: time.Now(), Valid: true},
 	})
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return 0, status.Errorf(
 				codes.FailedPrecondition,
 				"Failed to create invocation with id %s. The id may refer to a invocation that is locked for writing",

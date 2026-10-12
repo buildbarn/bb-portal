@@ -7,9 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"time"
 
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createTestSummariesBulk = `-- name: CreateTestSummariesBulk :execrows
@@ -54,16 +53,16 @@ type CreateTestSummariesBulkParams struct {
 
 // STAGE 2: Join the rest using the specific Target IDs we found
 func (q *Queries) CreateTestSummariesBulk(ctx context.Context, arg CreateTestSummariesBulkParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, createTestSummariesBulk,
+	result, err := q.db.Exec(ctx, createTestSummariesBulk,
 		arg.InstanceNameID,
-		pq.Array(arg.Labels),
-		pq.Array(arg.ConfigIds),
+		arg.Labels,
+		arg.ConfigIds,
 		arg.BazelInvocationID,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const updateTestSummariesBulk = `-- name: UpdateTestSummariesBulk :execrows
@@ -149,30 +148,30 @@ type UpdateTestSummariesBulkParams struct {
 	AttemptCounts     []int32
 	ShardCounts       []int32
 	TotalNumCacheds   []int32
-	StartTimes        []time.Time
-	StopTimes         []time.Time
+	StartTimes        []pgtype.Timestamptz
+	StopTimes         []pgtype.Timestamptz
 	Durations         []int64
 	BazelInvocationID int64
 }
 
 func (q *Queries) UpdateTestSummariesBulk(ctx context.Context, arg UpdateTestSummariesBulkParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, updateTestSummariesBulk,
+	result, err := q.db.Exec(ctx, updateTestSummariesBulk,
 		arg.InstanceNameID,
-		pq.Array(arg.Labels),
-		pq.Array(arg.ConfigIds),
-		pq.Array(arg.OverallStatuses),
-		pq.Array(arg.TotalRunCounts),
-		pq.Array(arg.RunCounts),
-		pq.Array(arg.AttemptCounts),
-		pq.Array(arg.ShardCounts),
-		pq.Array(arg.TotalNumCacheds),
-		pq.Array(arg.StartTimes),
-		pq.Array(arg.StopTimes),
-		pq.Array(arg.Durations),
+		arg.Labels,
+		arg.ConfigIds,
+		arg.OverallStatuses,
+		arg.TotalRunCounts,
+		arg.RunCounts,
+		arg.AttemptCounts,
+		arg.ShardCounts,
+		arg.TotalNumCacheds,
+		arg.StartTimes,
+		arg.StopTimes,
+		arg.Durations,
 		arg.BazelInvocationID,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

@@ -7,7 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"time"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getOrCreateEventMetadata = `-- name: GetOrCreateEventMetadata :one
@@ -33,12 +34,12 @@ WHERE bazel_invocation_id = $1
 type GetOrCreateEventMetadataRow struct {
 	ID              int64
 	Handled         []byte
-	EventReceivedAt time.Time
+	EventReceivedAt pgtype.Timestamptz
 	Version         int64
 }
 
 func (q *Queries) GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error) {
-	row := q.db.QueryRowContext(ctx, getOrCreateEventMetadata, bazelInvocationID)
+	row := q.db.QueryRow(ctx, getOrCreateEventMetadata, bazelInvocationID)
 	var i GetOrCreateEventMetadataRow
 	err := row.Scan(
 		&i.ID,
@@ -63,13 +64,13 @@ RETURNING version
 
 type UpdateEventMetadataParams struct {
 	Handled         []byte
-	EventReceivedAt time.Time
+	EventReceivedAt pgtype.Timestamptz
 	ID              int64
 	Version         int64
 }
 
 func (q *Queries) UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error) {
-	row := q.db.QueryRowContext(ctx, updateEventMetadata,
+	row := q.db.QueryRow(ctx, updateEventMetadata,
 		arg.Handled,
 		arg.EventReceivedAt,
 		arg.ID,

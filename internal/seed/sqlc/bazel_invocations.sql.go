@@ -7,10 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"time"
 
-	"github.com/google/uuid"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const seedAdvanceBazelInvocationsSequence = `-- name: SeedAdvanceBazelInvocationsSequence :exec
@@ -21,7 +19,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceBazelInvocationsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceBazelInvocationsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceBazelInvocationsSequence)
 	return err
 }
 
@@ -33,7 +31,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceConnectionMetadataSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceConnectionMetadataSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceConnectionMetadataSequence)
 	return err
 }
 
@@ -45,7 +43,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceEventMetadataSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceEventMetadataSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceEventMetadataSequence)
 	return err
 }
 
@@ -57,7 +55,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceInvocationTagsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceInvocationTagsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceInvocationTagsSequence)
 	return err
 }
 
@@ -69,7 +67,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceSourceControlsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceSourceControlsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceSourceControlsSequence)
 	return err
 }
 
@@ -120,10 +118,10 @@ FROM (
 
 type SeedCreateBazelInvocationsParams struct {
 	Ids                  []int64
-	InvocationIds        []uuid.UUID
-	CreatedTimestamps    []time.Time
-	StartedAts           []time.Time
-	EndedAts             []time.Time
+	InvocationIds        []pgtype.UUID
+	CreatedTimestamps    []pgtype.Timestamptz
+	StartedAts           []pgtype.Timestamptz
+	EndedAts             []pgtype.Timestamptz
 	BepCompleteds        []bool
 	Usernames            []string
 	Hostnames            []string
@@ -134,24 +132,24 @@ type SeedCreateBazelInvocationsParams struct {
 }
 
 func (q *Queries) SeedCreateBazelInvocations(ctx context.Context, arg SeedCreateBazelInvocationsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateBazelInvocations,
-		pq.Array(arg.Ids),
-		pq.Array(arg.InvocationIds),
-		pq.Array(arg.CreatedTimestamps),
-		pq.Array(arg.StartedAts),
-		pq.Array(arg.EndedAts),
-		pq.Array(arg.BepCompleteds),
-		pq.Array(arg.Usernames),
-		pq.Array(arg.Hostnames),
-		pq.Array(arg.ExitCodeNames),
-		pq.Array(arg.ExitCodeCodes),
-		pq.Array(arg.AuthenticatedUserIds),
-		pq.Array(arg.InstanceNameIds),
+	result, err := q.db.Exec(ctx, seedCreateBazelInvocations,
+		arg.Ids,
+		arg.InvocationIds,
+		arg.CreatedTimestamps,
+		arg.StartedAts,
+		arg.EndedAts,
+		arg.BepCompleteds,
+		arg.Usernames,
+		arg.Hostnames,
+		arg.ExitCodeNames,
+		arg.ExitCodeCodes,
+		arg.AuthenticatedUserIds,
+		arg.InstanceNameIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateConnectionMetadata = `-- name: SeedCreateConnectionMetadata :execrows
@@ -168,16 +166,16 @@ SELECT
 
 type SeedCreateConnectionMetadataParams struct {
 	Ids                   []int64
-	ConnectionLastOpenAts []time.Time
+	ConnectionLastOpenAts []pgtype.Timestamptz
 	BazelInvocationIds    []int64
 }
 
 func (q *Queries) SeedCreateConnectionMetadata(ctx context.Context, arg SeedCreateConnectionMetadataParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateConnectionMetadata, pq.Array(arg.Ids), pq.Array(arg.ConnectionLastOpenAts), pq.Array(arg.BazelInvocationIds))
+	result, err := q.db.Exec(ctx, seedCreateConnectionMetadata, arg.Ids, arg.ConnectionLastOpenAts, arg.BazelInvocationIds)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateEventMetadata = `-- name: SeedCreateEventMetadata :execrows
@@ -199,23 +197,23 @@ SELECT
 type SeedCreateEventMetadataParams struct {
 	Ids                []int64
 	Handleds           [][]byte
-	EventReceivedAts   []time.Time
+	EventReceivedAts   []pgtype.Timestamptz
 	Versions           []int64
 	BazelInvocationIds []int64
 }
 
 func (q *Queries) SeedCreateEventMetadata(ctx context.Context, arg SeedCreateEventMetadataParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateEventMetadata,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Handleds),
-		pq.Array(arg.EventReceivedAts),
-		pq.Array(arg.Versions),
-		pq.Array(arg.BazelInvocationIds),
+	result, err := q.db.Exec(ctx, seedCreateEventMetadata,
+		arg.Ids,
+		arg.Handleds,
+		arg.EventReceivedAts,
+		arg.Versions,
+		arg.BazelInvocationIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateInvocationTags = `-- name: SeedCreateInvocationTags :execrows
@@ -240,16 +238,16 @@ type SeedCreateInvocationTagsParams struct {
 }
 
 func (q *Queries) SeedCreateInvocationTags(ctx context.Context, arg SeedCreateInvocationTagsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateInvocationTags,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Keys),
-		pq.Array(arg.Values),
-		pq.Array(arg.BazelInvocationIds),
+	result, err := q.db.Exec(ctx, seedCreateInvocationTags,
+		arg.Ids,
+		arg.Keys,
+		arg.Values,
+		arg.BazelInvocationIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateSourceControls = `-- name: SeedCreateSourceControls :execrows
@@ -286,18 +284,18 @@ type SeedCreateSourceControlsParams struct {
 }
 
 func (q *Queries) SeedCreateSourceControls(ctx context.Context, arg SeedCreateSourceControlsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateSourceControls,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Repos),
-		pq.Array(arg.RepoUrls),
-		pq.Array(arg.Refs),
-		pq.Array(arg.RefUrls),
-		pq.Array(arg.Commits),
-		pq.Array(arg.CommitUrls),
-		pq.Array(arg.BazelInvocationIds),
+	result, err := q.db.Exec(ctx, seedCreateSourceControls,
+		arg.Ids,
+		arg.Repos,
+		arg.RepoUrls,
+		arg.Refs,
+		arg.RefUrls,
+		arg.Commits,
+		arg.CommitUrls,
+		arg.BazelInvocationIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

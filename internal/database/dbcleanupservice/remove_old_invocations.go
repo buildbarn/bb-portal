@@ -7,6 +7,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // RemoveOldInvocations removes invocations that have completed before a
@@ -22,7 +23,7 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) (int64, er
 		return dc.db.Sqlc().DeleteOldInvocationsFromPages(ctx, sqlc.DeleteOldInvocationsFromPagesParams{
 			FromPage:   start,
 			Pages:      count,
-			CutoffTime: cutoffTime,
+			CutoffTime: pgtype.Timestamptz{Time: cutoffTime, Valid: true},
 			BatchLimit: limit,
 		})
 	})
