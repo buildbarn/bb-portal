@@ -7,10 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"time"
 
-	"github.com/google/uuid"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const seedAdvanceBuildTagsSequence = `-- name: SeedAdvanceBuildTagsSequence :exec
@@ -21,7 +19,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceBuildTagsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceBuildTagsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceBuildTagsSequence)
 	return err
 }
 
@@ -33,7 +31,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceBuildsSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceBuildsSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceBuildsSequence)
 	return err
 }
 
@@ -50,11 +48,11 @@ type SeedAssignInvocationsToBuildParams struct {
 
 // Associates invocations with a build by setting their build foreign key.
 func (q *Queries) SeedAssignInvocationsToBuild(ctx context.Context, arg SeedAssignInvocationsToBuildParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedAssignInvocationsToBuild, arg.BuildID, pq.Array(arg.InvocationIds))
+	result, err := q.db.Exec(ctx, seedAssignInvocationsToBuild, arg.BuildID, arg.InvocationIds)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateBuildTags = `-- name: SeedCreateBuildTags :execrows
@@ -79,16 +77,16 @@ type SeedCreateBuildTagsParams struct {
 }
 
 func (q *Queries) SeedCreateBuildTags(ctx context.Context, arg SeedCreateBuildTagsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateBuildTags,
-		pq.Array(arg.Ids),
-		pq.Array(arg.Keys),
-		pq.Array(arg.Values),
-		pq.Array(arg.BuildIds),
+	result, err := q.db.Exec(ctx, seedCreateBuildTags,
+		arg.Ids,
+		arg.Keys,
+		arg.Values,
+		arg.BuildIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateBuilds = `-- name: SeedCreateBuilds :execrows
@@ -107,20 +105,20 @@ SELECT
 
 type SeedCreateBuildsParams struct {
 	Ids             []int64
-	BuildUuids      []uuid.UUID
-	Timestamps      []time.Time
+	BuildUuids      []pgtype.UUID
+	Timestamps      []pgtype.Timestamptz
 	InstanceNameIds []int64
 }
 
 func (q *Queries) SeedCreateBuilds(ctx context.Context, arg SeedCreateBuildsParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateBuilds,
-		pq.Array(arg.Ids),
-		pq.Array(arg.BuildUuids),
-		pq.Array(arg.Timestamps),
-		pq.Array(arg.InstanceNameIds),
+	result, err := q.db.Exec(ctx, seedCreateBuilds,
+		arg.Ids,
+		arg.BuildUuids,
+		arg.Timestamps,
+		arg.InstanceNameIds,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

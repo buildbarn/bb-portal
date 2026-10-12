@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const deleteUnusedDigestFromPages = `-- name: DeleteUnusedDigestFromPages :execrows
@@ -37,11 +35,11 @@ type DeleteUnusedDigestFromPagesParams struct {
 }
 
 func (q *Queries) DeleteUnusedDigestFromPages(ctx context.Context, arg DeleteUnusedDigestFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteUnusedDigestFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteUnusedDigestFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const deleteUnusedFilePathsFromPages = `-- name: DeleteUnusedFilePathsFromPages :execrows
@@ -70,11 +68,11 @@ type DeleteUnusedFilePathsFromPagesParams struct {
 }
 
 func (q *Queries) DeleteUnusedFilePathsFromPages(ctx context.Context, arg DeleteUnusedFilePathsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteUnusedFilePathsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteUnusedFilePathsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const deleteUnusedFilesFromPages = `-- name: DeleteUnusedFilesFromPages :execrows
@@ -116,11 +114,11 @@ type DeleteUnusedFilesFromPagesParams struct {
 }
 
 func (q *Queries) DeleteUnusedFilesFromPages(ctx context.Context, arg DeleteUnusedFilesFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteUnusedFilesFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteUnusedFilesFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const insertMissingDigests = `-- name: InsertMissingDigests :exec
@@ -149,11 +147,11 @@ type InsertMissingDigestsParams struct {
 }
 
 func (q *Queries) InsertMissingDigests(ctx context.Context, arg InsertMissingDigestsParams) error {
-	_, err := q.db.ExecContext(ctx, insertMissingDigests,
-		pq.Array(arg.Rev2InstanceNames),
-		pq.Array(arg.DigestFunctions),
-		pq.Array(arg.Hashes),
-		pq.Array(arg.SizeBytes),
+	_, err := q.db.Exec(ctx, insertMissingDigests,
+		arg.Rev2InstanceNames,
+		arg.DigestFunctions,
+		arg.Hashes,
+		arg.SizeBytes,
 	)
 	return err
 }
@@ -177,7 +175,7 @@ type InsertMissingFilePathsParams struct {
 }
 
 func (q *Queries) InsertMissingFilePaths(ctx context.Context, arg InsertMissingFilePathsParams) error {
-	_, err := q.db.ExecContext(ctx, insertMissingFilePaths, arg.BepInstanceNameID, pq.Array(arg.Paths))
+	_, err := q.db.Exec(ctx, insertMissingFilePaths, arg.BepInstanceNameID, arg.Paths)
 	return err
 }
 
@@ -220,12 +218,12 @@ type InsertMissingFilesParams struct {
 }
 
 func (q *Queries) InsertMissingFiles(ctx context.Context, arg InsertMissingFilesParams) error {
-	_, err := q.db.ExecContext(ctx, insertMissingFiles,
-		pq.Array(arg.FilePaths),
-		pq.Array(arg.Rev2InstanceNames),
-		pq.Array(arg.DigestFunctions),
-		pq.Array(arg.Hashes),
-		pq.Array(arg.SizeBytes),
+	_, err := q.db.Exec(ctx, insertMissingFiles,
+		arg.FilePaths,
+		arg.Rev2InstanceNames,
+		arg.DigestFunctions,
+		arg.Hashes,
+		arg.SizeBytes,
 		arg.BepInstanceNameID,
 	)
 	return err

@@ -10,6 +10,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/seed/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -198,13 +199,13 @@ func seedUsers(ctx context.Context, db *sqlc.Queries, n int32) ([]int64, error) 
 	}
 
 	ids := make([]int64, 0, n)
-	userUUIDs := make([]uuid.UUID, 0, n)
+	userUUIDs := make([]pgtype.UUID, 0, n)
 	externalIDs := make([]string, 0, n)
 	displayNames := make([]string, 0, n)
 	for i := range n {
 		user := fmt.Sprintf("seed_user_%d", i)
 		ids = append(ids, int64(i+1))
-		userUUIDs = append(userUUIDs, uuid.NewSHA1(uuid.NameSpaceURL, []byte(user)))
+		userUUIDs = append(userUUIDs, pgtype.UUID{Bytes: uuid.NewSHA1(uuid.NameSpaceURL, []byte(user)), Valid: true})
 		externalIDs = append(externalIDs, user)
 		displayNames = append(displayNames, user)
 	}

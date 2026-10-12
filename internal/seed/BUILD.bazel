@@ -17,6 +17,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_google_uuid//:uuid",
+        "@com_github_jackc_pgx_v5//pgtype",
         "@org_golang_x_sync//errgroup",
     ],
 )
@@ -33,6 +34,7 @@ go_test(
         "//internal/database/sqlc",
         "//internal/seed/sqlc",
         "@com_github_google_uuid//:uuid",
+        "@com_github_jackc_pgx_v5//pgtype",
         "@com_github_stretchr_testify//require",
     ],
 )

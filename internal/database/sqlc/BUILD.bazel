@@ -24,8 +24,8 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/internal/database/sqlc",
     visibility = ["//:__subpackages__"],
     deps = [
-        "@com_github_google_uuid//:uuid",
-        "@com_github_lib_pq//:pq",
-        "@com_github_sqlc_dev_pqtype//:pqtype",
+        "@com_github_jackc_pgx_v5//:pgx",
+        "@com_github_jackc_pgx_v5//pgconn",
+        "@com_github_jackc_pgx_v5//pgtype",
     ],
 )

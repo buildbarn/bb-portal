@@ -7,9 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"time"
 
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createTestActionOutputAssociation = `-- name: CreateTestActionOutputAssociation :execrows
@@ -53,19 +52,19 @@ type CreateTestActionOutputAssociationParams struct {
 }
 
 func (q *Queries) CreateTestActionOutputAssociation(ctx context.Context, arg CreateTestActionOutputAssociationParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, createTestActionOutputAssociation,
-		pq.Array(arg.TestResultID),
-		pq.Array(arg.FilePaths),
-		pq.Array(arg.Rev2InstanceNames),
-		pq.Array(arg.DigestFunctions),
-		pq.Array(arg.Hashes),
-		pq.Array(arg.SizeBytes),
+	result, err := q.db.Exec(ctx, createTestActionOutputAssociation,
+		arg.TestResultID,
+		arg.FilePaths,
+		arg.Rev2InstanceNames,
+		arg.DigestFunctions,
+		arg.Hashes,
+		arg.SizeBytes,
 		arg.BepInstanceNameID,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const createTestResultsBulk = `-- name: CreateTestResultsBulk :many
@@ -191,7 +190,7 @@ type CreateTestResultsBulkParams struct {
 	Statuses             []string
 	StatusDetailss       []string
 	CachedLocallys       []bool
-	TestAttemptStarts    []time.Time
+	TestAttemptStarts    []pgtype.Timestamptz
 	TestAttemptDurations []int64
 	Warnings             []string
 	Strategies           []string
@@ -206,23 +205,23 @@ type CreateTestResultsBulkParams struct {
 // STAGE 2: Join the rest using the specific Target IDs we found
 // Order the results by the input order
 func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) ([]int64, error) {
-	rows, err := q.db.QueryContext(ctx, createTestResultsBulk,
-		pq.Array(arg.Labels),
-		pq.Array(arg.ConfigIds),
-		pq.Array(arg.Runs),
-		pq.Array(arg.Shards),
-		pq.Array(arg.Attempts),
-		pq.Array(arg.Statuses),
-		pq.Array(arg.StatusDetailss),
-		pq.Array(arg.CachedLocallys),
-		pq.Array(arg.TestAttemptStarts),
-		pq.Array(arg.TestAttemptDurations),
-		pq.Array(arg.Warnings),
-		pq.Array(arg.Strategies),
-		pq.Array(arg.CachedRemotelys),
-		pq.Array(arg.ExitCodes),
-		pq.Array(arg.Hostnames),
-		pq.Array(arg.TimingBreakdowns),
+	rows, err := q.db.Query(ctx, createTestResultsBulk,
+		arg.Labels,
+		arg.ConfigIds,
+		arg.Runs,
+		arg.Shards,
+		arg.Attempts,
+		arg.Statuses,
+		arg.StatusDetailss,
+		arg.CachedLocallys,
+		arg.TestAttemptStarts,
+		arg.TestAttemptDurations,
+		arg.Warnings,
+		arg.Strategies,
+		arg.CachedRemotelys,
+		arg.ExitCodes,
+		arg.Hostnames,
+		arg.TimingBreakdowns,
 		arg.InstanceNameID,
 		arg.BazelInvocationID,
 	)
@@ -237,9 +236,6 @@ func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResul
 			return nil, err
 		}
 		items = append(items, id)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

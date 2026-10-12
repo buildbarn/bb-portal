@@ -8,8 +8,7 @@ package sqlc
 import (
 	"context"
 
-	"github.com/google/uuid"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const seedAdvanceAuthenticatedUsersSequence = `-- name: SeedAdvanceAuthenticatedUsersSequence :exec
@@ -20,7 +19,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceAuthenticatedUsersSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceAuthenticatedUsersSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceAuthenticatedUsersSequence)
 	return err
 }
 
@@ -32,7 +31,7 @@ SELECT setval(
 `
 
 func (q *Queries) SeedAdvanceInstanceNamesSequence(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedAdvanceInstanceNamesSequence)
+	_, err := q.db.Exec(ctx, seedAdvanceInstanceNamesSequence)
 	return err
 }
 
@@ -52,22 +51,22 @@ SELECT
 
 type SeedCreateAuthenticatedUsersParams struct {
 	Ids          []int64
-	UserUuids    []uuid.UUID
+	UserUuids    []pgtype.UUID
 	ExternalIds  []string
 	DisplayNames []string
 }
 
 func (q *Queries) SeedCreateAuthenticatedUsers(ctx context.Context, arg SeedCreateAuthenticatedUsersParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateAuthenticatedUsers,
-		pq.Array(arg.Ids),
-		pq.Array(arg.UserUuids),
-		pq.Array(arg.ExternalIds),
-		pq.Array(arg.DisplayNames),
+	result, err := q.db.Exec(ctx, seedCreateAuthenticatedUsers,
+		arg.Ids,
+		arg.UserUuids,
+		arg.ExternalIds,
+		arg.DisplayNames,
 	)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const seedCreateInstanceNames = `-- name: SeedCreateInstanceNames :execrows
@@ -86,9 +85,9 @@ type SeedCreateInstanceNamesParams struct {
 }
 
 func (q *Queries) SeedCreateInstanceNames(ctx context.Context, arg SeedCreateInstanceNamesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, seedCreateInstanceNames, pq.Array(arg.Ids), pq.Array(arg.Names))
+	result, err := q.db.Exec(ctx, seedCreateInstanceNames, arg.Ids, arg.Names)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

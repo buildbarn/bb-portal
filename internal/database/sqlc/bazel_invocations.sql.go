@@ -7,10 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
-	"time"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createBazelInvocation = `-- name: CreateBazelInvocation :one
@@ -41,10 +39,10 @@ LIMIT 1
 `
 
 type CreateBazelInvocationParams struct {
-	InvocationID        uuid.UUID
+	InvocationID        pgtype.UUID
 	InstanceNameID      int64
-	AuthenticatedUserID sql.NullInt64
-	CreatedTimestamp    time.Time
+	AuthenticatedUserID pgtype.Int8
+	CreatedTimestamp    pgtype.Timestamptz
 }
 
 type CreateBazelInvocationRow struct {
@@ -57,7 +55,7 @@ type CreateBazelInvocationRow struct {
 // if the invocation was created, `false` if
 // the invocation already existed.
 func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (CreateBazelInvocationRow, error) {
-	row := q.db.QueryRowContext(ctx, createBazelInvocation,
+	row := q.db.QueryRow(ctx, createBazelInvocation,
 		arg.InvocationID,
 		arg.InstanceNameID,
 		arg.AuthenticatedUserID,
@@ -86,12 +84,12 @@ WHERE ctid IN(
 type DeleteOldInvocationsFromPagesParams struct {
 	FromPage   int64
 	Pages      int64
-	CutoffTime time.Time
+	CutoffTime pgtype.Timestamptz
 	BatchLimit int64
 }
 
 func (q *Queries) DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteOldInvocationsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteOldInvocationsFromPages,
+	result, err := q.db.Exec(ctx, deleteOldInvocationsFromPages,
 		arg.FromPage,
 		arg.Pages,
 		arg.CutoffTime,
@@ -100,7 +98,7 @@ func (q *Queries) DeleteOldInvocationsFromPages(ctx context.Context, arg DeleteO
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const getInvocationsForLogCompactionFromPages = `-- name: GetInvocationsForLogCompactionFromPages :many
@@ -129,11 +127,11 @@ type GetInvocationsForLogCompactionFromPagesParams struct {
 
 type GetInvocationsForLogCompactionFromPagesRow struct {
 	ID           int64
-	InvocationID uuid.UUID
+	InvocationID pgtype.UUID
 }
 
 func (q *Queries) GetInvocationsForLogCompactionFromPages(ctx context.Context, arg GetInvocationsForLogCompactionFromPagesParams) ([]GetInvocationsForLogCompactionFromPagesRow, error) {
-	rows, err := q.db.QueryContext(ctx, getInvocationsForLogCompactionFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	rows, err := q.db.Query(ctx, getInvocationsForLogCompactionFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -145,9 +143,6 @@ func (q *Queries) GetInvocationsForLogCompactionFromPages(ctx context.Context, a
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -168,7 +163,7 @@ type LockBazelInvocationCompletionRow struct {
 }
 
 func (q *Queries) LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error) {
-	row := q.db.QueryRowContext(ctx, lockBazelInvocationCompletion, id)
+	row := q.db.QueryRow(ctx, lockBazelInvocationCompletion, id)
 	var i LockBazelInvocationCompletionRow
 	err := row.Scan(&i.ID, &i.BepCompleted)
 	return i, err
@@ -197,12 +192,12 @@ WHERE ctid IN (
 type LockStaleInvocationsFromPagesParams struct {
 	FromPage   int64
 	Pages      int64
-	CutoffTime time.Time
+	CutoffTime pgtype.Timestamptz
 	BatchLimit int64
 }
 
 func (q *Queries) LockStaleInvocationsFromPages(ctx context.Context, arg LockStaleInvocationsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, lockStaleInvocationsFromPages,
+	result, err := q.db.Exec(ctx, lockStaleInvocationsFromPages,
 		arg.FromPage,
 		arg.Pages,
 		arg.CutoffTime,
@@ -211,7 +206,7 @@ func (q *Queries) LockStaleInvocationsFromPages(ctx context.Context, arg LockSta
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const updateCompletedInvocationWithEndTimeFromEventMetadata = `-- name: UpdateCompletedInvocationWithEndTimeFromEventMetadata :execrows
@@ -225,9 +220,9 @@ WHERE bi.id = em.bazel_invocation_id
 `
 
 func (q *Queries) UpdateCompletedInvocationWithEndTimeFromEventMetadata(ctx context.Context) (int64, error) {
-	result, err := q.db.ExecContext(ctx, updateCompletedInvocationWithEndTimeFromEventMetadata)
+	result, err := q.db.Exec(ctx, updateCompletedInvocationWithEndTimeFromEventMetadata)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

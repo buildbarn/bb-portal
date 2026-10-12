@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const createTestTargetsBulk = `-- name: CreateTestTargetsBulk :exec
@@ -19,7 +17,7 @@ ON CONFLICT (target_id) DO NOTHING
 `
 
 func (q *Queries) CreateTestTargetsBulk(ctx context.Context, targetIds []int64) error {
-	_, err := q.db.ExecContext(ctx, createTestTargetsBulk, pq.Array(targetIds))
+	_, err := q.db.Exec(ctx, createTestTargetsBulk, targetIds)
 	return err
 }
 
@@ -49,9 +47,9 @@ type DeleteOrphanedTestTargetsFromPagesParams struct {
 }
 
 func (q *Queries) DeleteOrphanedTestTargetsFromPages(ctx context.Context, arg DeleteOrphanedTestTargetsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteOrphanedTestTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteOrphanedTestTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

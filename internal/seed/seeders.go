@@ -14,6 +14,7 @@ import (
 	jmespath_proto "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // Parameters describes the shape of the data to seed.
@@ -180,10 +181,10 @@ func (s *instanceSeeder) seedBazelInvocations(ctx context.Context) ([]int64, err
 	invocationBatcher := newBatcher("bazel_invocations", int(n), func(chunk []invocationRow) error {
 		params := sqlc.SeedCreateBazelInvocationsParams{
 			Ids:                  make([]int64, 0, len(chunk)),
-			InvocationIds:        make([]uuid.UUID, 0, len(chunk)),
-			CreatedTimestamps:    make([]time.Time, 0, len(chunk)),
-			StartedAts:           make([]time.Time, 0, len(chunk)),
-			EndedAts:             make([]time.Time, 0, len(chunk)),
+			InvocationIds:        make([]pgtype.UUID, 0, len(chunk)),
+			CreatedTimestamps:    make([]pgtype.Timestamptz, 0, len(chunk)),
+			StartedAts:           make([]pgtype.Timestamptz, 0, len(chunk)),
+			EndedAts:             make([]pgtype.Timestamptz, 0, len(chunk)),
 			BepCompleteds:        make([]bool, 0, len(chunk)),
 			Usernames:            make([]string, 0, len(chunk)),
 			Hostnames:            make([]string, 0, len(chunk)),
@@ -202,10 +203,10 @@ func (s *instanceSeeder) seedBazelInvocations(ctx context.Context) ([]int64, err
 				exitCodeName = "SUCCESS"
 			}
 			params.Ids = append(params.Ids, row.id)
-			params.InvocationIds = append(params.InvocationIds, row.invocationID)
-			params.CreatedTimestamps = append(params.CreatedTimestamps, row.seedTime)
-			params.StartedAts = append(params.StartedAts, row.seedTime)
-			params.EndedAts = append(params.EndedAts, endedAt)
+			params.InvocationIds = append(params.InvocationIds, pgtype.UUID{Bytes: row.invocationID, Valid: true})
+			params.CreatedTimestamps = append(params.CreatedTimestamps, pgtype.Timestamptz{Time: row.seedTime, Valid: true})
+			params.StartedAts = append(params.StartedAts, pgtype.Timestamptz{Time: row.seedTime, Valid: true})
+			params.EndedAts = append(params.EndedAts, pgtype.Timestamptz{Time: endedAt, Valid: true})
 			params.BepCompleteds = append(params.BepCompleteds, row.ended)
 			params.Usernames = append(params.Usernames, row.username)
 			params.Hostnames = append(params.Hostnames, fmt.Sprintf("seed-host-%d", row.id%1_000_000))
@@ -334,12 +335,12 @@ func (s *instanceSeeder) seedBazelInvocations(ctx context.Context) ([]int64, err
 	connectionMetadataBatcher := newBatcher("connection_metadata", int(n), func(chunk []connectionMetadataRow) error {
 		params := sqlc.SeedCreateConnectionMetadataParams{
 			Ids:                   make([]int64, 0, len(chunk)),
-			ConnectionLastOpenAts: make([]time.Time, 0, len(chunk)),
+			ConnectionLastOpenAts: make([]pgtype.Timestamptz, 0, len(chunk)),
 			BazelInvocationIds:    make([]int64, 0, len(chunk)),
 		}
 		for _, row := range chunk {
 			params.Ids = append(params.Ids, row.id)
-			params.ConnectionLastOpenAts = append(params.ConnectionLastOpenAts, row.lastOpenAt)
+			params.ConnectionLastOpenAts = append(params.ConnectionLastOpenAts, pgtype.Timestamptz{Time: row.lastOpenAt, Valid: true})
 			params.BazelInvocationIds = append(params.BazelInvocationIds, row.invocationID)
 		}
 		_, err := s.db.SeedCreateConnectionMetadata(ctx, params)
@@ -363,14 +364,14 @@ func (s *instanceSeeder) seedBazelInvocations(ctx context.Context) ([]int64, err
 		params := sqlc.SeedCreateEventMetadataParams{
 			Ids:                make([]int64, 0, len(chunk)),
 			Handleds:           make([][]byte, 0, len(chunk)),
-			EventReceivedAts:   make([]time.Time, 0, len(chunk)),
+			EventReceivedAts:   make([]pgtype.Timestamptz, 0, len(chunk)),
 			Versions:           make([]int64, 0, len(chunk)),
 			BazelInvocationIds: make([]int64, 0, len(chunk)),
 		}
 		for _, row := range chunk {
 			params.Ids = append(params.Ids, row.id)
 			params.Handleds = append(params.Handleds, row.handled)
-			params.EventReceivedAts = append(params.EventReceivedAts, row.eventReceivedAt)
+			params.EventReceivedAts = append(params.EventReceivedAts, pgtype.Timestamptz{Time: row.eventReceivedAt, Valid: true})
 			params.Versions = append(params.Versions, row.version)
 			params.BazelInvocationIds = append(params.BazelInvocationIds, row.invocationID)
 		}
@@ -410,8 +411,8 @@ func (s *instanceSeeder) seedBuild(ctx context.Context, invocationIDs []int64, i
 	buildID := s.buildIDAllocator.nextID()
 	if _, err := s.db.SeedCreateBuilds(ctx, sqlc.SeedCreateBuildsParams{
 		Ids:             []int64{buildID},
-		BuildUuids:      []uuid.UUID{buildUUID},
-		Timestamps:      []time.Time{s.from},
+		BuildUuids:      []pgtype.UUID{{Bytes: buildUUID, Valid: true}},
+		Timestamps:      []pgtype.Timestamptz{{Time: s.from, Valid: true}},
 		InstanceNameIds: []int64{s.instanceName.ID},
 	}); err != nil {
 		return util.StatusWrap(err, "Failed to create build")

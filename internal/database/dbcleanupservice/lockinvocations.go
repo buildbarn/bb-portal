@@ -6,6 +6,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // LockInvocationsWithNoRecentEvents locks invocations that have not received any new
@@ -23,7 +24,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 			sqlc.LockStaleInvocationsFromPagesParams{
 				FromPage:   start,
 				Pages:      count,
-				CutoffTime: cutoffTime,
+				CutoffTime: pgtype.Timestamptz{Time: cutoffTime, Valid: true},
 				BatchLimit: limit,
 			},
 		)

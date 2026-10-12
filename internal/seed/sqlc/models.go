@@ -5,155 +5,151 @@
 package sqlc
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/google/uuid"
-	"github.com/sqlc-dev/pqtype"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Action struct {
 	ID                int64
 	Label             string
-	Type              sql.NullString
-	Success           sql.NullBool
-	ExitCode          sql.NullInt32
-	CommandLine       pqtype.NullRawMessage
-	StartTime         sql.NullTime
-	EndTime           sql.NullTime
-	FailureCode       sql.NullString
-	FailureMessage    sql.NullString
+	Type              pgtype.Text
+	Success           pgtype.Bool
+	ExitCode          pgtype.Int4
+	CommandLine       []byte
+	StartTime         pgtype.Timestamptz
+	EndTime           pgtype.Timestamptz
+	FailureCode       pgtype.Text
+	FailureMessage    pgtype.Text
 	ConfigurationID   int64
-	StdoutFileID      sql.NullInt64
-	StderrFileID      sql.NullInt64
+	StdoutFileID      pgtype.Int8
+	StderrFileID      pgtype.Int8
 	BazelInvocationID int64
 }
 
 type ActionCacheStatistic struct {
 	ID                              int64
-	SizeInBytes                     sql.NullInt64
-	SaveTimeInMs                    sql.NullInt64
-	LoadTimeInMs                    sql.NullInt64
-	CacheCheckSemaphoreWaitTimeInMs sql.NullInt64
-	Hits                            sql.NullInt32
-	Misses                          sql.NullInt32
-	ActionSummaryID                 sql.NullInt64
+	SizeInBytes                     pgtype.Int8
+	SaveTimeInMs                    pgtype.Int8
+	LoadTimeInMs                    pgtype.Int8
+	CacheCheckSemaphoreWaitTimeInMs pgtype.Int8
+	Hits                            pgtype.Int4
+	Misses                          pgtype.Int4
+	ActionSummaryID                 pgtype.Int8
 }
 
 type ActionDatum struct {
 	ID                      int64
-	Mnemonic                sql.NullString
-	ActionsExecuted         sql.NullInt64
-	ActionsCreated          sql.NullInt64
-	FirstStartedMs          sql.NullInt64
-	LastEndedMs             sql.NullInt64
-	SystemTime              sql.NullInt64
-	UserTime                sql.NullInt64
-	ActionSummaryActionData sql.NullInt64
+	Mnemonic                pgtype.Text
+	ActionsExecuted         pgtype.Int8
+	ActionsCreated          pgtype.Int8
+	FirstStartedMs          pgtype.Int8
+	LastEndedMs             pgtype.Int8
+	SystemTime              pgtype.Int8
+	UserTime                pgtype.Int8
+	ActionSummaryActionData pgtype.Int8
 }
 
 type ActionSummary struct {
 	ID                                int64
-	ActionsCreated                    sql.NullInt64
-	ActionsCreatedNotIncludingAspects sql.NullInt64
-	ActionsExecuted                   sql.NullInt64
-	RemoteCacheHits                   sql.NullInt64
-	MetricsActionSummary              sql.NullInt64
+	ActionsCreated                    pgtype.Int8
+	ActionsCreatedNotIncludingAspects pgtype.Int8
+	ActionsExecuted                   pgtype.Int8
+	RemoteCacheHits                   pgtype.Int8
+	MetricsActionSummary              pgtype.Int8
 }
 
 type ArtifactMetric struct {
 	ID                                        int64
-	SourceArtifactsReadSizeInBytes            sql.NullInt64
-	SourceArtifactsReadCount                  sql.NullInt32
-	OutputArtifactsSeenSizeInBytes            sql.NullInt64
-	OutputArtifactsSeenCount                  sql.NullInt32
-	OutputArtifactsFromActionCacheSizeInBytes sql.NullInt64
-	OutputArtifactsFromActionCacheCount       sql.NullInt32
-	TopLevelArtifactsSizeInBytes              sql.NullInt64
-	TopLevelArtifactsCount                    sql.NullInt32
-	MetricsArtifactMetrics                    sql.NullInt64
+	SourceArtifactsReadSizeInBytes            pgtype.Int8
+	SourceArtifactsReadCount                  pgtype.Int4
+	OutputArtifactsSeenSizeInBytes            pgtype.Int8
+	OutputArtifactsSeenCount                  pgtype.Int4
+	OutputArtifactsFromActionCacheSizeInBytes pgtype.Int8
+	OutputArtifactsFromActionCacheCount       pgtype.Int4
+	TopLevelArtifactsSizeInBytes              pgtype.Int8
+	TopLevelArtifactsCount                    pgtype.Int4
+	MetricsArtifactMetrics                    pgtype.Int8
 }
 
 type AuthenticatedUser struct {
 	ID          int64
-	UserUuid    uuid.UUID
+	UserUuid    pgtype.UUID
 	ExternalID  string
-	DisplayName sql.NullString
-	UserInfo    pqtype.NullRawMessage
+	DisplayName pgtype.Text
+	UserInfo    []byte
 }
 
 type BazelInvocation struct {
 	ID                                int64
-	InvocationID                      uuid.UUID
-	CreatedTimestamp                  time.Time
-	StartedAt                         sql.NullTime
-	EndedAt                           sql.NullTime
+	InvocationID                      pgtype.UUID
+	CreatedTimestamp                  pgtype.Timestamptz
+	StartedAt                         pgtype.Timestamptz
+	EndedAt                           pgtype.Timestamptz
 	BepCompleted                      bool
-	Username                          sql.NullString
-	Hostname                          sql.NullString
-	NumFetches                        sql.NullInt64
-	BazelVersion                      sql.NullString
-	ExitCodeName                      sql.NullString
-	ExitCodeCode                      sql.NullInt32
-	CanonicalCommandLine              pqtype.NullRawMessage
-	OriginalCommandLine               pqtype.NullRawMessage
-	OptionsParsed                     pqtype.NullRawMessage
-	EnvironmentVariables              pqtype.NullRawMessage
+	Username                          pgtype.Text
+	Hostname                          pgtype.Text
+	NumFetches                        pgtype.Int8
+	BazelVersion                      pgtype.Text
+	ExitCodeName                      pgtype.Text
+	ExitCodeCode                      pgtype.Int4
+	CanonicalCommandLine              []byte
+	OriginalCommandLine               []byte
+	OptionsParsed                     []byte
+	EnvironmentVariables              []byte
 	ProcessedEventStarted             bool
 	ProcessedEventBuildMetadata       bool
 	ProcessedEventBuildFinished       bool
 	ProcessedEventWorkspaceStatus     bool
-	AuthenticatedUserBazelInvocations sql.NullInt64
-	ProfileID                         sql.NullInt64
-	BuildInvocations                  sql.NullInt64
+	AuthenticatedUserBazelInvocations pgtype.Int8
+	ProfileID                         pgtype.Int8
+	BuildInvocations                  pgtype.Int8
 	InstanceNameBazelInvocations      int64
 }
 
 type Build struct {
 	ID                 int64
-	BuildUuid          uuid.UUID
-	Timestamp          time.Time
+	BuildUuid          pgtype.UUID
+	Timestamp          pgtype.Timestamptz
 	InstanceNameBuilds int64
 }
 
 type BuildGraphAspectCount struct {
 	ID                            int64
-	Key                           sql.NullString
-	AspectName                    sql.NullString
-	Count                         sql.NullInt64
-	ActionCount                   sql.NullInt64
-	BuildGraphMetricsAspectCounts sql.NullInt64
+	Key                           pgtype.Text
+	AspectName                    pgtype.Text
+	Count                         pgtype.Int8
+	ActionCount                   pgtype.Int8
+	BuildGraphMetricsAspectCounts pgtype.Int8
 }
 
 type BuildGraphEvaluationStat struct {
 	ID                               int64
-	Operation                        sql.NullString
-	SkyfunctionName                  sql.NullString
-	Count                            sql.NullInt64
-	BuildGraphMetricsEvaluationStats sql.NullInt64
+	Operation                        pgtype.Text
+	SkyfunctionName                  pgtype.Text
+	Count                            pgtype.Int8
+	BuildGraphMetricsEvaluationStats pgtype.Int8
 }
 
 type BuildGraphMetric struct {
 	ID                                        int64
-	ActionLookupValueCount                    sql.NullInt32
-	ActionLookupValueCountNotIncludingAspects sql.NullInt32
-	ActionCount                               sql.NullInt32
-	ActionCountNotIncludingAspects            sql.NullInt32
-	InputFileConfiguredTargetCount            sql.NullInt32
-	OutputFileConfiguredTargetCount           sql.NullInt32
-	OtherConfiguredTargetCount                sql.NullInt32
-	OutputArtifactCount                       sql.NullInt32
-	PostInvocationSkyframeNodeCount           sql.NullInt32
-	MetricsBuildGraphMetrics                  sql.NullInt64
+	ActionLookupValueCount                    pgtype.Int4
+	ActionLookupValueCountNotIncludingAspects pgtype.Int4
+	ActionCount                               pgtype.Int4
+	ActionCountNotIncludingAspects            pgtype.Int4
+	InputFileConfiguredTargetCount            pgtype.Int4
+	OutputFileConfiguredTargetCount           pgtype.Int4
+	OtherConfiguredTargetCount                pgtype.Int4
+	OutputArtifactCount                       pgtype.Int4
+	PostInvocationSkyframeNodeCount           pgtype.Int4
+	MetricsBuildGraphMetrics                  pgtype.Int8
 }
 
 type BuildGraphRuleClassCount struct {
 	ID                               int64
-	Key                              sql.NullString
-	RuleClass                        sql.NullString
-	Count                            sql.NullInt64
-	ActionCount                      sql.NullInt64
-	BuildGraphMetricsRuleClassCounts sql.NullInt64
+	Key                              pgtype.Text
+	RuleClass                        pgtype.Text
+	Count                            pgtype.Int8
+	ActionCount                      pgtype.Int8
+	BuildGraphMetricsRuleClassCounts pgtype.Int8
 }
 
 type BuildLogChunk struct {
@@ -175,25 +171,25 @@ type BuildTag struct {
 type Configuration struct {
 	ID                int64
 	ConfigurationID   string
-	Mnemonic          sql.NullString
-	PlatformName      sql.NullString
-	Cpu               sql.NullString
-	MakeVariables     pqtype.NullRawMessage
-	IsTool            sql.NullBool
+	Mnemonic          pgtype.Text
+	PlatformName      pgtype.Text
+	Cpu               pgtype.Text
+	MakeVariables     []byte
+	IsTool            pgtype.Bool
 	BazelInvocationID int64
 }
 
 type ConnectionMetadatum struct {
 	ID                                int64
-	ConnectionLastOpenAt              time.Time
+	ConnectionLastOpenAt              pgtype.Timestamptz
 	BazelInvocationConnectionMetadata int64
 }
 
 type CumulativeMetric struct {
 	ID                       int64
-	NumAnalyses              sql.NullInt32
-	NumBuilds                sql.NullInt32
-	MetricsCumulativeMetrics sql.NullInt64
+	NumAnalyses              pgtype.Int4
+	NumBuilds                pgtype.Int4
+	MetricsCumulativeMetrics pgtype.Int8
 }
 
 type Digest struct {
@@ -206,23 +202,23 @@ type Digest struct {
 
 type DynamicExecutionMetric struct {
 	ID                             int64
-	MetricsDynamicExecutionMetrics sql.NullInt64
+	MetricsDynamicExecutionMetrics pgtype.Int8
 }
 
 type DynamicExecutionRaceStatistic struct {
 	ID                                    int64
-	Mnemonic                              sql.NullString
-	LocalRunner                           sql.NullString
-	RemoteRunner                          sql.NullString
-	LocalWins                             sql.NullInt32
-	RemoteWins                            sql.NullInt32
-	DynamicExecutionMetricsRaceStatistics sql.NullInt64
+	Mnemonic                              pgtype.Text
+	LocalRunner                           pgtype.Text
+	RemoteRunner                          pgtype.Text
+	LocalWins                             pgtype.Int4
+	RemoteWins                            pgtype.Int4
+	DynamicExecutionMetricsRaceStatistics pgtype.Int8
 }
 
 type EventMetadatum struct {
 	ID                int64
 	Handled           []byte
-	EventReceivedAt   time.Time
+	EventReceivedAt   pgtype.Timestamptz
 	Version           int64
 	BazelInvocationID int64
 }
@@ -241,9 +237,9 @@ type FilePath struct {
 
 type GarbageMetric struct {
 	ID                          int64
-	Type                        sql.NullString
-	GarbageCollected            sql.NullInt64
-	MemoryMetricsGarbageMetrics sql.NullInt64
+	Type                        pgtype.Text
+	GarbageCollected            pgtype.Int8
+	MemoryMetricsGarbageMetrics pgtype.Int8
 }
 
 type IncompleteBuildLog struct {
@@ -268,124 +264,124 @@ type InvocationTag struct {
 type InvocationTarget struct {
 	ID                               int64
 	Success                          bool
-	Tags                             pqtype.NullRawMessage
-	FailureMessage                   sql.NullString
+	Tags                             []byte
+	FailureMessage                   pgtype.Text
 	AbortReason                      string
 	BazelInvocationInvocationTargets int64
-	InvocationTargetConfiguration    sql.NullInt64
+	InvocationTargetConfiguration    pgtype.Int8
 	TargetInvocationTargets          int64
 }
 
 type MemoryMetric struct {
 	ID                             int64
-	PeakPostGcHeapSize             sql.NullInt64
-	UsedHeapSizePostBuild          sql.NullInt64
-	PeakPostGcTenuredSpaceHeapSize sql.NullInt64
-	MetricsMemoryMetrics           sql.NullInt64
+	PeakPostGcHeapSize             pgtype.Int8
+	UsedHeapSizePostBuild          pgtype.Int8
+	PeakPostGcTenuredSpaceHeapSize pgtype.Int8
+	MetricsMemoryMetrics           pgtype.Int8
 }
 
 type Metric struct {
 	ID                     int64
-	BazelInvocationMetrics sql.NullInt64
+	BazelInvocationMetrics pgtype.Int8
 }
 
 type MissDetail struct {
 	ID                               int64
 	Reason                           string
-	Count                            sql.NullInt32
-	ActionCacheStatisticsMissDetails sql.NullInt64
+	Count                            pgtype.Int4
+	ActionCacheStatisticsMissDetails pgtype.Int8
 }
 
 type NetworkMetric struct {
 	ID                    int64
-	MetricsNetworkMetrics sql.NullInt64
+	MetricsNetworkMetrics pgtype.Int8
 }
 
 type PackageLoadMetric struct {
 	ID                               int64
-	Name                             sql.NullString
-	LoadDurationInNs                 sql.NullInt64
-	NumTargets                       sql.NullInt64
-	ComputationSteps                 sql.NullInt64
-	NumTransitiveLoads               sql.NullInt64
-	PackageOverhead                  sql.NullInt64
-	GlobFilesystemOperationCost      sql.NullInt64
-	PackageMetricsPackageLoadMetrics sql.NullInt64
+	Name                             pgtype.Text
+	LoadDurationInNs                 pgtype.Int8
+	NumTargets                       pgtype.Int8
+	ComputationSteps                 pgtype.Int8
+	NumTransitiveLoads               pgtype.Int8
+	PackageOverhead                  pgtype.Int8
+	GlobFilesystemOperationCost      pgtype.Int8
+	PackageMetricsPackageLoadMetrics pgtype.Int8
 }
 
 type PackageMetric struct {
 	ID                    int64
-	PackagesLoaded        sql.NullInt64
-	MetricsPackageMetrics sql.NullInt64
+	PackagesLoaded        pgtype.Int8
+	MetricsPackageMetrics pgtype.Int8
 }
 
 type PgAttribute struct {
-	Attrelid interface{}
+	Attrelid pgtype.Uint32
 	Attname  string
 	Attnum   int16
 }
 
 type PgClass struct {
-	Oid            interface{}
+	Oid            pgtype.Uint32
 	Relname        string
-	Relnamespace   interface{}
+	Relnamespace   pgtype.Uint32
 	Relpages       int32
 	Relispartition bool
 }
 
 type PgConstraint struct {
-	Oid          interface{}
+	Oid          pgtype.Uint32
 	Conname      string
-	Connamespace interface{}
+	Connamespace pgtype.Uint32
 	Contype      string
-	Conrelid     interface{}
-	Confrelid    interface{}
+	Conrelid     pgtype.Uint32
+	Confrelid    pgtype.Uint32
 	Conkey       []int16
 }
 
 type PgIndex struct {
-	Indexrelid  interface{}
-	Indrelid    interface{}
+	Indexrelid  pgtype.Uint32
+	Indrelid    pgtype.Uint32
 	Indisvalid  bool
 	Indisunique bool
 	Indkey      interface{}
 }
 
 type PgNamespace struct {
-	Oid     interface{}
+	Oid     pgtype.Uint32
 	Nspname string
 }
 
 type RunnerCount struct {
 	ID                       int64
-	Name                     sql.NullString
-	ExecKind                 sql.NullString
-	ActionsExecuted          sql.NullInt64
-	ActionSummaryRunnerCount sql.NullInt64
+	Name                     pgtype.Text
+	ExecKind                 pgtype.Text
+	ActionsExecuted          pgtype.Int8
+	ActionSummaryRunnerCount pgtype.Int8
 }
 
 type SourceControl struct {
 	ID                           int64
-	Repo                         sql.NullString
-	RepoUrl                      sql.NullString
-	Ref                          sql.NullString
-	RefUrl                       sql.NullString
-	Commit                       sql.NullString
-	CommitUrl                    sql.NullString
-	BazelInvocationSourceControl sql.NullInt64
+	Repo                         pgtype.Text
+	RepoUrl                      pgtype.Text
+	Ref                          pgtype.Text
+	RefUrl                       pgtype.Text
+	Commit                       pgtype.Text
+	CommitUrl                    pgtype.Text
+	BazelInvocationSourceControl pgtype.Int8
 }
 
 type SystemNetworkStat struct {
 	ID                               int64
-	BytesSent                        sql.NullInt64
-	BytesRecv                        sql.NullInt64
-	PacketsSent                      sql.NullInt64
-	PacketsRecv                      sql.NullInt64
-	PeakBytesSentPerSec              sql.NullInt64
-	PeakBytesRecvPerSec              sql.NullInt64
-	PeakPacketsSentPerSec            sql.NullInt64
-	PeakPacketsRecvPerSec            sql.NullInt64
-	NetworkMetricsSystemNetworkStats sql.NullInt64
+	BytesSent                        pgtype.Int8
+	BytesRecv                        pgtype.Int8
+	PacketsSent                      pgtype.Int8
+	PacketsRecv                      pgtype.Int8
+	PeakBytesSentPerSec              pgtype.Int8
+	PeakBytesRecvPerSec              pgtype.Int8
+	PeakPacketsSentPerSec            pgtype.Int8
+	PeakPacketsRecvPerSec            pgtype.Int8
+	NetworkMetricsSystemNetworkStats pgtype.Int8
 }
 
 type Target struct {
@@ -404,10 +400,10 @@ type TargetKindMapping struct {
 
 type TargetMetric struct {
 	ID                                   int64
-	TargetsLoaded                        sql.NullInt64
-	TargetsConfigured                    sql.NullInt64
-	TargetsConfiguredNotIncludingAspects sql.NullInt64
-	MetricsTargetMetrics                 sql.NullInt64
+	TargetsLoaded                        pgtype.Int8
+	TargetsConfigured                    pgtype.Int8
+	TargetsConfiguredNotIncludingAspects pgtype.Int8
+	MetricsTargetMetrics                 pgtype.Int8
 }
 
 type TestActionOutput struct {
@@ -421,31 +417,31 @@ type TestResult struct {
 	Run                     int32
 	Shard                   int32
 	Attempt                 int32
-	Status                  sql.NullString
-	StatusDetails           sql.NullString
-	CachedLocally           sql.NullBool
-	TestAttemptStart        sql.NullTime
-	TestAttemptDurationInMs sql.NullInt64
-	Warning                 pqtype.NullRawMessage
-	Strategy                sql.NullString
-	CachedRemotely          sql.NullBool
-	ExitCode                sql.NullInt32
-	Hostname                sql.NullString
-	TimingBreakdown         pqtype.NullRawMessage
+	Status                  pgtype.Text
+	StatusDetails           pgtype.Text
+	CachedLocally           pgtype.Bool
+	TestAttemptStart        pgtype.Timestamptz
+	TestAttemptDurationInMs pgtype.Int8
+	Warning                 []byte
+	Strategy                pgtype.Text
+	CachedRemotely          pgtype.Bool
+	ExitCode                pgtype.Int4
+	Hostname                pgtype.Text
+	TimingBreakdown         []byte
 	TestSummaryTestResults  int64
 }
 
 type TestSummary struct {
 	ID                          int64
-	OverallStatus               sql.NullString
-	TotalRunCount               sql.NullInt32
-	RunCount                    sql.NullInt32
-	AttemptCount                sql.NullInt32
-	ShardCount                  sql.NullInt32
-	TotalNumCached              sql.NullInt32
-	FirstStartTime              sql.NullTime
-	LastStopTime                sql.NullTime
-	TotalRunDurationInMs        sql.NullInt64
+	OverallStatus               pgtype.Text
+	TotalRunCount               pgtype.Int4
+	RunCount                    pgtype.Int4
+	AttemptCount                pgtype.Int4
+	ShardCount                  pgtype.Int4
+	TotalNumCached              pgtype.Int4
+	FirstStartTime              pgtype.Timestamptz
+	LastStopTime                pgtype.Timestamptz
+	TotalRunDurationInMs        pgtype.Int8
 	InvocationTargetTestSummary int64
 }
 
@@ -456,61 +452,61 @@ type TestTarget struct {
 
 type TimingMetric struct {
 	ID                        int64
-	CpuTimeInMs               sql.NullInt64
-	WallTimeInMs              sql.NullInt64
-	AnalysisPhaseTimeInMs     sql.NullInt64
-	ExecutionPhaseTimeInMs    sql.NullInt64
-	ActionsExecutionStartInMs sql.NullInt64
-	CriticalPathTimeInMs      sql.NullInt64
-	MetricsTimingMetrics      sql.NullInt64
+	CpuTimeInMs               pgtype.Int8
+	WallTimeInMs              pgtype.Int8
+	AnalysisPhaseTimeInMs     pgtype.Int8
+	ExecutionPhaseTimeInMs    pgtype.Int8
+	ActionsExecutionStartInMs pgtype.Int8
+	CriticalPathTimeInMs      pgtype.Int8
+	MetricsTimingMetrics      pgtype.Int8
 }
 
 type WorkerID struct {
 	ID                     int64
 	WorkerID               int64
-	WorkerMetricsWorkerIds sql.NullInt64
+	WorkerMetricsWorkerIds pgtype.Int8
 }
 
 type WorkerMetric struct {
 	ID                   int64
-	ProcessID            sql.NullInt64
-	Mnemonic             sql.NullString
-	IsMultiplex          sql.NullBool
-	IsSandbox            sql.NullBool
-	IsMeasurable         sql.NullBool
-	WorkerKeyHash        sql.NullInt64
-	WorkerStatus         sql.NullString
-	Code                 sql.NullString
-	ActionsExecuted      sql.NullInt64
-	PriorActionsExecuted sql.NullInt64
-	MetricsWorkerMetrics sql.NullInt64
+	ProcessID            pgtype.Int8
+	Mnemonic             pgtype.Text
+	IsMultiplex          pgtype.Bool
+	IsSandbox            pgtype.Bool
+	IsMeasurable         pgtype.Bool
+	WorkerKeyHash        pgtype.Int8
+	WorkerStatus         pgtype.Text
+	Code                 pgtype.Text
+	ActionsExecuted      pgtype.Int8
+	PriorActionsExecuted pgtype.Int8
+	MetricsWorkerMetrics pgtype.Int8
 }
 
 type WorkerPoolMetric struct {
 	ID                       int64
-	MetricsWorkerPoolMetrics sql.NullInt64
+	MetricsWorkerPoolMetrics pgtype.Int8
 }
 
 type WorkerPoolStat struct {
 	ID                                 int64
-	Hash                               sql.NullInt32
-	Mnemonic                           sql.NullString
-	CreatedCount                       sql.NullInt64
-	DestroyedCount                     sql.NullInt64
-	EvictedCount                       sql.NullInt64
-	UserExecExceptionDestroyedCount    sql.NullInt64
-	IoExceptionDestroyedCount          sql.NullInt64
-	InterruptedExceptionDestroyedCount sql.NullInt64
-	UnknownDestroyedCount              sql.NullInt64
-	AliveCount                         sql.NullInt64
-	WorkerPoolMetricsWorkerPoolStats   sql.NullInt64
+	Hash                               pgtype.Int4
+	Mnemonic                           pgtype.Text
+	CreatedCount                       pgtype.Int8
+	DestroyedCount                     pgtype.Int8
+	EvictedCount                       pgtype.Int8
+	UserExecExceptionDestroyedCount    pgtype.Int8
+	IoExceptionDestroyedCount          pgtype.Int8
+	InterruptedExceptionDestroyedCount pgtype.Int8
+	UnknownDestroyedCount              pgtype.Int8
+	AliveCount                         pgtype.Int8
+	WorkerPoolMetricsWorkerPoolStats   pgtype.Int8
 }
 
 type WorkerStat struct {
 	ID                       int64
-	CollectTimeInMs          sql.NullInt64
-	WorkerMemoryInKb         sql.NullInt32
-	PriorWorkerMemoryInKb    sql.NullInt32
-	LastActionStartTimeInMs  sql.NullInt64
-	WorkerMetricsWorkerStats sql.NullInt64
+	CollectTimeInMs          pgtype.Int8
+	WorkerMemoryInKb         pgtype.Int4
+	PriorWorkerMemoryInKb    pgtype.Int4
+	LastActionStartTimeInMs  pgtype.Int8
+	WorkerMetricsWorkerStats pgtype.Int8
 }

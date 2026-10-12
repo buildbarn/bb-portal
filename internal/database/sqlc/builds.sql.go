@@ -19,6 +19,6 @@ WHERE bi.id = $1
 `
 
 func (q *Queries) UpdateBuildTimestampFromInvocation(ctx context.Context, invocationID int64) error {
-	_, err := q.db.ExecContext(ctx, updateBuildTimestampFromInvocation, invocationID)
+	_, err := q.db.Exec(ctx, updateBuildTimestampFromInvocation, invocationID)
 	return err
 }

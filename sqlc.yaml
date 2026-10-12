@@ -11,6 +11,7 @@ sql:
         package: "sqlc"
         out: "internal/database/sqlc"
         emit_interface: true
+        sql_package: "pgx/v5"
   # Seed-only queries. They should not be used by the real application.
   - schema:
       - "sql/migrations"
@@ -23,3 +24,4 @@ sql:
         package: "sqlc"
         out: "internal/seed/sqlc"
         emit_interface: true
+        sql_package: "pgx/v5"

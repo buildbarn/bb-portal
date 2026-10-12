@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const createTargetKindMappingsBulk = `-- name: CreateTargetKindMappingsBulk :exec
@@ -30,7 +28,7 @@ type CreateTargetKindMappingsBulkParams struct {
 }
 
 func (q *Queries) CreateTargetKindMappingsBulk(ctx context.Context, arg CreateTargetKindMappingsBulkParams) error {
-	_, err := q.db.ExecContext(ctx, createTargetKindMappingsBulk, arg.BazelInvocationID, pq.Array(arg.TargetIds))
+	_, err := q.db.Exec(ctx, createTargetKindMappingsBulk, arg.BazelInvocationID, arg.TargetIds)
 	return err
 }
 
@@ -56,11 +54,11 @@ type DeleteTargetKindMappingsFromPagesParams struct {
 }
 
 func (q *Queries) DeleteTargetKindMappingsFromPages(ctx context.Context, arg DeleteTargetKindMappingsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteTargetKindMappingsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const findMappedTargets = `-- name: FindMappedTargets :many
@@ -94,7 +92,7 @@ type FindMappedTargetsRow struct {
 }
 
 func (q *Queries) FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error) {
-	rows, err := q.db.QueryContext(ctx, findMappedTargets, pq.Array(arg.Labels), pq.Array(arg.Aspects), arg.BazelInvocationID)
+	rows, err := q.db.Query(ctx, findMappedTargets, arg.Labels, arg.Aspects, arg.BazelInvocationID)
 	if err != nil {
 		return nil, err
 	}
@@ -106,9 +104,6 @@ func (q *Queries) FindMappedTargets(ctx context.Context, arg FindMappedTargetsPa
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

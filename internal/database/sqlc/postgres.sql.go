@@ -32,7 +32,7 @@ type SelectForeignKeysWithoutIndexesRow struct {
 }
 
 func (q *Queries) SelectForeignKeysWithoutIndexes(ctx context.Context) ([]SelectForeignKeysWithoutIndexesRow, error) {
-	rows, err := q.db.QueryContext(ctx, selectForeignKeysWithoutIndexes)
+	rows, err := q.db.Query(ctx, selectForeignKeysWithoutIndexes)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,6 @@ func (q *Queries) SelectForeignKeysWithoutIndexes(ctx context.Context) ([]Select
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -63,7 +60,7 @@ WHERE relname = $1
 
 // Returns the number of physical blocks of a table
 func (q *Queries) SelectPages(ctx context.Context, tableName string) (int32, error) {
-	row := q.db.QueryRowContext(ctx, selectPages, tableName)
+	row := q.db.QueryRow(ctx, selectPages, tableName)
 	var relpages int32
 	err := row.Scan(&relpages)
 	return relpages, err
@@ -107,7 +104,7 @@ type SelectRedundantIndexesRow struct {
 }
 
 func (q *Queries) SelectRedundantIndexes(ctx context.Context) ([]SelectRedundantIndexesRow, error) {
-	rows, err := q.db.QueryContext(ctx, selectRedundantIndexes)
+	rows, err := q.db.Query(ctx, selectRedundantIndexes)
 	if err != nil {
 		return nil, err
 	}
@@ -119,9 +116,6 @@ func (q *Queries) SelectRedundantIndexes(ctx context.Context) ([]SelectRedundant
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

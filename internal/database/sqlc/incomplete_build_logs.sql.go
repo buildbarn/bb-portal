@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const createIncompleteBuildLogs = `-- name: CreateIncompleteBuildLogs :exec
@@ -35,7 +33,7 @@ type CreateIncompleteBuildLogsParams struct {
 }
 
 func (q *Queries) CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error {
-	_, err := q.db.ExecContext(ctx, createIncompleteBuildLogs, arg.BazelInvocationID, pq.Array(arg.SnippetIds), pq.Array(arg.LogSnippets))
+	_, err := q.db.Exec(ctx, createIncompleteBuildLogs, arg.BazelInvocationID, arg.SnippetIds, arg.LogSnippets)
 	return err
 }
 
@@ -66,9 +64,9 @@ type DeleteIncompleteLogsFromPagesParams struct {
 }
 
 func (q *Queries) DeleteIncompleteLogsFromPages(ctx context.Context, arg DeleteIncompleteLogsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteIncompleteLogsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteIncompleteLogsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }

@@ -33,7 +33,7 @@ type Handle interface {
 
 // New creates a new Client for the specified dialect and connection.
 func New(dialect string, conn *sql.DB) (Client, error) {
-	ret := client{conn: conn, dialect: dialect, sqlc: sqlc.New(conn)}
+	ret := client{conn: conn, dialect: dialect, sqlc: sqlc.New(NewSqlcDBTX(conn))}
 	driver := entsql.OpenDB(dialect, conn)
 	ret.ent = ent.NewClient(ent.Driver(driver))
 	return &ret, nil

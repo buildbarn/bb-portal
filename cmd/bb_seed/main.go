@@ -56,7 +56,7 @@ func main() {
 			return util.StatusWrap(err, "Could not automatically migrate to desired schema")
 		}
 
-		if err = seed.PerformSeed(ctx, sqlc.New(connection), seed.NewSeedParametersFromConfiguration(&configuration)); err != nil {
+		if err = seed.PerformSeed(ctx, sqlc.New(database.NewSqlcDBTX(connection)), seed.NewSeedParametersFromConfiguration(&configuration)); err != nil {
 			slog.Error("There was an error seeding the database")
 			return util.StatusWrap(err, "Failed to seed database")
 		}

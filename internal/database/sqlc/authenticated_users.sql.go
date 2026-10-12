@@ -7,10 +7,8 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/google/uuid"
-	"github.com/sqlc-dev/pqtype"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createAuthenticatedUser = `-- name: CreateAuthenticatedUser :one
@@ -31,10 +29,10 @@ SELECT id, created FROM new_row
 `
 
 type CreateAuthenticatedUserParams struct {
-	UserUuid    uuid.UUID
+	UserUuid    pgtype.UUID
 	ExternalID  string
-	DisplayName sql.NullString
-	UserInfo    pqtype.NullRawMessage
+	DisplayName pgtype.Text
+	UserInfo    []byte
 }
 
 type CreateAuthenticatedUserRow struct {
@@ -49,7 +47,7 @@ type CreateAuthenticatedUserRow struct {
 // existed. The query uses the system column
 // `xmax`, see docs for more information.
 func (q *Queries) CreateAuthenticatedUser(ctx context.Context, arg CreateAuthenticatedUserParams) (CreateAuthenticatedUserRow, error) {
-	row := q.db.QueryRowContext(ctx, createAuthenticatedUser,
+	row := q.db.QueryRow(ctx, createAuthenticatedUser,
 		arg.UserUuid,
 		arg.ExternalID,
 		arg.DisplayName,

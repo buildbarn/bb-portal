@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const createInvocationTargetsBulk = `-- name: CreateInvocationTargetsBulk :exec
@@ -54,14 +52,14 @@ type CreateInvocationTargetsBulkParams struct {
 }
 
 func (q *Queries) CreateInvocationTargetsBulk(ctx context.Context, arg CreateInvocationTargetsBulkParams) error {
-	_, err := q.db.ExecContext(ctx, createInvocationTargetsBulk,
+	_, err := q.db.Exec(ctx, createInvocationTargetsBulk,
 		arg.BazelInvocationID,
-		pq.Array(arg.TargetIds),
-		pq.Array(arg.ConfigurationIds),
-		pq.Array(arg.Successes),
-		pq.Array(arg.TagsList),
-		pq.Array(arg.FailureMessages),
-		pq.Array(arg.AbortReasons),
+		arg.TargetIds,
+		arg.ConfigurationIds,
+		arg.Successes,
+		arg.TagsList,
+		arg.FailureMessages,
+		arg.AbortReasons,
 	)
 	return err
 }

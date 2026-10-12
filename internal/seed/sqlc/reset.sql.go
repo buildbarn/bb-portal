@@ -16,6 +16,6 @@ TRUNCATE TABLE instance_names, authenticated_users RESTART IDENTITY CASCADE
 // Deletes all seeded data and everything referencing it. This is an extremely
 // destructive operation and is only safe to run when bb_portal is stopped.
 func (q *Queries) SeedTruncateEverythingCascade(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, seedTruncateEverythingCascade)
+	_, err := q.db.Exec(ctx, seedTruncateEverythingCascade)
 	return err
 }

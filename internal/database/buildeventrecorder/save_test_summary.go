@@ -3,12 +3,12 @@ package buildeventrecorder
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/jackc/pgx/v5/pgtype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
@@ -76,8 +76,8 @@ func (r *buildEventRecorder) saveTestSummaryBatch(ctx context.Context, batch []B
 		AttemptCounts:     make([]int32, len(filteredBatch)),
 		ShardCounts:       make([]int32, len(filteredBatch)),
 		TotalNumCacheds:   make([]int32, len(filteredBatch)),
-		StartTimes:        make([]time.Time, len(filteredBatch)),
-		StopTimes:         make([]time.Time, len(filteredBatch)),
+		StartTimes:        make([]pgtype.Timestamptz, len(filteredBatch)),
+		StopTimes:         make([]pgtype.Timestamptz, len(filteredBatch)),
 		Durations:         make([]int64, len(filteredBatch)),
 	}
 
@@ -108,10 +108,10 @@ func (r *buildEventRecorder) saveTestSummaryBatch(ctx context.Context, batch []B
 		}
 
 		if testSummary.FirstStartTime != nil && testSummary.FirstStartTime.AsTime().IsZero() == false {
-			params.StartTimes[i] = testSummary.FirstStartTime.AsTime()
+			params.StartTimes[i] = pgtype.Timestamptz{Time: testSummary.FirstStartTime.AsTime(), Valid: true}
 		}
 		if testSummary.LastStopTime != nil && testSummary.LastStopTime.AsTime().IsZero() == false {
-			params.StopTimes[i] = testSummary.LastStopTime.AsTime()
+			params.StopTimes[i] = pgtype.Timestamptz{Time: testSummary.LastStopTime.AsTime(), Valid: true}
 		}
 		if testSummary.TotalRunDuration != nil && testSummary.TotalRunDuration.AsDuration() != 0 {
 			params.Durations[i] = int64(testSummary.TotalRunDuration.AsDuration().Milliseconds())

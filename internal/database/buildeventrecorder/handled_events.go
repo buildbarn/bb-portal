@@ -8,6 +8,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (r *buildEventRecorder) loadHandledEvents(ctx context.Context) error {
@@ -37,7 +38,7 @@ func (r *buildEventRecorder) saveHandledEvents(ctx context.Context, db database.
 		Handled:         bytes,
 		Version:         r.handledEvents.version,
 		ID:              r.handledEvents.id,
-		EventReceivedAt: timestamp,
+		EventReceivedAt: pgtype.Timestamptz{Time: timestamp, Valid: true},
 	}
 	version, err := db.Sqlc().UpdateEventMetadata(ctx, data)
 	if err != nil {

@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const createTargets = `-- name: CreateTargets :many
@@ -52,11 +50,11 @@ type CreateTargetsRow struct {
 // instantiations, otherwise golden file generation may have a different
 // order than what's used during the test.
 func (q *Queries) CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error) {
-	rows, err := q.db.QueryContext(ctx, createTargets,
+	rows, err := q.db.Query(ctx, createTargets,
 		arg.InstanceNameID,
-		pq.Array(arg.Labels),
-		pq.Array(arg.Aspects),
-		pq.Array(arg.TargetKinds),
+		arg.Labels,
+		arg.Aspects,
+		arg.TargetKinds,
 	)
 	if err != nil {
 		return nil, err
@@ -74,9 +72,6 @@ func (q *Queries) CreateTargets(ctx context.Context, arg CreateTargetsParams) ([
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -122,11 +117,11 @@ type DeleteUnusedTargetsFromPagesParams struct {
 }
 
 func (q *Queries) DeleteUnusedTargetsFromPages(ctx context.Context, arg DeleteUnusedTargetsFromPagesParams) (int64, error) {
-	result, err := q.db.ExecContext(ctx, deleteUnusedTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
+	result, err := q.db.Exec(ctx, deleteUnusedTargetsFromPages, arg.FromPage, arg.Pages, arg.BatchLimit)
 	if err != nil {
 		return 0, err
 	}
-	return result.RowsAffected()
+	return result.RowsAffected(), nil
 }
 
 const findTargets = `-- name: FindTargets :many
@@ -160,11 +155,11 @@ type FindTargetsRow struct {
 }
 
 func (q *Queries) FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error) {
-	rows, err := q.db.QueryContext(ctx, findTargets,
+	rows, err := q.db.Query(ctx, findTargets,
 		arg.InstanceNameID,
-		pq.Array(arg.Labels),
-		pq.Array(arg.Aspects),
-		pq.Array(arg.TargetKinds),
+		arg.Labels,
+		arg.Aspects,
+		arg.TargetKinds,
 	)
 	if err != nil {
 		return nil, err
@@ -182,9 +177,6 @@ func (q *Queries) FindTargets(ctx context.Context, arg FindTargetsParams) ([]Fin
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
