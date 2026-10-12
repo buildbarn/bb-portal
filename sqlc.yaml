@@ -3,11 +3,23 @@ sql:
   - schema:
       - "sql/migrations"
       - "sql/system"
-    queries: 
+    queries:
       - "sql/queries"
     engine: "postgresql"
     gen:
-      go: 
+      go:
         package: "sqlc"
         out: "internal/database/sqlc"
+        emit_interface: true
+  # Seed-only queries. They should not be used by the real application.
+  - schema:
+      - "sql/migrations"
+      - "sql/system"
+    queries:
+      - "sql/seed_queries"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "sqlc"
+        out: "internal/seed/sqlc"
         emit_interface: true
