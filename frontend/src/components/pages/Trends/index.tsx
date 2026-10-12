@@ -12,9 +12,11 @@ import {
   YAxis,
 } from "recharts";
 import { PortalCard } from "@/components/PortalCard";
-import type {
-  BazelInvocationNodeFragment,
-  FindBuildTimesQueryVariables,
+import {
+  type BazelInvocationNodeFragment,
+  BazelInvocationOrderField,
+  type FindBuildTimesQueryVariables,
+  OrderDirection,
 } from "@/graphql/__generated__/graphql";
 import dayjs from "@/lib/dayjs";
 import { readableDurationFromMilliseconds } from "@/utils/time";
@@ -24,6 +26,11 @@ export const TrendsPage: React.FC = () => {
   const [variables, _setVariables] = useState<FindBuildTimesQueryVariables>({
     first: 1000,
     where: { startedAtNotNil: true, endedAtNotNil: true },
+    // Newest first; without an order the API returns the oldest invocations still kept.
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: BazelInvocationOrderField.StartedAt,
+    },
   });
 
   const { loading, data, previousData, error } = useQuery(

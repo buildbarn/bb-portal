@@ -4,8 +4,9 @@ const FIND_BUILD_DURATIONS = gql(/* GraphQL */ `
   query FindBuildTimes(
     $first: Int!
   	$where: BazelInvocationWhereInput
+    $orderBy: BazelInvocationOrder
   ) {
-    findBazelInvocations(first: $first, where: $where ) {
+    findBazelInvocations(first: $first, where: $where, orderBy: $orderBy) {
       pageInfo{
         startCursor
         endCursor
