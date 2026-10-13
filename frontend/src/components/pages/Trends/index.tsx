@@ -7,6 +7,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -182,46 +183,46 @@ export const TrendsPage: React.FC = () => {
           </Space>
         </Row>
         <Row>
-          <AreaChart
-            width={1500}
-            height={250}
-            data={dataPoints}
-            margin={{ top: 10, right: 60, left: 10, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="from"
-              type="number"
-              scale="time"
-              domain={["dataMin", "dataMax"]}
-              ticks={timeTicks}
-              tickFormatter={(v: number) => dayjs(v).format(timeTickFormat)}
-            />
-            <YAxis
-              width={70}
-              tickFormatter={(v: number) =>
-                readableDurationFromMilliseconds(v, { smallestUnit: "s" })
-              }
-            />
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <Tooltip
-              labelFormatter={(label) =>
-                dayjs(Number(label)).format("YYYY-MM-DD HH:mm:ss")
-              }
-            />
-            <Area
-              type="monotone"
-              dataKey="duration"
-              stroke="#8884d8"
-              fillOpacity={1}
-              fill="url(#colorUv)"
-            />
-          </AreaChart>
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart
+              data={dataPoints}
+              margin={{ top: 10, right: 60, left: 10, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="from"
+                type="number"
+                scale="time"
+                domain={["dataMin", "dataMax"]}
+                ticks={timeTicks}
+                tickFormatter={(v: number) => dayjs(v).format(timeTickFormat)}
+              />
+              <YAxis
+                width={70}
+                tickFormatter={(v: number) =>
+                  readableDurationFromMilliseconds(v, { smallestUnit: "s" })
+                }
+              />
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <Tooltip
+                labelFormatter={(label) =>
+                  dayjs(Number(label)).format("YYYY-MM-DD HH:mm:ss")
+                }
+              />
+              <Area
+                type="monotone"
+                dataKey="duration"
+                stroke="#8884d8"
+                fillOpacity={1}
+                fill="url(#colorUv)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </Row>
       </PortalCard>
     </PortalCard>
