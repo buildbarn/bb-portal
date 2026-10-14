@@ -20,17 +20,19 @@ type BuildQueueStateServerImpl struct {
 	client                   buildqueuestate.BuildQueueStateClient
 	readAuthorizer           auth.Authorizer
 	killOperationsAuthorizer auth.Authorizer
+	drainAuthorizer          auth.Authorizer
 	listOperationsPageSize   uint32
 }
 
 // NewBuildQueueStateServerImpl creates a new BuildQueueStateServerImpl from a
 // given client. It also takes an authorizer to filter out the queues that the
-// user is not allowed to see.
-func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, readAuthorizer, killOperationsAuthorizer auth.Authorizer, listOperationsPageSize uint32) *BuildQueueStateServerImpl {
+// user is not allowed to see, and an optional authorizer for modifying drains.
+func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, readAuthorizer, killOperationsAuthorizer, drainAuthorizer auth.Authorizer, listOperationsPageSize uint32) *BuildQueueStateServerImpl {
 	return &BuildQueueStateServerImpl{
 		client:                   client,
 		readAuthorizer:           readAuthorizer,
 		killOperationsAuthorizer: killOperationsAuthorizer,
+		drainAuthorizer:          drainAuthorizer,
 		listOperationsPageSize:   listOperationsPageSize,
 	}
 }
@@ -101,12 +103,43 @@ func (s *BuildQueueStateServerImpl) ListPlatformQueues(ctx context.Context, req 
 
 // ListInvocationChildren proxies ListInvocationChildren requests to the client.
 func (s *BuildQueueStateServerImpl) ListInvocationChildren(ctx context.Context, req *buildqueuestate.ListInvocationChildrenRequest) (*buildqueuestate.ListInvocationChildrenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
+	instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(req.GetInvocationName().GetSizeClassQueueName())
+	if err != nil {
+		return nil, err
+	}
+
+	if !common.IsInstanceNameAllowed(ctx, s.readAuthorizer, instanceNamePrefix) {
+		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list invocation children for instance name prefix %s", instanceNamePrefix)
+	}
+	resp, err := s.client.ListInvocationChildren(ctx, req)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to list invocation children")
+	}
+	return resp, nil
 }
 
 // ListQueuedOperations proxies ListQueuedOperations requests to the client.
 func (s *BuildQueueStateServerImpl) ListQueuedOperations(ctx context.Context, req *buildqueuestate.ListQueuedOperationsRequest) (*buildqueuestate.ListQueuedOperationsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
+	instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(req.GetInvocationName().GetSizeClassQueueName())
+	if err != nil {
+		return nil, err
+	}
+
+	if !common.IsInstanceNameAllowed(ctx, s.readAuthorizer, instanceNamePrefix) {
+		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list queued operations for instance name prefix %s", instanceNamePrefix)
+	}
+	resp, err := s.client.ListQueuedOperations(ctx, &buildqueuestate.ListQueuedOperationsRequest{
+		InvocationName: req.InvocationName,
+		PageSize:       min(req.PageSize, s.listOperationsPageSize),
+		StartAfter:     req.StartAfter,
+	})
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to list queued operations")
+	}
+	for _, operation := range resp.GetQueuedOperations() {
+		censorQueuedOperationState(ctx, s.readAuthorizer, instanceNamePrefix, operation)
+	}
+	return resp, nil
 }
 
 // ListWorkers proxies ListWorkers requests to the client.
@@ -137,17 +170,43 @@ func (s *BuildQueueStateServerImpl) TerminateWorkers(ctx context.Context, req *b
 
 // ListDrains proxies ListDrains requests to the client.
 func (s *BuildQueueStateServerImpl) ListDrains(ctx context.Context, req *buildqueuestate.ListDrainsRequest) (*buildqueuestate.ListDrainsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
+	instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(req.GetSizeClassQueueName())
+	if err != nil {
+		return nil, err
+	}
+
+	if !common.IsInstanceNameAllowed(ctx, s.readAuthorizer, instanceNamePrefix) {
+		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list drains for instance name prefix %s", instanceNamePrefix)
+	}
+	resp, err := s.client.ListDrains(ctx, req)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to list drains")
+	}
+	return resp, nil
 }
 
 // AddDrain proxies AddDrain requests to the client.
 func (s *BuildQueueStateServerImpl) AddDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
+	if err := s.checkModifyDrains(ctx, req); err != nil {
+		return nil, err
+	}
+	resp, err := s.client.AddDrain(ctx, req)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to add drain")
+	}
+	return resp, nil
 }
 
 // RemoveDrain proxies RemoveDrain requests to the client.
 func (s *BuildQueueStateServerImpl) RemoveDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
+	if err := s.checkModifyDrains(ctx, req); err != nil {
+		return nil, err
+	}
+	resp, err := s.client.RemoveDrain(ctx, req)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to remove drain")
+	}
+	return resp, nil
 }
 
 // IsAllowedToKillOperation checks if the user is allowed to kill the
@@ -183,6 +242,45 @@ func (s *BuildQueueStateServerImpl) CheckKillOperationAuthorization(w http.Respo
 	}
 }
 
+// IsAllowedToModifyDrains checks if the user is allowed to add and remove
+// drains in a platform queue.
+func (s *BuildQueueStateServerImpl) IsAllowedToModifyDrains(ctx context.Context, instanceNamePrefix string) bool {
+	return s.drainAuthorizer != nil &&
+		common.IsInstanceNameAllowed(ctx, s.readAuthorizer, instanceNamePrefix) &&
+		common.IsInstanceNameAllowed(ctx, s.drainAuthorizer, instanceNamePrefix)
+}
+
+// CheckModifyDrainsAuthorization is a HTTP endpoint that checks if the user
+// is allowed to modify drains for an instance name prefix.
+func (s *BuildQueueStateServerImpl) CheckModifyDrainsAuthorization(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	ctx := common.ExtractContextFromRequest(r)
+	instanceNamePrefix := r.PathValue("instanceNamePrefix")
+
+	if s.IsAllowedToModifyDrains(ctx, instanceNamePrefix) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"allowed": true}`))
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"allowed": false}`))
+	}
+}
+
+func (s *BuildQueueStateServerImpl) checkModifyDrains(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) error {
+	instanceNamePrefix, err := getInstanceNamePrefixFromSizeClassQueueName(req.GetSizeClassQueueName())
+	if err != nil {
+		return err
+	}
+	if !s.IsAllowedToModifyDrains(ctx, instanceNamePrefix) {
+		return status.Errorf(codes.PermissionDenied, "Not allowed to modify drains for instance name prefix %s", instanceNamePrefix)
+	}
+	return nil
+}
+
 func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlatformQueuesResponse, authorizer auth.Authorizer) []*buildqueuestate.PlatformQueueState {
 	queues := response.GetPlatformQueues()
 	// Filter out the queues that the user is not allowed to see.
@@ -205,6 +303,19 @@ func censorWorkerState(ctx context.Context, authorizer auth.Authorizer, instance
 	}
 	if !isPrefixSuffixAllowed(ctx, authorizer, instanceNamePrefix, operation.InstanceNameSuffix) {
 		worker.CurrentOperation = nil
+	}
+}
+
+func censorQueuedOperationState(ctx context.Context, authorizer auth.Authorizer, instanceNamePrefix string, operation *buildqueuestate.OperationState) {
+	if !isPrefixSuffixAllowed(ctx, authorizer, instanceNamePrefix, operation.InstanceNameSuffix) {
+		// Keep the entry and its sort keys, so that pagination still works.
+		*operation = buildqueuestate.OperationState{
+			InvocationName:   operation.InvocationName,
+			Priority:         operation.Priority,
+			ExpectedDuration: operation.ExpectedDuration,
+			QueuedTimestamp:  operation.QueuedTimestamp,
+			Stage:            operation.Stage,
+		}
 	}
 }
 
@@ -252,6 +363,13 @@ func getInstanceNamePrefixFromListWorkersRequest(req *buildqueuestate.ListWorker
 		return platformQueueName.InstanceNamePrefix, nil
 	}
 
+	return "", status.Errorf(codes.InvalidArgument, "Request does not contain a valid InstanceNamePrefix")
+}
+
+func getInstanceNamePrefixFromSizeClassQueueName(sizeClassQueueName *buildqueuestate.SizeClassQueueName) (string, error) {
+	if platformQueueName := sizeClassQueueName.GetPlatformQueueName(); platformQueueName != nil {
+		return platformQueueName.InstanceNamePrefix, nil
+	}
 	return "", status.Errorf(codes.InvalidArgument, "Request does not contain a valid InstanceNamePrefix")
 }
 

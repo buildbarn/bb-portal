@@ -7,6 +7,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/grpcweb/buildqueuestateproxy"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
+	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
@@ -50,6 +51,14 @@ func NewSchedulerService(
 		return util.StatusWrap(err, "Failed to create KillOperationsAuthorizer")
 	}
 
+	var drainAuthorizer auth.Authorizer
+	if configuration.DrainAuthorizer != nil {
+		drainAuthorizer, err = auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.DrainAuthorizer, dependenciesGroup, grpcClientFactory)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create DrainAuthorizer")
+		}
+	}
+
 	if configuration.BuildQueueStateClient == nil {
 		return util.StatusWrap(err, "No BuildQueueStateClient configured")
 	}
@@ -58,7 +67,7 @@ func NewSchedulerService(
 		return util.StatusWrap(err, "Failed to create gRPC client for BuildQueueState")
 	}
 	buildQueueStateClient := buildqueuestate.NewBuildQueueStateClient(grpcClient)
-	buildQueueStateServer := buildqueuestateproxy.NewBuildQueueStateServerImpl(buildQueueStateClient, readAuthorizer, killOperationsAuthorizer, configuration.ListOperationsPageSize)
+	buildQueueStateServer := buildqueuestateproxy.NewBuildQueueStateServerImpl(buildQueueStateClient, readAuthorizer, killOperationsAuthorizer, drainAuthorizer, configuration.ListOperationsPageSize)
 
 	grpcServer := go_grpc.NewServer()
 	grpcWebServer := grpcweb.WrapServer(grpcServer)
@@ -66,6 +75,7 @@ func NewSchedulerService(
 
 	bb_grpcweb.AddGrpcWebEndpoint(router, grpcWebServer, "/buildbarn.buildqueuestate.BuildQueueState/")
 	router.HandleFunc("GET /api/v1/checkPermissions/killOperation/{operationName}", buildQueueStateServer.CheckKillOperationAuthorization)
+	router.HandleFunc("GET /api/v1/checkPermissions/modifyDrains/{instanceNamePrefix...}", buildQueueStateServer.CheckModifyDrainsAuthorization)
 
 	return nil
 }

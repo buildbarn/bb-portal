@@ -5,4 +5,5 @@ export enum ProtobufTypeUrls {
   FILE_POOL_RESOURCE_USAGE = "type.googleapis.com/buildbarn.resourceusage.FilePoolResourceUsage",
   INPUT_ROOT_RESOURCE_USAGE = "type.googleapis.com/buildbarn.resourceusage.InputRootResourceUsage",
   MONETARY_RESOURCE_USAGE = "type.googleapis.com/buildbarn.resourceusage.MonetaryResourceUsage",
+  BACKGROUND_LEARNING = "type.googleapis.com/buildbarn.buildqueuestate.BackgroundLearning",
 }
