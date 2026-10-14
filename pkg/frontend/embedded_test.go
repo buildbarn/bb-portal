@@ -50,8 +50,8 @@ func TestPreloadLinkMiddleware(t *testing.T) {
 
 		require.Len(t, links, 2)
 		require.True(t, nextCalled)
-		require.Contains(t, links, "</bazel-invocations.css>; rel=preload; as=style; crossorigin")
-		require.Contains(t, links, "</bazel-invocations.js>; rel=modulepreload; crossorigin")
+		require.Contains(t, links, "</bazel-invocations.css>; rel=preload; as=style")
+		require.Contains(t, links, "</bazel-invocations.js>; rel=modulepreload")
 	})
 
 	t.Run("Static Assets fallback", func(t *testing.T) {
