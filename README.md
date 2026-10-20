@@ -102,7 +102,7 @@ Once you have BEP files produced by Bazel, you can upload them via the applicati
 
 ### BB-scheduler
 
-BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `schedulerServiceConfiguration` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu.
+BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `schedulerServiceConfiguration` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu. Adding and removing drains requires `drainAuthorizer` in `schedulerServiceConfiguration`; without it drains are read-only. The scheduler's own `modifyDrainsAuthorizer` must also allow bb-portal's client identity.
 
 ### BB-browser
 
