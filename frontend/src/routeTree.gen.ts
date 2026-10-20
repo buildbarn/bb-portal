@@ -27,6 +27,7 @@ import { Route as BrowserIndexRouteImport } from './routes/browser.index'
 import { Route as BazelInvocationsIndexRouteImport } from './routes/bazel-invocations.index'
 import { Route as UsersUserUUIDRouteImport } from './routes/users.$userUUID'
 import { Route as SchedulerWorkerRouteImport } from './routes/scheduler.worker'
+import { Route as SchedulerDrainRouteImport } from './routes/scheduler.drain'
 import { Route as OperationsOperationIDRouteImport } from './routes/operations.$operationID'
 import { Route as BuildsBuildUUIDRouteImport } from './routes/builds.$buildUUID'
 import { Route as BrowserSplatRouteImport } from './routes/browser.$'
@@ -133,6 +134,11 @@ const UsersUserUUIDRoute = UsersUserUUIDRouteImport.update({
 const SchedulerWorkerRoute = SchedulerWorkerRouteImport.update({
   id: '/worker',
   path: '/worker',
+  getParentRoute: () => SchedulerRoute,
+} as any)
+const SchedulerDrainRoute = SchedulerDrainRouteImport.update({
+  id: '/drain',
+  path: '/drain',
   getParentRoute: () => SchedulerRoute,
 } as any)
 const OperationsOperationIDRoute = OperationsOperationIDRouteImport.update({
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
+  '/scheduler/drain': typeof SchedulerDrainRoute
   '/scheduler/worker': typeof SchedulerWorkerRoute
   '/users/$userUUID': typeof UsersUserUUIDRoute
   '/bazel-invocations/': typeof BazelInvocationsIndexRoute
@@ -276,6 +283,7 @@ export interface FileRoutesByTo {
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
+  '/scheduler/drain': typeof SchedulerDrainRoute
   '/scheduler/worker': typeof SchedulerWorkerRoute
   '/users/$userUUID': typeof UsersUserUUIDRoute
   '/bazel-invocations': typeof BazelInvocationsIndexRoute
@@ -313,6 +321,7 @@ export interface FileRoutesById {
   '/browser/$': typeof BrowserSplatRoute
   '/builds/$buildUUID': typeof BuildsBuildUUIDRoute
   '/operations/$operationID': typeof OperationsOperationIDRoute
+  '/scheduler/drain': typeof SchedulerDrainRoute
   '/scheduler/worker': typeof SchedulerWorkerRoute
   '/users/$userUUID': typeof UsersUserUUIDRoute
   '/bazel-invocations/': typeof BazelInvocationsIndexRoute
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
+    | '/scheduler/drain'
     | '/scheduler/worker'
     | '/users/$userUUID'
     | '/bazel-invocations/'
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
+    | '/scheduler/drain'
     | '/scheduler/worker'
     | '/users/$userUUID'
     | '/bazel-invocations'
@@ -417,6 +428,7 @@ export interface FileRouteTypes {
     | '/browser/$'
     | '/builds/$buildUUID'
     | '/operations/$operationID'
+    | '/scheduler/drain'
     | '/scheduler/worker'
     | '/users/$userUUID'
     | '/bazel-invocations/'
@@ -580,6 +592,13 @@ declare module '@tanstack/react-router' {
       path: '/worker'
       fullPath: '/scheduler/worker'
       preLoaderRoute: typeof SchedulerWorkerRouteImport
+      parentRoute: typeof SchedulerRoute
+    }
+    '/scheduler/drain': {
+      id: '/scheduler/drain'
+      path: '/drain'
+      fullPath: '/scheduler/drain'
+      preLoaderRoute: typeof SchedulerDrainRouteImport
       parentRoute: typeof SchedulerRoute
     }
     '/operations/$operationID': {
@@ -815,11 +834,13 @@ const OperationsRouteWithChildren = OperationsRoute._addFileChildren(
 )
 
 interface SchedulerRouteChildren {
+  SchedulerDrainRoute: typeof SchedulerDrainRoute
   SchedulerWorkerRoute: typeof SchedulerWorkerRoute
   SchedulerIndexRoute: typeof SchedulerIndexRoute
 }
 
 const SchedulerRouteChildren: SchedulerRouteChildren = {
+  SchedulerDrainRoute: SchedulerDrainRoute,
   SchedulerWorkerRoute: SchedulerWorkerRoute,
   SchedulerIndexRoute: SchedulerIndexRoute,
 }
