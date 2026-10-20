@@ -2,8 +2,21 @@ import { Link } from "@tanstack/react-router";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { WorkerListStatus } from "@/routes/scheduler.worker";
+import type { SizeClassQueueNameSearch } from "@/utils/sizeClassQueueName";
 import PropertyTagList from "../PropertyTagList";
 import type { PlatformQueueTableState } from "./types";
+
+const sizeClassQueueNameSearch = (
+  record: PlatformQueueTableState,
+): SizeClassQueueNameSearch => ({
+  platformQueueName: {
+    instanceNamePrefix: record.name?.instanceNamePrefix || "",
+    platform: {
+      properties: record.name?.platform?.properties || [],
+    },
+  },
+  sizeClass: record.sizeClassQueues[0]?.sizeClass,
+});
 
 const cellMergingLogic = (value: PlatformQueueTableState) => {
   if (value.isFirstSizeClass) {
@@ -68,15 +81,7 @@ const executingWorkersColumn: ColumnType<PlatformQueueTableState> = {
         to="/scheduler/worker"
         search={{
           workerStatusFilter: WorkerListStatus.EXECUTING,
-          sizeClassQueueName: {
-            platformQueueName: {
-              instanceNamePrefix: record.name?.instanceNamePrefix || "",
-              platform: {
-                properties: record.name?.platform?.properties || [],
-              },
-            },
-            sizeClass: record.sizeClassQueues[0]?.sizeClass,
-          },
+          sizeClassQueueName: sizeClassQueueNameSearch(record),
           cursor: undefined,
         }}
       >
@@ -104,15 +109,7 @@ const allWorkersColumn: ColumnType<PlatformQueueTableState> = {
       to="/scheduler/worker"
       search={{
         workerStatusFilter: WorkerListStatus.ALL,
-        sizeClassQueueName: {
-          platformQueueName: {
-            instanceNamePrefix: record.name?.instanceNamePrefix || "",
-            platform: {
-              properties: record.name?.platform?.properties || [],
-            },
-          },
-          sizeClass: record.sizeClassQueues[0]?.sizeClass,
-        },
+        sizeClassQueueName: sizeClassQueueNameSearch(record),
         cursor: undefined,
       }}
     >
@@ -121,16 +118,30 @@ const allWorkersColumn: ColumnType<PlatformQueueTableState> = {
   ),
 };
 
-const getColumns = (): TableColumnsType<PlatformQueueTableState> => {
-  return [
-    instanceNamePrefixColumn,
-    platformPropertiesColumn,
-    sizeClassColumn,
-    queuedOperationsColumn,
-    executingWorkersColumn,
-    idleWorkersColumn,
-    allWorkersColumn,
-  ];
+const drainsColumn: ColumnType<PlatformQueueTableState> = {
+  key: "drains",
+  title: "Drains",
+  render: (_, record) => (
+    <Link
+      to="/scheduler/drain"
+      search={{ sizeClassQueueName: sizeClassQueueNameSearch(record) }}
+    >
+      {record.sizeClassQueues[0].drainsCount ?? 0}
+    </Link>
+  ),
 };
+
+const getColumns = (
+  operatorMode: boolean,
+): TableColumnsType<PlatformQueueTableState> => [
+  instanceNamePrefixColumn,
+  platformPropertiesColumn,
+  sizeClassColumn,
+  queuedOperationsColumn,
+  executingWorkersColumn,
+  idleWorkersColumn,
+  allWorkersColumn,
+  ...(operatorMode ? [drainsColumn] : []),
+];
 
 export default getColumns;

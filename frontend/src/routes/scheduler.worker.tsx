@@ -2,26 +2,12 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import { SchedulerWorkersPage } from "@/components/pages/SchedulerWorkers";
 import { generatePageTitle } from "@/utils/generatePageTitle";
+import { SizeClassQueueNameSchema } from "@/utils/sizeClassQueueName";
 
 export enum WorkerListStatus {
   ALL = "all",
   EXECUTING = "executing",
 }
-
-const PlatformProperySchema = z.object({
-  name: z.string(),
-  value: z.string(),
-});
-
-const SizeClassQueueNameSchema = z.object({
-  platformQueueName: z.object({
-    instanceNamePrefix: z.string(),
-    platform: z.object({
-      properties: z.array(PlatformProperySchema),
-    }),
-  }),
-  sizeClass: z.number().int().nonnegative().default(0).catch(0),
-});
 
 const WorkerSearchSchema = z.object({
   workerStatusFilter: z.enum(WorkerListStatus).catch(WorkerListStatus.ALL),

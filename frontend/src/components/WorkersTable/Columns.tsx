@@ -5,7 +5,7 @@ import { readableDurationFromDates } from "@/utils/time";
 import { operationsStateToBrowserSplat } from "../OperationStateDisplay/utils";
 import PropertyTagList from "../PropertyTagList";
 
-export const columns: TableColumnsType<WorkerState> = [
+const getColumns = (operatorMode: boolean): TableColumnsType<WorkerState> => [
   {
     key: "workerId",
     title: "Worker ID",
@@ -45,7 +45,7 @@ export const columns: TableColumnsType<WorkerState> = [
             </Tooltip>
           );
         }
-        return "Idle";
+        return operatorMode && record.drained ? "Drained" : "Idle";
       }
       if (!record.currentOperation.timeout) {
         return "∞";
@@ -109,3 +109,5 @@ export const columns: TableColumnsType<WorkerState> = [
     render: (_, record) => record.currentOperation?.targetId,
   },
 ];
+
+export default getColumns;

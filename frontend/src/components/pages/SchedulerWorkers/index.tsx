@@ -1,5 +1,6 @@
 import { CalendarFilled } from "@ant-design/icons";
 import type React from "react";
+import { OperatorModeSwitch } from "@/components/OperatorModeSwitch";
 import { PortalCard } from "@/components/PortalCard";
 import WorkersGrid from "@/components/WorkersGrid";
 import type { WorkerSearchParams } from "@/routes/scheduler.worker";
@@ -13,6 +14,7 @@ export const SchedulerWorkersPage: React.FC<WorkerSearchParams> = ({
     <PortalCard
       icon={<CalendarFilled />}
       titleBits={[<span key="title">Workers</span>]}
+      extraBits={[<OperatorModeSwitch key="operatorMode" />]}
     >
       <WorkersGrid
         workerStatusFilter={workerStatusFilter}

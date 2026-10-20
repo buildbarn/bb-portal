@@ -6,9 +6,10 @@ import type {
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { Route, type WorkerListStatus } from "@/routes/scheduler.worker";
 import themeStyles from "@/theme/theme.module.css";
+import { useOperatorMode } from "@/utils/operatorMode";
 import WorkersTablePageSelector from "../WorkersTablePageSelector";
 import WorkersTableTypeSelector from "../WorkersTableTypeSelector";
-import { columns } from "./Columns";
+import getColumns from "./Columns";
 
 type Props = {
   workerStatusFilter: WorkerListStatus;
@@ -26,6 +27,7 @@ const WorkersTable: React.FC<Props> = ({
   pageSize,
 }) => {
   const navigate = Route.useNavigate();
+  const [operatorMode] = useOperatorMode();
 
   const handleFilterChange = (value: WorkerListStatus) => {
     navigate({
@@ -78,7 +80,7 @@ const WorkersTable: React.FC<Props> = ({
       </Row>
       <Row>
         <Table
-          columns={columns}
+          columns={getColumns(operatorMode)}
           loading={isLoading}
           bordered={true}
           style={{ width: "100%" }}
