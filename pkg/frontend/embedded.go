@@ -53,10 +53,10 @@ func preloadLinkMiddleware(next http.Handler, embeddedFrontendFS fs.FS) (http.Ha
 	for _, route := range routeManifest {
 		shadowRouter.HandleFunc("GET "+route.Path, func(w http.ResponseWriter, r *http.Request) {
 			for _, css := range route.CSS {
-				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=preload; as=style; crossorigin", css))
+				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=preload; as=style", css))
 			}
 			for _, js := range route.JS {
-				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=modulepreload; crossorigin", js))
+				w.Header().Add("Link", fmt.Sprintf("</%s>; rel=modulepreload", js))
 			}
 			next.ServeHTTP(w, r)
 		})
