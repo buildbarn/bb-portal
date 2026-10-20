@@ -1,11 +1,55 @@
-import { type TableColumnsType, Tooltip } from "antd";
+import { MoreOutlined } from "@ant-design/icons";
+import { Button, Dropdown, type TableColumnsType, Tooltip } from "antd";
 import { CodeLink } from "@/components/CodeLink";
+import type { DrainActions } from "@/components/DrainActions";
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { readableDurationFromDates } from "@/utils/time";
 import { operationsStateToBrowserSplat } from "../OperationStateDisplay/utils";
 import PropertyTagList from "../PropertyTagList";
 
-const getColumns = (operatorMode: boolean): TableColumnsType<WorkerState> => [
+export interface DrainSelection {
+  actions: DrainActions;
+  workerIdPattern: Record<string, string>;
+  toggle: (key: string, value: string) => void;
+}
+
+const drainColumn = (
+  drainActions: DrainActions,
+): TableColumnsType<WorkerState>[number] => ({
+  key: "drain",
+  title: "Drain",
+  align: "center",
+  render: (_, record) => (
+    <Dropdown
+      trigger={["click"]}
+      menu={{
+        items: [
+          {
+            key: "drain",
+            danger: true,
+            disabled: record.drained,
+            label: record.drained
+              ? "Drain this worker (already drained)"
+              : "Drain this worker",
+            onClick: () => drainActions.drain(record.id),
+          },
+        ],
+      }}
+    >
+      <Button
+        size="small"
+        type="text"
+        icon={<MoreOutlined />}
+        aria-label="Drain actions"
+      />
+    </Dropdown>
+  ),
+});
+
+const getColumns = (
+  operatorMode: boolean,
+  drainSelection: DrainSelection | undefined,
+): TableColumnsType<WorkerState> => [
   {
     key: "workerId",
     title: "Worker ID",
@@ -14,6 +58,16 @@ const getColumns = (operatorMode: boolean): TableColumnsType<WorkerState> => [
         propertyList={Object.entries(record.id)
           .sort()
           .map(([property, value]) => ({ name: property, value: value }))}
+        onTagClick={
+          drainSelection &&
+          (({ name, value }) => drainSelection.toggle(name, value))
+        }
+        isTagSelected={
+          drainSelection &&
+          (({ name, value }) =>
+            Object.hasOwn(drainSelection.workerIdPattern, name) &&
+            drainSelection.workerIdPattern[name] === value)
+        }
       />
     ),
   },
@@ -108,6 +162,7 @@ const getColumns = (operatorMode: boolean): TableColumnsType<WorkerState> => [
     onCell: (value, _) => ({ colSpan: value.currentOperation ? 1 : 0 }),
     render: (_, record) => record.currentOperation?.targetId,
   },
+  ...(drainSelection ? [drainColumn(drainSelection.actions)] : []),
 ];
 
 export default getColumns;

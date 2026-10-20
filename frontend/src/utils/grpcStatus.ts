@@ -1,3 +1,4 @@
+import { ClientError, Status as GrpcStatus } from "nice-grpc-common";
 import { Code } from "@/lib/grpc-client/google/rpc/code";
 import type { Status } from "@/lib/grpc-client/google/rpc/status";
 
@@ -15,3 +16,8 @@ export const isRetryableGrpcError = (status: Status): boolean => {
       return false;
   }
 };
+
+export const grpcErrorText = (error: Error): string =>
+  error instanceof ClientError
+    ? `${GrpcStatus[error.code]}: ${error.details}`
+    : error.message || "Unknown error";

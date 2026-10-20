@@ -1,0 +1,10 @@
+/* Long platform properties such as container images must wrap inside the confirm dialogs. */
+.content :global(.ant-tag) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  height: auto;
+}
+
+.nowrap :global(.ant-tag) {
+  white-space: nowrap;
+}
