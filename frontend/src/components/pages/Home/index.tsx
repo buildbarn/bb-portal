@@ -2,7 +2,6 @@ import { Navigate } from "@tanstack/react-router";
 import { Space, Typography } from "antd";
 import Uploader from "@/components/Uploader";
 import { env } from "@/utils/env";
-import styles from "./index.module.css";
 
 const BuildInstructions: React.FC = () => {
   const bazelrcLines = `build --bes_backend=${env.grpcBackendUrl}\nbuild --bes_results_url=${window.location.origin}/bazel-invocations/`;
@@ -56,7 +55,14 @@ const BESdisabled = () => {
 
 export function HomePage() {
   return (
-    <Space orientation="vertical" size="large" className={styles.container}>
+    <Space
+      orientation="vertical"
+      size="large"
+      style={{
+        width: "100%",
+        textAlign: "center",
+      }}
+    >
       {!!env.featureFlags?.home?.fileUpload && <BepFileUploader />}
       {!!env.featureFlags?.home?.instructions && <BuildInstructions />}
       {!env.featureFlags?.home?.fileUpload &&
