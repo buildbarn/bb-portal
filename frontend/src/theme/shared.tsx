@@ -4,6 +4,10 @@ import type { ThemeConfig } from "antd";
 export const HEADER_OPACITY_HEX = "BB";
 
 export const shared: ThemeConfig = {
+  // Disables AntD runtime styles. Instead all styles needs to be imported
+  // manually. Should increase performance.
+  // https://ant.design/docs/react/customize-theme#zero-runtime
+  zeroRuntime: true,
   components: {
     Alert: {
       withDescriptionIconSize: 24,
