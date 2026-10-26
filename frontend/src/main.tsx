@@ -7,6 +7,7 @@ import "./globals.css";
 import { DisabledPage } from "./components/pages/DisabledPage";
 import { ErrorPage } from "./components/pages/ErrorPage";
 import { FeatureDisabledError } from "./utils/featureGuard";
+import "antd/dist/antd.css";
 
 export class NotFoundError extends Error {
   type?: string;
