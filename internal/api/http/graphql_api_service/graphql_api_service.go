@@ -7,7 +7,6 @@ import (
 
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/playground"
-	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/internal/api/http/loghandler"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
@@ -57,8 +56,8 @@ func StartGraphqlAPIService(
 	})
 
 	// Handle Graphql requests.
-	router.Handle("/graphql", apicommon.Middleware(srv))
-	router.Handle("/graphql/", apicommon.Middleware(srv))
+	router.Handle("/graphql", srv)
+	router.Handle("/graphql/", srv)
 
 	// Graphql Playground
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
@@ -67,7 +66,7 @@ func StartGraphqlAPIService(
 	logHandler := loghandler.NewLogHandler(dbClient.Ent(), dbAuthService, tracerProvider)
 	router.Handle(
 		"GET /api/v1/invocations/{invocation_id}/log",
-		apicommon.Middleware(logHandler),
+		logHandler,
 	)
 	return nil
 }
