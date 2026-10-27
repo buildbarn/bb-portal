@@ -7,14 +7,17 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { PortalCard } from "@/components/PortalCard";
-import type {
-  BazelInvocationNodeFragment,
-  FindBuildTimesQueryVariables,
+import {
+  type BazelInvocationNodeFragment,
+  BazelInvocationOrderField,
+  type FindBuildTimesQueryVariables,
+  OrderDirection,
 } from "@/graphql/__generated__/graphql";
 import dayjs from "@/lib/dayjs";
 import { readableDurationFromMilliseconds } from "@/utils/time";
@@ -24,6 +27,11 @@ export const TrendsPage: React.FC = () => {
   const [variables, _setVariables] = useState<FindBuildTimesQueryVariables>({
     first: 1000,
     where: { startedAtNotNil: true, endedAtNotNil: true },
+    // Newest first; without an order the API returns the oldest invocations still kept.
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: BazelInvocationOrderField.StartedAt,
+    },
   });
 
   const { loading, data, previousData, error } = useQuery(
@@ -182,46 +190,46 @@ export const TrendsPage: React.FC = () => {
           </Space>
         </Row>
         <Row>
-          <AreaChart
-            width={1500}
-            height={250}
-            data={dataPoints}
-            margin={{ top: 10, right: 60, left: 10, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="from"
-              type="number"
-              scale="time"
-              domain={["dataMin", "dataMax"]}
-              ticks={timeTicks}
-              tickFormatter={(v: number) => dayjs(v).format(timeTickFormat)}
-            />
-            <YAxis
-              width={70}
-              tickFormatter={(v: number) =>
-                readableDurationFromMilliseconds(v, { smallestUnit: "s" })
-              }
-            />
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <Tooltip
-              labelFormatter={(label) =>
-                dayjs(Number(label)).format("YYYY-MM-DD HH:mm:ss")
-              }
-            />
-            <Area
-              type="monotone"
-              dataKey="duration"
-              stroke="#8884d8"
-              fillOpacity={1}
-              fill="url(#colorUv)"
-            />
-          </AreaChart>
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart
+              data={dataPoints}
+              margin={{ top: 10, right: 60, left: 10, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="from"
+                type="number"
+                scale="time"
+                domain={["dataMin", "dataMax"]}
+                ticks={timeTicks}
+                tickFormatter={(v: number) => dayjs(v).format(timeTickFormat)}
+              />
+              <YAxis
+                width={70}
+                tickFormatter={(v: number) =>
+                  readableDurationFromMilliseconds(v, { smallestUnit: "s" })
+                }
+              />
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <Tooltip
+                labelFormatter={(label) =>
+                  dayjs(Number(label)).format("YYYY-MM-DD HH:mm:ss")
+                }
+              />
+              <Area
+                type="monotone"
+                dataKey="duration"
+                stroke="#8884d8"
+                fillOpacity={1}
+                fill="url(#colorUv)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </Row>
       </PortalCard>
     </PortalCard>
