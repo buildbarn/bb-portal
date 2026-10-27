@@ -33,10 +33,10 @@ func IsInstanceNameAllowed(ctx context.Context, authorizer auth.Authorizer, inst
 	return auth.AuthorizeSingleInstanceName(ctx, authorizer, instanceName) == nil
 }
 
-// Middleware forwards request headers as gRPC metadata on the request
+// ForwardHeadersAsGrpcMetadata forwards request headers as gRPC metadata on the request
 // context, which authorizers that read trusted headers via
 // metadata.FromIncomingContext require.
-func Middleware(next http.Handler) http.Handler {
+func ForwardHeadersAsGrpcMetadata(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		next.ServeHTTP(w, r.WithContext(ExtractContextFromRequest(r)))
 	})

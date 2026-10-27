@@ -3,6 +3,7 @@ package common
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 
@@ -107,4 +108,28 @@ func TestIsInstanceNameAllowed(t *testing.T) {
 			t.Error("Expected instance name to be forbidden")
 		}
 	})
+}
+
+func TestForwardHeadersAsGrpcMetadata(t *testing.T) {
+	req, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("X-Auth-Token", "secret")
+
+	called := false
+	handler := ForwardHeadersAsGrpcMetadata(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		md, ok := metadata.FromIncomingContext(r.Context())
+		if !ok {
+			t.Fatal("expected incoming metadata on request context")
+		}
+		if got := md.Get("x-auth-token"); !reflect.DeepEqual(got, []string{"secret"}) {
+			t.Errorf("x-auth-token = %v, want [secret]", got)
+		}
+	}))
+	handler.ServeHTTP(httptest.NewRecorder(), req)
+	if !called {
+		t.Fatal("next handler was not called")
+	}
 }

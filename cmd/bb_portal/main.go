@@ -12,6 +12,7 @@ import (
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
+	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	graphqlapiservice "github.com/buildbarn/bb-portal/internal/api/http/graphql_api_service"
 	"github.com/buildbarn/bb-portal/internal/api/http/zstdmiddleware"
 	"github.com/buildbarn/bb-portal/internal/bep"
@@ -215,7 +216,7 @@ func main() {
 			zstdMiddleware := zstdmiddleware.NewZstdMiddleware(zstdPool)
 
 			var handler http.Handler
-			handler = router
+			handler = apicommon.ForwardHeadersAsGrpcMetadata(router)
 			handler = zstdMiddleware(handler)
 			handler = otelhttp.NewHandler(
 				handler,
