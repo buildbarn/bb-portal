@@ -1,9 +1,10 @@
 import {
   DownloadOutlined,
   FileSearchOutlined,
+  LoadingOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
-import { Button, Spin, Tooltip } from "antd";
+import { Button, Spin, Tag, Tooltip } from "antd";
 import type React from "react";
 import { useMemo, useState } from "react";
 import PortalAlert from "@/components/PortalAlert";
@@ -27,6 +28,7 @@ interface Props {
   title: string;
   logDownloadUrl?: string;
   fileName: string;
+  isLive?: boolean;
 }
 
 export const LogViewerCard: React.FC<Props> = ({
@@ -37,6 +39,7 @@ export const LogViewerCard: React.FC<Props> = ({
   title,
   logDownloadUrl,
   fileName,
+  isLive,
 }) => {
   const { copyToClipboard } = useBbPortalMessage();
 
@@ -118,8 +121,17 @@ export const LogViewerCard: React.FC<Props> = ({
       reservedTitleWidth={300}
       icon={<FileSearchOutlined />}
       titleBits={[
-        <div className={styles.titleWrapper} key="title">
-          {title}
+        <div className={styles.titleRow} key="title">
+          <div className={styles.titleWrapper}>{title}</div>
+          {isLive && (
+            <Tag
+              className={styles.liveTag}
+              icon={<LoadingOutlined />}
+              color="blue"
+            >
+              Live
+            </Tag>
+          )}
         </div>,
       ]}
       extraBits={[
