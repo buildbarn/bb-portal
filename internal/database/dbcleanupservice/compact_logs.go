@@ -11,7 +11,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
-	"github.com/klauspost/compress/zstd"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
@@ -33,18 +32,14 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocationD
 		return util.StatusWrap(err, "Could not normalize log")
 	}
 
-	encoder, err := zstd.NewWriter(nil)
-	if err != nil {
-		return util.StatusWrap(err, "Could not create zstd encoder")
-	}
-	defer encoder.Close()
-
 	const chunkSize = 8 * 1024 * 1024 // 8MiB
 	line := int64(0)
-	buffer := make([]byte, 0, chunkSize/50)
 
 	chunkBuilders := make([]*ent.BuildLogChunkCreate, 0)
 
+	// Allocate a single buffer to reuse for every encoded chunk.
+	var compressedChunk bytes.Buffer
+	compressedChunk.Grow(chunkSize)
 	for index := 0; index*chunkSize < len(normalizedLogs); index++ {
 		start := index * chunkSize
 		end := min((index+1)*chunkSize, len(normalizedLogs))
@@ -58,13 +53,25 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocationD
 		} else {
 			lastLineIndex = firstLineIndex + int64(lineCount)
 		}
-		data = encoder.EncodeAll(data, buffer[:0])
+
+		compressedChunk.Reset()
+		encoder, err := dc.zstdPool.NewEncoder(ctx, &compressedChunk)
+		if err != nil {
+			return util.StatusWrap(err, "Could not create zstd encoder")
+		}
+		if _, err := encoder.Write(data); err != nil {
+			encoder.Close()
+			return util.StatusWrap(err, "Could not write to zstd encoder")
+		}
+		if err := encoder.Close(); err != nil {
+			return util.StatusWrap(err, "Could not flush zstd encoder")
+		}
 
 		chunkBuilders = append(
 			chunkBuilders,
 			dc.db.Ent().BuildLogChunk.Create().
 				SetBazelInvocationID(invocationDbID).
-				SetData(data).
+				SetData(bytes.Clone(compressedChunk.Bytes())).
 				SetChunkIndex(index).
 				SetFirstLineIndex(firstLineIndex).
 				SetLastLineIndex(lastLineIndex),

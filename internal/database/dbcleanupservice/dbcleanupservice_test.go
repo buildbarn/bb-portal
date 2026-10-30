@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
+	bb_zstd "github.com/buildbarn/bb-storage/pkg/zstd"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
@@ -38,5 +39,5 @@ func getNewDbCleanupService(db database.Client, c clock.Clock, traceProvider tra
 		InvocationRetention:      durationpb.New(30 * time.Minute),
 	}
 	batcher := dbcleanupservice.NewTimedBatcher(clock.SystemClock, 1*time.Second, 128, 1<<20)
-	return dbcleanupservice.NewDbCleanupService(db, c, batcher, cleanupConfiguration, traceProvider)
+	return dbcleanupservice.NewDbCleanupService(db, c, batcher, cleanupConfiguration, traceProvider, bb_zstd.NewUnboundedPool(nil, nil))
 }
