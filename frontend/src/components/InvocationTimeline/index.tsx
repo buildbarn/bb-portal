@@ -99,8 +99,11 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
             const bValue =
               b.tags.find((tag) => tag.key === columnName.valueKey)?.value ??
               "";
-            if (aValue.localeCompare(bValue) !== 0) {
-              return aValue.localeCompare(bValue);
+            const comparison = aValue.localeCompare(bValue, undefined, {
+              numeric: true,
+            });
+            if (comparison !== 0) {
+              return comparison;
             }
           }
           return a.timestamps[0] - b.timestamps[0];
