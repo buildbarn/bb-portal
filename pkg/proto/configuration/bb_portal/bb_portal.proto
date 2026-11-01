@@ -260,12 +260,26 @@ message FrontendService {
 message StorageBlobAccessConfiguration {
   buildbarn.configuration.blobstore.BlobAccessConfiguration backend = 1;
 
-  // The authorizer for determining whether bb-portal may read from storage.
-  // Applies for both `get` and `find_missing`.
+  // Authorizer that determines which instance names a user may read from
+  // storage. Applies for both `get` and `find_missing`.
   buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 2;
 
   // There is no write_authorizer as bb-portal shouldn't be able to write to
   // storage.
+}
+
+// Configuration for serving the Content Addressable Storage (CAS).
+message ContentAddressableStorageServerConfiguration {
+  // The Chunk Storage (CS) and Chunk Mapping Storage (CMS) that together
+  // make up the Content Addressable Storage.
+  buildbarn.configuration.blobstore.ContentAddressableStorageConfiguration
+      content_addressable_storage = 1;
+
+  // Authorizer that determines which instance names a user may read blobs
+  // from.
+  buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 2;
+
+  // There is no put authorizer as bb-portal does not write to storage.
 }
 
 message ApplicationConfiguration {
@@ -308,7 +322,10 @@ message ApplicationConfiguration {
   // behaviour.
   FrontendService frontend_service_configuration = 10;
 
-  StorageBlobAccessConfiguration content_addressable_storage = 11;
+  // Config for serving the Content Addressable Storage (CAS). If omitted,
+  // the CAS parts of the backend will not be started.
+  ContentAddressableStorageServerConfiguration
+      content_addressable_storage_server = 11;
   StorageBlobAccessConfiguration action_cache = 12;
   StorageBlobAccessConfiguration initial_size_class_cache = 13;
   StorageBlobAccessConfiguration file_system_access_cache = 14;

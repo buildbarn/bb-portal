@@ -75,8 +75,15 @@ local adminAuthorizer = { allow: {} };
     },
   },
 
-  contentAddressableStorage: {
-    backend: { grpc: { client: { address: 'localhost:8980' } } },
+  contentAddressableStorageServer: {
+    contentAddressableStorage: {
+      chunkStorage: {
+        backend: { grpc: { client: { address: 'localhost:8980' } } },
+      },
+      chunkMappingStorage: {
+        backend: { grpc: { client: { address: 'localhost:8980' } } },
+      },
+    },
     readAuthorizer: readAuthorizer,
   },
   actionCache: {
