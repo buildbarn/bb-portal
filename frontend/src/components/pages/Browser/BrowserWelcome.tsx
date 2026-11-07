@@ -3,15 +3,21 @@
 import { LayoutOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import type React from "react";
+import PortalAlert from "@/components/PortalAlert";
 import { PortalCard } from "@/components/PortalCard";
 import styles from "./browser.module.css";
 
-export const BrowserWelcomePage: React.FC = () => {
+interface Props {
+  note?: string;
+}
+
+export const BrowserWelcomePage: React.FC<Props> = ({ note }) => {
   return (
     <PortalCard
       icon={<LayoutOutlined />}
       titleBits={[<span key="title">Browser</span>]}
     >
+      {note && <PortalAlert showIcon type="info" title={note} />}
       <Typography.Title level={2}>Welcome</Typography.Title>
       <Typography.Text>
         This page allows you to display objects stored in the Content
