@@ -2,6 +2,7 @@ package testutils
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 	"time"
 
@@ -14,6 +15,13 @@ import (
 
 // SetupTestDB creates a new database used for testing.
 func SetupTestDB(t testing.TB, dbProvider *embedded.DatabaseProvider) database.Client {
+	db, _ := SetupTestDBWithConn(t, dbProvider)
+	return db
+}
+
+// SetupTestDBWithConn is like SetupTestDB, but also returns the
+// underlying connection, for tests that need to run raw SQL.
+func SetupTestDBWithConn(t testing.TB, dbProvider *embedded.DatabaseProvider) (database.Client, *sql.DB) {
 	conn, err := dbProvider.CreateDatabase()
 	require.NoError(t, err)
 	conn.SetMaxOpenConns(1)
@@ -22,7 +30,7 @@ func SetupTestDB(t testing.TB, dbProvider *embedded.DatabaseProvider) database.C
 	t.Cleanup(func() { conn.Close() })
 	err = db.Ent().Schema.Create(context.Background())
 	require.NoError(t, err)
-	return db
+	return db, conn
 }
 
 // CreateInstanceName creates a instance name in the testing database.

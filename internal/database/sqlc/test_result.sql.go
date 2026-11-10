@@ -122,30 +122,48 @@ FROM (
         input.exit_code,
         input.hostname,
         input.timing_breakdown,
-        -- Add a row number to track the order of inputs
-        ROW_NUMBER() OVER () AS input_order
-    FROM (
-        SELECT
-            $1::bigint as instance_name_id,
-            unnest($2::text[]) as label,
-            unnest($3::text[]) as config_id,
-            unnest($4::integer[]) AS run,
-            unnest($5::integer[]) AS shard,
-            unnest($6::integer[]) AS attempt,
-            unnest($7::text[]) AS status,
-            unnest($8::text[]) AS status_details,
-            unnest($9::boolean[]) AS cached_locally,
-            unnest($10::timestamptz[]) AS test_attempt_start,
-            unnest($11::bigint[]) AS test_attempt_duration_in_ms,
-            unnest($12::text[]) AS warning,
-            unnest($13::text[]) AS strategy,
-            unnest($14::boolean[]) AS cached_remotely,
-            unnest($15::integer[]) AS exit_code,
-            unnest($16::text[]) AS hostname,
-            unnest($17::text[]) AS timing_breakdown
-    ) AS input
+        input.input_order
+    -- The caller matches the returned IDs to its inputs by position, so
+    -- number the inputs here, before any join: a join may emit rows in any
+    -- order (e.g. a hash join emits them in targets order).
+    FROM ROWS FROM (
+        unnest($1::text[]),
+        unnest($2::text[]),
+        unnest($3::integer[]),
+        unnest($4::integer[]),
+        unnest($5::integer[]),
+        unnest($6::text[]),
+        unnest($7::text[]),
+        unnest($8::boolean[]),
+        unnest($9::timestamptz[]),
+        unnest($10::bigint[]),
+        unnest($11::text[]),
+        unnest($12::text[]),
+        unnest($13::boolean[]),
+        unnest($14::integer[]),
+        unnest($15::text[]),
+        unnest($16::text[])
+    ) WITH ORDINALITY AS input(
+        label,
+        config_id,
+        run,
+        shard,
+        attempt,
+        status,
+        status_details,
+        cached_locally,
+        test_attempt_start,
+        test_attempt_duration_in_ms,
+        warning,
+        strategy,
+        cached_remotely,
+        exit_code,
+        hostname,
+        timing_breakdown,
+        input_order
+    )
     JOIN targets t
-        ON t.instance_name_targets = input.instance_name_id
+        ON t.instance_name_targets = $17::bigint
         AND t.label = input.label
         AND t.aspect = ''
     -- We use OFFSET 0 here to force this block to execute first
@@ -165,7 +183,6 @@ RETURNING id
 `
 
 type CreateTestResultsBulkParams struct {
-	InstanceNameID       int64
 	Labels               []string
 	ConfigIds            []string
 	Runs                 []int32
@@ -182,6 +199,7 @@ type CreateTestResultsBulkParams struct {
 	ExitCodes            []int32
 	Hostnames            []string
 	TimingBreakdowns     []string
+	InstanceNameID       int64
 	BazelInvocationID    int64
 }
 
@@ -189,7 +207,6 @@ type CreateTestResultsBulkParams struct {
 // Order the results by the input order
 func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResultsBulkParams) ([]int64, error) {
 	rows, err := q.db.QueryContext(ctx, createTestResultsBulk,
-		arg.InstanceNameID,
 		pq.Array(arg.Labels),
 		pq.Array(arg.ConfigIds),
 		pq.Array(arg.Runs),
@@ -206,6 +223,7 @@ func (q *Queries) CreateTestResultsBulk(ctx context.Context, arg CreateTestResul
 		pq.Array(arg.ExitCodes),
 		pq.Array(arg.Hostnames),
 		pq.Array(arg.TimingBreakdowns),
+		arg.InstanceNameID,
 		arg.BazelInvocationID,
 	)
 	if err != nil {
