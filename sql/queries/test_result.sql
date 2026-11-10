@@ -52,30 +52,48 @@ FROM (
         input.exit_code,
         input.hostname,
         input.timing_breakdown,
-        -- Add a row number to track the order of inputs
-        ROW_NUMBER() OVER () AS input_order
-    FROM (
-        SELECT
-            sqlc.arg(instance_name_id)::bigint as instance_name_id,
-            unnest(sqlc.arg(labels)::text[]) as label,
-            unnest(sqlc.arg(config_ids)::text[]) as config_id,
-            unnest(sqlc.arg(runs)::integer[]) AS run,
-            unnest(sqlc.arg(shards)::integer[]) AS shard,
-            unnest(sqlc.arg(attempts)::integer[]) AS attempt,
-            unnest(sqlc.arg(statuses)::text[]) AS status,
-            unnest(sqlc.arg(status_detailss)::text[]) AS status_details,
-            unnest(sqlc.arg(cached_locallys)::boolean[]) AS cached_locally,
-            unnest(sqlc.arg(test_attempt_starts)::timestamptz[]) AS test_attempt_start,
-            unnest(sqlc.arg(test_attempt_durations)::bigint[]) AS test_attempt_duration_in_ms,
-            unnest(sqlc.arg(warnings)::text[]) AS warning,
-            unnest(sqlc.arg(strategies)::text[]) AS strategy,
-            unnest(sqlc.arg(cached_remotelys)::boolean[]) AS cached_remotely,
-            unnest(sqlc.arg(exit_codes)::integer[]) AS exit_code,
-            unnest(sqlc.arg(hostnames)::text[]) AS hostname,
-            unnest(sqlc.arg(timing_breakdowns)::text[]) AS timing_breakdown
-    ) AS input
+        input.input_order
+    -- The caller matches the returned IDs to its inputs by position, so
+    -- number the inputs here, before any join: a join may emit rows in any
+    -- order (e.g. a hash join emits them in targets order).
+    FROM ROWS FROM (
+        unnest(sqlc.arg(labels)::text[]),
+        unnest(sqlc.arg(config_ids)::text[]),
+        unnest(sqlc.arg(runs)::integer[]),
+        unnest(sqlc.arg(shards)::integer[]),
+        unnest(sqlc.arg(attempts)::integer[]),
+        unnest(sqlc.arg(statuses)::text[]),
+        unnest(sqlc.arg(status_detailss)::text[]),
+        unnest(sqlc.arg(cached_locallys)::boolean[]),
+        unnest(sqlc.arg(test_attempt_starts)::timestamptz[]),
+        unnest(sqlc.arg(test_attempt_durations)::bigint[]),
+        unnest(sqlc.arg(warnings)::text[]),
+        unnest(sqlc.arg(strategies)::text[]),
+        unnest(sqlc.arg(cached_remotelys)::boolean[]),
+        unnest(sqlc.arg(exit_codes)::integer[]),
+        unnest(sqlc.arg(hostnames)::text[]),
+        unnest(sqlc.arg(timing_breakdowns)::text[])
+    ) WITH ORDINALITY AS input(
+        label,
+        config_id,
+        run,
+        shard,
+        attempt,
+        status,
+        status_details,
+        cached_locally,
+        test_attempt_start,
+        test_attempt_duration_in_ms,
+        warning,
+        strategy,
+        cached_remotely,
+        exit_code,
+        hostname,
+        timing_breakdown,
+        input_order
+    )
     JOIN targets t
-        ON t.instance_name_targets = input.instance_name_id
+        ON t.instance_name_targets = sqlc.arg(instance_name_id)::bigint
         AND t.label = input.label
         AND t.aspect = ''
     -- We use OFFSET 0 here to force this block to execute first
