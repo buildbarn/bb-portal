@@ -80,6 +80,7 @@ go_test(
         ":buildeventrecorder",
         "//ent/gen/ent",
         "//ent/gen/ent/runtime",
+        "//internal/database",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
