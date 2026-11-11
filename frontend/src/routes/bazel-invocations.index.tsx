@@ -88,32 +88,27 @@ export const Route = createFileRoute("/bazel-invocations/")({
     const pagination = deps.invocationTable?.pagination ?? { first: pageSize };
     const where = deps.invocationTable?.where ?? [];
 
+    const variables = {
+      where: {
+        and: [...where, { startedAtNotNil: true }],
+      },
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: BazelInvocationOrderField.StartedAt,
+      },
+      ...pagination,
+    };
     const { data, error } = await apolloClient.query({
       errorPolicy: "all",
       query: FIND_BAZEL_INVOCATIONS_QUERY,
-      variables: {
-        where: {
-          and: [...where, { startedAtNotNil: true }],
-        },
-        orderBy: {
-          direction: OrderDirection.Desc,
-          field: BazelInvocationOrderField.StartedAt,
-        },
-        ...pagination,
-      },
+      variables,
       fetchPolicy: "network-only",
     });
     if (!data) {
       throw new NotFoundError("invocations", error?.message);
     }
 
-    const invocations = parseGraphqlEdgeListWithFragment(
-      BAZEL_INVOCATION_NODE_FRAGMENT,
-      data.findBazelInvocations,
-    );
-    const pageInfo = data.findBazelInvocations.pageInfo;
-
-    return { invocations, pageInfo, pageSize };
+    return { data, variables, pageSize };
   },
   head: (_ctx) => ({ meta: [{ title: generatePageTitle(["Invocations"]) }] }),
 });
@@ -133,15 +128,24 @@ const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
-  const { invocations, pageInfo, pageSize } = Route.useLoaderData();
+  const { data: initialData, variables, pageSize } = Route.useLoaderData();
+  // Subscribe to the loaded page so normalized updates from polling are rendered.
+  const { data = initialData } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
+    variables,
+    fetchPolicy: "cache-only",
+    errorPolicy: "all",
+  });
+  const invocations = parseGraphqlEdgeListWithFragment(
+    BAZEL_INVOCATION_NODE_FRAGMENT,
+    data.findBazelInvocations,
+  );
+  const pageInfo = data.findBazelInvocations.pageInfo;
 
   const inProgressInvocations = invocations
     .filter((inv) => shouldPollInvocation(inv))
     .map((inv) => inv.id);
 
-  // Refetch any ongoing invocations periodically. The result of the query is
-  // unused, but in the background Apollo updates the result of the original
-  // query based on the IDs of the response.
+  // Poll only ongoing invocations; the page subscription receives their updates.
   useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
     variables: {
       where: {
