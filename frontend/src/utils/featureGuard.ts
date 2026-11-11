@@ -6,9 +6,9 @@ export class FeatureDisabledError extends Error {
   }
 }
 
-export const requireFeature = (feature: Empty | undefined) => {
+export const requireFeature = (feature: Empty | null | undefined) => {
   return () => {
-    if (feature === undefined) {
+    if (feature == null) {
       throw new FeatureDisabledError();
     }
   };
