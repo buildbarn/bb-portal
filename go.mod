@@ -15,6 +15,7 @@ replace (
 )
 
 require (
+	ariga.io/atlas v1.2.2
 	// NOTE: When updating entgo.io/ent and entgo.io/contrib, check if any of
 	// the templates in `./ent/template` needs to be updated.
 	entgo.io/contrib v0.7.0
@@ -59,7 +60,6 @@ require (
 )
 
 require (
-	ariga.io/atlas v1.2.2 // indirect
 	cel.dev/expr v0.25.2 // indirect
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/auth v0.20.0 // indirect

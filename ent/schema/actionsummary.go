@@ -61,6 +61,10 @@ func (ActionSummary) Edges() []ent.Edge {
 		// Information about the action cache behavior during a single invocation.
 		edge.To("action_cache_statistics", ActionCacheStatistics.Type).
 			Unique().
+			// The default column name, action_summary_action_cache_statistics,
+			// gives its implicit unique index a name longer than the 63 bytes
+			// Postgres allows.
+			StorageKey(edge.Column("action_summary_id")).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),

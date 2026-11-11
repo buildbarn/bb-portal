@@ -252,7 +252,7 @@ func (_c *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *sq
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.action_summary_action_cache_statistics = &nodes[0]
+		_node.action_summary_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.MissDetailsIDs(); len(nodes) > 0 {

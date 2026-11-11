@@ -31,9 +31,9 @@ type ActionCacheStatistics struct {
 	Misses int32 `json:"misses,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionCacheStatisticsQuery when eager-loading is set.
-	Edges                                  ActionCacheStatisticsEdges `json:"edges"`
-	action_summary_action_cache_statistics *int64
-	selectValues                           sql.SelectValues
+	Edges             ActionCacheStatisticsEdges `json:"edges"`
+	action_summary_id *int64
+	selectValues      sql.SelectValues
 }
 
 // ActionCacheStatisticsEdges holds the relations/edges for other nodes in the graph.
@@ -78,7 +78,7 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldCacheCheckSemaphoreWaitTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
 			values[i] = new(sql.NullInt64)
-		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
+		case actioncachestatistics.ForeignKeys[0]: // action_summary_id
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -139,10 +139,10 @@ func (_m *ActionCacheStatistics) assignValues(columns []string, values []any) er
 			}
 		case actioncachestatistics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_cache_statistics", value)
+				return fmt.Errorf("unexpected type %T for edge-field action_summary_id", value)
 			} else if value.Valid {
-				_m.action_summary_action_cache_statistics = new(int64)
-				*_m.action_summary_action_cache_statistics = int64(value.Int64)
+				_m.action_summary_id = new(int64)
+				*_m.action_summary_id = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])

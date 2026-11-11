@@ -36,7 +36,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "actionsummary" package.
 	ActionSummaryInverseTable = "action_summaries"
 	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
-	ActionSummaryColumn = "action_summary_action_cache_statistics"
+	ActionSummaryColumn = "action_summary_id"
 	// MissDetailsTable is the table that holds the miss_details relation/edge.
 	MissDetailsTable = "miss_details"
 	// MissDetailsInverseTable is the table name for the MissDetail entity.
@@ -60,7 +60,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "action_cache_statistics"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"action_summary_action_cache_statistics",
+	"action_summary_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

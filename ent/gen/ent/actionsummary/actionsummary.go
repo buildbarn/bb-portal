@@ -57,7 +57,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "actioncachestatistics" package.
 	ActionCacheStatisticsInverseTable = "action_cache_statistics"
 	// ActionCacheStatisticsColumn is the table column denoting the action_cache_statistics relation/edge.
-	ActionCacheStatisticsColumn = "action_summary_action_cache_statistics"
+	ActionCacheStatisticsColumn = "action_summary_id"
 )
 
 // Columns holds all SQL columns for actionsummary fields.
