@@ -677,13 +677,13 @@ func (_q *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, que
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.action_summary_action_cache_statistics
+		fk := n.action_summary_id
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "action_summary_action_cache_statistics" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "action_summary_id" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_action_cache_statistics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

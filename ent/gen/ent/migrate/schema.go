@@ -93,7 +93,7 @@ var (
 		{Name: "cache_check_semaphore_wait_time_in_ms", Type: field.TypeUint64, Nullable: true},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
-		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt64, Unique: true, Nullable: true},
+		{Name: "action_summary_id", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// ActionCacheStatisticsTable holds the schema information for the "action_cache_statistics" table.
 	ActionCacheStatisticsTable = &schema.Table{

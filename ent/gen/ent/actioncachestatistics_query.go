@@ -476,10 +476,10 @@ func (_q *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, que
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*ActionCacheStatistics)
 	for i := range nodes {
-		if nodes[i].action_summary_action_cache_statistics == nil {
+		if nodes[i].action_summary_id == nil {
 			continue
 		}
-		fk := *nodes[i].action_summary_action_cache_statistics
+		fk := *nodes[i].action_summary_id
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -496,7 +496,7 @@ func (_q *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, que
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_summary_action_cache_statistics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_summary_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

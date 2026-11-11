@@ -4,9 +4,12 @@ go_test(
     name = "dbtest_test",
     srcs = ["dbindex_test.go"],
     deps = [
+        "//ent/gen/ent/migrate",
         "//internal/database/dbauthservice",
         "//internal/database/embedded",
         "//test/testutils",
         "@com_github_stretchr_testify//require",
+        "@io_ariga_atlas//sql/schema",
+        "@io_entgo_ent//dialect/sql/schema",
     ],
 )

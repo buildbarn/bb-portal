@@ -30,14 +30,14 @@ type Action struct {
 }
 
 type ActionCacheStatistic struct {
-	ID                                 int64
-	SizeInBytes                        sql.NullInt64
-	SaveTimeInMs                       sql.NullInt64
-	LoadTimeInMs                       sql.NullInt64
-	CacheCheckSemaphoreWaitTimeInMs    sql.NullInt64
-	Hits                               sql.NullInt32
-	Misses                             sql.NullInt32
-	ActionSummaryActionCacheStatistics sql.NullInt64
+	ID                              int64
+	SizeInBytes                     sql.NullInt64
+	SaveTimeInMs                    sql.NullInt64
+	LoadTimeInMs                    sql.NullInt64
+	CacheCheckSemaphoreWaitTimeInMs sql.NullInt64
+	Hits                            sql.NullInt32
+	Misses                          sql.NullInt32
+	ActionSummaryID                 sql.NullInt64
 }
 
 type ActionDatum struct {

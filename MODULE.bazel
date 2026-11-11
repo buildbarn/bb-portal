@@ -130,6 +130,7 @@ use_repo(
     "com_github_stretchr_testify",
     "com_github_uptrace_opentelemetry_go_extra_otelsql",
     "com_github_vektah_gqlparser_v2",
+    "io_ariga_atlas",
     "io_entgo_contrib",
     "io_entgo_ent",
     "io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp",
