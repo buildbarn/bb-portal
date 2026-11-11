@@ -141,11 +141,12 @@ func NewBuildEventRecorder(
 	}
 
 	return &buildEventRecorder{
-		db:             db,
-		saveDataLevel:  saveDataLevel,
-		tracer:         tracer,
-		dataExtractors: dataExtractors,
-		buildKey:       buildKey,
+		db:                db,
+		saveDataLevel:     saveDataLevel,
+		tracer:            tracer,
+		dataExtractors:    dataExtractors,
+		buildKey:          buildKey,
+		batchRetryTimeout: batchRetryTimeout,
 
 		InstanceName:     instanceName,
 		InstanceNameDbID: instanceNameDbID,
