@@ -286,7 +286,7 @@ func main() {
 		// running. Otherwise a faulty config would shut down the application
 		// in the middle of the first cleanup.
 		if dbCleanupService != nil {
-			dbCleanupService.StartDbCleanupService(ctx, dependenciesGroup)
+			dbCleanupService.StartDbCleanupService(ctx, siblingsGroup)
 		}
 
 		lifecycleState.MarkReadyAndWait(siblingsGroup)
