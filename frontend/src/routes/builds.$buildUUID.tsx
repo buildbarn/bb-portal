@@ -112,31 +112,21 @@ export const Route = createFileRoute("/builds/$buildUUID")({
     };
     const where: BuildWhereInput[] = deps.buildTable?.where ?? [];
 
+    const variables = {
+      ...pagination,
+      where: { and: where },
+      buildUUID: params.buildUUID,
+    };
     const { data, error } = await apolloClient.query({
       errorPolicy: "all",
       query: GET_BUILD_BY_UUID_QUERY,
-      variables: {
-        ...pagination,
-        where: { and: where },
-        buildUUID: params.buildUUID,
-      },
+      variables,
     });
 
     if (!data?.getBuild) {
       throw new NotFoundError("build", error?.message);
     }
-    const invocations = parseGraphqlEdgeListWithFragment(
-      GET_BUILD_INVOCATION_FRAGMENT,
-      data.getBuild.invocations,
-    );
-    const build = getFragmentData(GET_BUILD_FRAGMENT, data.getBuild);
-
-    return {
-      build,
-      invocations,
-      pageInfo: data.getBuild.invocations.pageInfo,
-      pageSize,
-    };
+    return { build: data.getBuild, variables, pageSize };
   },
   head: (_ctx) => ({
     meta: [{ title: generatePageTitle(["Build", _ctx.params.buildUUID]) }],
@@ -159,7 +149,20 @@ const getPaginationUpdateLink = (newPagination: TablePaginationVars) =>
 function RouteComponent() {
   const navigate = Route.useNavigate();
   const { buildUUID } = Route.useParams();
-  const { build, invocations, pageInfo, pageSize } = Route.useLoaderData();
+  const { build: initialBuild, variables, pageSize } = Route.useLoaderData();
+  // Subscribe to the loaded page so normalized updates from polling are rendered.
+  const { data } = useQuery(GET_BUILD_BY_UUID_QUERY, {
+    variables,
+    fetchPolicy: "cache-only",
+    errorPolicy: "all",
+  });
+  const loadedBuild = data?.getBuild ?? initialBuild;
+  const build = getFragmentData(GET_BUILD_FRAGMENT, loadedBuild);
+  const invocations = parseGraphqlEdgeListWithFragment(
+    GET_BUILD_INVOCATION_FRAGMENT,
+    loadedBuild.invocations,
+  );
+  const pageInfo = loadedBuild.invocations.pageInfo;
   const inProgressInvocations = invocations
     .filter((inv) => shouldPollInvocation(inv))
     .map((inv) => inv.id);
@@ -177,9 +180,7 @@ function RouteComponent() {
       }),
     });
   };
-  // Refetch any ongoing invocations periodically. The result of the query is
-  // unused, but in the background Apollo updates the result of the original
-  // query based on the IDs of the response.
+  // Poll only ongoing invocations; the page subscription receives their updates.
   useQuery(GET_BUILD_BY_UUID_QUERY, {
     variables: {
       where: {
