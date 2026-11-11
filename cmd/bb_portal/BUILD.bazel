@@ -1,5 +1,5 @@
 load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
-load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_library(
     name = "bb_portal_lib",
@@ -56,4 +56,33 @@ go_binary(
     name = "bb_portal",
     embed = [":bb_portal_lib"],
     visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "bb_portal_test",
+    srcs = [
+        "main_process_test.go",
+        "main_test.go",
+    ],
+    # main_process_test.go runs the binary.
+    data = [":bb_portal"],
+    embed = [":bb_portal_lib"],
+    env = {"BB_PORTAL_BINARY": "$(rlocationpath :bb_portal)"},
+    deps = [
+        "//ent/gen/ent/migrate",
+        "//internal/database",
+        "//internal/database/dbauthservice",
+        "//internal/database/embedded",
+        "//pkg/prometheus_metrics",
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_storage//pkg/zstd",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_prometheus_client_golang//prometheus/testutil",
+        "@com_github_stretchr_testify//require",
+        "@io_opentelemetry_go_otel_trace//noop",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@rules_go//go/runfiles",
+    ],
 )

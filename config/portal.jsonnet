@@ -73,6 +73,14 @@ local adminAuthorizer = { allow: {} };
       invocationRetention: '604800s',
       completedActionRetention: '604800s',
     },
+    // By default the desired schema is applied at startup. To migrate
+    // as a separate step, run once with { applyAndExit: {} }, e.g. as a
+    // Kubernetes Job, and serve with { verify: {} } to refuse to start when
+    // the installed schema lacks parts of the desired schema, or
+    // { skip: {} } to not check it at all. The latter two need no DDL
+    // privileges. The desired schema can be exported with:
+    //   bazel run //cmd/bb_export_schema > schema.sql
+    schemaManagement: { apply: {} },
   },
 
   contentAddressableStorageServer: {
