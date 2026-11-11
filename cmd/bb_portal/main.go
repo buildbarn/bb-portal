@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"reflect"
@@ -54,15 +57,39 @@ func setupDatabase(
 	if err != nil {
 		return nil, nil, util.StatusWrap(err, "Failed to connect to database")
 	}
+	return initializeDatabase(ctx, configuration, dialect, connection, tracerProvider, zstdPool)
+}
 
+// initializeDatabase performs all database setup that happens after a
+// connection has been opened. It is separate from setupDatabase so that
+// it can be tested against an embedded database.
+func initializeDatabase(
+	ctx context.Context,
+	configuration *bb_portal.Database,
+	dialect string,
+	connection *sql.DB,
+	tracerProvider trace.TracerProvider,
+	zstdPool bb_zstd.Pool,
+) (database.Client, *dbcleanupservice.DbCleanupService, error) {
 	dbClient, err := database.New(dialect, connection)
 	if err != nil {
 		return nil, nil, util.StatusWrap(err, "Failed to create database client from connection")
 	}
 
-	// Attempt to migrate towards ents model.
-	if err = dbClient.Ent().Schema.Create(ctx, migrate.WithDropIndex(true)); err != nil {
-		return nil, nil, util.StatusWrap(err, "Could not automatically migrate to desired schema")
+	switch configuration.GetSchemaManagement().GetMode().(type) {
+	case nil, *bb_portal.Database_SchemaManagement_Apply, *bb_portal.Database_SchemaManagement_ApplyAndExit:
+		// Attempt to migrate towards ents model.
+		if err = dbClient.Ent().Schema.Create(ctx, migrate.WithDropIndex(true)); err != nil {
+			return nil, nil, util.StatusWrap(err, "Could not automatically migrate to desired schema")
+		}
+	case *bb_portal.Database_SchemaManagement_Verify:
+		if err = verifySchema(ctx, dbClient); err != nil {
+			return nil, nil, util.StatusWrap(err, "Failed to verify the installed schema")
+		}
+	case *bb_portal.Database_SchemaManagement_Skip:
+		log.Print("Schema management is set to skip, assuming the desired schema is already installed")
+	default:
+		return nil, nil, status.Error(codes.Internal, "Schema management mode is not recognized. This is probably a bug.")
 	}
 
 	prometheusmetrics.SyncMetrics(dbClient.Ent())
@@ -83,6 +110,22 @@ func setupDatabase(
 		}
 	}
 	return dbClient, dbCleanupService, nil
+}
+
+// verifySchema checks that the installed schema has everything the
+// desired schema has, for when the schema is managed externally.
+func verifySchema(ctx context.Context, dbClient database.Client) error {
+	// This plans the changes Schema.Create would make, without executing
+	// them. The drop options are deliberately omitted, so that objects
+	// the installed schema has in addition are not reported.
+	var missingChanges bytes.Buffer
+	if err := dbClient.Ent().Schema.WriteTo(ctx, &missingChanges); err != nil {
+		return util.StatusWrap(err, "Failed to compare the installed schema with the desired schema")
+	}
+	if missingChanges.Len() > 0 {
+		return status.Errorf(codes.FailedPrecondition, "The installed schema differs from the desired schema. Missing changes:\n%s", missingChanges.String())
+	}
+	return nil
 }
 
 func main() {
@@ -120,6 +163,10 @@ func main() {
 				zstdPool,
 			); err != nil {
 				return util.StatusWrap(err, "Failed to setup the database")
+			}
+			if _, ok := configuration.Database.GetSchemaManagement().GetMode().(*bb_portal.Database_SchemaManagement_ApplyAndExit); ok {
+				log.Print("Applied the desired schema, exiting as schema management is set to apply_and_exit")
+				return nil
 			}
 		}
 

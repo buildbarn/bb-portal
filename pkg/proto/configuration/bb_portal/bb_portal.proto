@@ -88,6 +88,38 @@ message Database {
   // Configuration for the database cleanup service to avoid
   // the database growing without bounds.
   CleanupConfiguration cleanup_configuration = 4;
+
+  message SchemaManagement {
+    oneof mode {
+      // Apply the desired schema at startup, migrating the database
+      // towards it. This is the default.
+      google.protobuf.Empty apply = 1;
+      // Do not change the schema, but refuse to start if the installed
+      // schema lacks tables, columns, indexes or constraints of the
+      // desired schema, or defines them differently. The error lists
+      // the missing changes. Objects that the installed schema has in
+      // addition are accepted, so that replicas of an older release keep
+      // working after a newer release extended the schema. Only reads
+      // the database catalog, and works with a role that lacks DDL
+      // privileges.
+      google.protobuf.Empty verify = 2;
+      // Neither change nor check the schema. The desired schema must
+      // already be installed before bb_portal starts.
+      google.protobuf.Empty skip = 3;
+      // Apply the desired schema like 'apply', then exit without
+      // starting any service. Meant for running migrations as a separate
+      // step, such as a Kubernetes Job using a database role with DDL
+      // privileges, while the serving replicas use 'verify' or 'skip'.
+      google.protobuf.Empty apply_and_exit = 4;
+    }
+  }
+
+  // How bb_portal manages the database schema at startup. If not set,
+  // behaves as 'apply'. The other modes are meant for deployments that
+  // manage schema migrations externally, for example because the
+  // database role used by bb_portal lacks DDL privileges. The desired
+  // schema can be exported using cmd/bb_export_schema.
+  SchemaManagement schema_management = 5;
 }
 
 message BuildEventStreamService {
