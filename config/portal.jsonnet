@@ -117,14 +117,18 @@ local adminAuthorizer = { allow: {} };
     buildKey: 'build_id',
   },
 
-  schedulerServiceConfiguration: {
-    buildQueueStateClient: {
-      address: 'localhost:8984',
+  namedSchedulers: [{
+    id: 'default',
+    label: 'Default',
+    configuration: {
+      buildQueueStateClient: {
+        address: 'localhost:8984',
+      },
+      readAuthorizer: readAuthorizer,
+      killOperationsAuthorizer: adminAuthorizer,
+      listOperationsPageSize: 500,
     },
-    readAuthorizer: readAuthorizer,
-    killOperationsAuthorizer: adminAuthorizer,
-    listOperationsPageSize: 500,
-  },
+  }],
 
   graphqlApiServiceConfiguration: {
     readAuthorizer: readAuthorizer,
