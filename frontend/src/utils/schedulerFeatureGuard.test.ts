@@ -1,5 +1,11 @@
 import { afterEach, expect, test, vi } from "vitest";
 
+// The guard resolves the scheduler registry once the feature check passes.
+// Stub it so the enabled case exercises only the feature flag, not the network.
+vi.mock("@/schedulers/context", () => ({
+  schedulerContext: vi.fn().mockResolvedValue({}),
+}));
+
 afterEach(() => {
   Reflect.deleteProperty(window, "__env__");
   vi.resetModules();
@@ -30,10 +36,12 @@ test.each([
     throw new Error("Missing scheduler route guard");
   }
 
-  const loadDirectURL = () => beforeLoad({} as never);
+  // The guard is async because it also resolves the scheduler context, so a
+  // disabled feature surfaces as a rejection rather than a synchronous throw.
+  const loadDirectURL = async () => beforeLoad({ search: {} } as never);
   if (disabled) {
-    expect(loadDirectURL).toThrow("FEATURE_DISABLED");
+    await expect(loadDirectURL()).rejects.toThrow("FEATURE_DISABLED");
   } else {
-    expect(loadDirectURL).not.toThrow();
+    await expect(loadDirectURL()).resolves.toBeDefined();
   }
 });

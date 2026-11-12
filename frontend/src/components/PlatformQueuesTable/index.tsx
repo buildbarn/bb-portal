@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
 import type React from "react";
-import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
+import { useScheduler } from "@/schedulers/context";
+import { platformQueuesOptions } from "@/schedulers/queries";
 import themeStyles from "@/theme/theme.module.css";
 import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
 import type { PlatformQueueTableState } from "./types";
 
 const PlatformQueuesTable: React.FC = () => {
+  const { scheduler } = useScheduler();
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["listPlatformQueues"],
-    queryFn: async (): Promise<PlatformQueueTableState[]> => {
-      const queues = await buildQueueStateClient.listPlatformQueues({});
+    ...platformQueuesOptions(scheduler.id),
+    select: (queues): PlatformQueueTableState[] => {
       // Convert PlatoformQueueState to PlatformQueueTableState, making it
       // suitable for the table component. This is done by flattening the
       // sizeClassQueues array into a single element array, and adding

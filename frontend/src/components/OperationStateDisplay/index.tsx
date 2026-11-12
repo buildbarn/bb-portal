@@ -21,9 +21,10 @@ import {
 
 interface Props {
   operation: OperationState;
+  schedulerId: string;
 }
 
-const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
+const OperationStateDisplay: React.FC<Props> = ({ operation, schedulerId }) => {
   const invocationMetadata = operation.invocationName?.ids?.map((value) => {
     return JSON.stringify(protobufToObjectWithTypeField(value, false));
   });
@@ -67,6 +68,7 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
                 <Link
                   to="/operations"
                   search={{
+                    scheduler: schedulerId,
                     filter: metadataObject,
                   }}
                 >
