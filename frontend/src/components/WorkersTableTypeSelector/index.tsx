@@ -14,7 +14,7 @@ const WorkersTableTypeSelector: React.FC<Props> = ({
   return (
     <Radio.Group
       buttonStyle="solid"
-      defaultValue={workerStatusFilter}
+      value={workerStatusFilter}
       onChange={(e: RadioChangeEvent) => setWorkerStatusFilter(e.target.value)}
     >
       <Radio.Button value={WorkerListStatus.EXECUTING}>Executing</Radio.Button>
