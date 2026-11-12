@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "schedulerservice",
@@ -14,6 +14,21 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_improbable_eng_grpc_web//go/grpcweb",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_test(
+    name = "schedulerservice_test",
+    srcs = ["scheduler_service_test.go"],
+    embed = [":schedulerservice"],
+    deps = [
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc",
         "@com_github_improbable_eng_grpc_web//go/grpcweb",
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_grpc//codes",

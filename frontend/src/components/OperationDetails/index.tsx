@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Space, Spin } from "antd";
-import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import { Code } from "@/lib/grpc-client/google/rpc/code";
+import { useScheduler } from "@/schedulers/context";
+import {
+  killPermissionOptions,
+  operationDetailsOptions,
+} from "@/schedulers/queries";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
 import PortalAlert from "../PortalAlert";
@@ -11,11 +15,12 @@ interface Props {
 }
 
 const OperationDetails: React.FC<Props> = ({ operationID }) => {
+  const { scheduler, client } = useScheduler();
   const queryClient = useQueryClient();
 
   const killOperationMutation = useMutation({
     mutationFn: () => {
-      return buildQueueStateClient.killOperations({
+      return client.killOperations({
         filter: {
           operationName: operationID,
         },
@@ -27,30 +32,19 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["operationDetails", operationID],
+        queryKey: ["operationDetails", scheduler.id, operationID],
         exact: true,
       });
     },
   });
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["operationDetails", operationID],
-    queryFn: buildQueueStateClient.getOperation.bind(window, {
-      operationName: operationID,
-    }),
-    staleTime: Number.POSITIVE_INFINITY,
-    refetchOnMount: "always",
-  });
+  const { data, isLoading, isError, error } = useQuery(
+    operationDetailsOptions(scheduler.id, operationID),
+  );
 
-  const { data: allowedToKillOperation } = useQuery({
-    queryKey: ["killOperationsButtonState", operationID],
-    queryFn: async (): Promise<boolean> => {
-      const response = await fetch(
-        `/api/v1/checkPermissions/killOperation/${operationID}`,
-      );
-      return (await response.json()).allowed;
-    },
-  });
+  const { data: allowedToKillOperation } = useQuery(
+    killPermissionOptions(scheduler.id, operationID),
+  );
 
   if (isLoading) {
     return <Spin />;
@@ -81,7 +75,12 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
 
   return (
     <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
-      {data?.operation && <OperationStateDisplay operation={data.operation} />}
+      {data?.operation && (
+        <OperationStateDisplay
+          operation={data.operation}
+          schedulerId={scheduler.id}
+        />
+      )}
       {data?.operation?.completed && (
         <ExecuteResponseDisplay executeResponse={data.operation.completed} />
       )}

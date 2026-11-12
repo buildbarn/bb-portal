@@ -4,71 +4,25 @@ import type React from "react";
 import PortalAlert from "@/components/PortalAlert";
 import WorkersInfo from "@/components/WorkersInfo";
 import WorkersTable from "@/components/WorkersTable";
-import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
-import type {
-  BuildQueueStateClient,
-  DeepPartial,
-  ListWorkersRequest,
-  ListWorkersResponse,
-  SizeClassQueueName,
-  WorkerState,
-} from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
-import {
-  WorkerListStatus,
-  type WorkerSearchParams,
-} from "@/routes/scheduler.worker";
-
-const LIST_WORKERS_PAGE_SIZE = 100;
-
-const fetchWorkers = async (
-  client: BuildQueueStateClient,
-  workerStatusFilter: WorkerListStatus,
-  sizeClassQueueName: SizeClassQueueName,
-  paginationCursor?: WorkerState["id"],
-) => {
-  const requestBody: DeepPartial<ListWorkersRequest> = {
-    filter: {},
-    pageSize: LIST_WORKERS_PAGE_SIZE,
-  };
-
-  if (paginationCursor) {
-    requestBody.startAfter = { workerId: paginationCursor };
-  }
-
-  switch (workerStatusFilter) {
-    case WorkerListStatus.ALL:
-      requestBody.filter = {
-        all: sizeClassQueueName,
-      };
-      break;
-    case WorkerListStatus.EXECUTING:
-      requestBody.filter = {
-        executing: {
-          sizeClassQueueName: sizeClassQueueName,
-        },
-      };
-      break;
-  }
-
-  return client.listWorkers(requestBody);
-};
+import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import type { WorkerSearchParams } from "@/routes/scheduler.worker";
+import { useScheduler } from "@/schedulers/context";
+import { LIST_WORKERS_PAGE_SIZE, workersOptions } from "@/schedulers/queries";
 
 const WorkersGrid: React.FC<WorkerSearchParams> = ({
   workerStatusFilter,
   sizeClassQueueName,
   cursor,
 }) => {
-  const { data, isError, isLoading, error } = useQuery<ListWorkersResponse>({
-    queryKey: ["listWorkers", workerStatusFilter, sizeClassQueueName, cursor],
-    queryFn: () =>
-      fetchWorkers(
-        buildQueueStateClient,
-        workerStatusFilter,
-        sizeClassQueueName,
-        cursor,
-      ),
-    placeholderData: (previousData, _) => previousData,
-  });
+  const { scheduler } = useScheduler();
+  const { data, isError, isLoading, error } = useQuery(
+    workersOptions(
+      scheduler.id,
+      workerStatusFilter,
+      sizeClassQueueName,
+      cursor,
+    ),
+  );
 
   if (isError) {
     return (

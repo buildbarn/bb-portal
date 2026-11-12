@@ -2,14 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Skeleton, Space, Statistic } from "antd";
 import type React from "react";
-import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
+import { useScheduler } from "@/schedulers/context";
+import { schedulerStatisticsOptions } from "@/schedulers/queries";
 import PortalAlert from "../PortalAlert";
 
 export const SchedulerStatistics: React.FC = () => {
-  const { data, isError, error, isPending } = useQuery({
-    queryKey: ["listOperations"],
-    queryFn: buildQueueStateClient.listOperations.bind(null, {}),
-  });
+  const { scheduler } = useScheduler();
+  const { data, isError, isPending, error } = useQuery(
+    schedulerStatisticsOptions(scheduler.id),
+  );
 
   if (isPending) {
     return (

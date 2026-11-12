@@ -152,16 +152,13 @@ func main() {
 		}
 
 		// Configure and start the scheduler service
-		if configuration.SchedulerServiceConfiguration != nil {
-			if err = schedulerservice.NewSchedulerService(
-				configuration.SchedulerServiceConfiguration,
-				siblingsGroup,
-				dependenciesGroup,
-				grpcClientFactory,
-				router,
-			); err != nil {
-				return util.StatusWrap(err, "Failed to create Scheduler service")
-			}
+		if err = schedulerservice.NewSchedulerServices(
+			&configuration,
+			dependenciesGroup,
+			grpcClientFactory,
+			router,
+		); err != nil {
+			return util.StatusWrap(err, "Failed to create Scheduler service")
 		}
 
 		// Configure and start the BES upload service

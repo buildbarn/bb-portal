@@ -228,6 +228,15 @@ message SchedulerService {
   buildbarn.configuration.auth.AuthorizerConfiguration read_authorizer = 4;
 }
 
+// A stable scheduler identity, independent of instance-name prefixes.
+message NamedScheduler {
+  // URL-safe ID: 1-63 lowercase letters, digits, underscores or hyphens;
+  // the first character must be a letter or digit.
+  string id = 1;
+  string label = 2;
+  SchedulerService configuration = 3;
+}
+
 message GraphqlApiService {
   // Authorizer for what the user can read from the database via the Graphql
   // API and associated endpoints.
@@ -301,9 +310,10 @@ message ApplicationConfiguration {
   // browser parts of the application will not work.
   google.protobuf.Empty blobstore_service_configuration = 4;
 
-  // Config for starting the Scheduler Service. If omitted, the Scheduler part
-  // of the backend will not be started.
-  SchedulerService scheduler_service_configuration = 5;
+  // Legacy single-scheduler configuration. Use named_schedulers instead.
+  // Must not be combined with named_schedulers. Omit both fields to disable
+  // scheduler APIs.
+  SchedulerService scheduler_service_configuration = 5 [ deprecated = true ];
 
   // Maximum Protobuf message size to unmarshal.
   int64 maximum_message_size_bytes = 6;
@@ -342,4 +352,14 @@ message ApplicationConfiguration {
   // Config for the Graphql API. If not configured, no Graphql API will be
   // served, and the Build Event Stream parts of the frontend will not work.
   GraphqlApiService graphql_api_service_configuration = 17;
+
+  // Named schedulers. Must not be combined with
+  // scheduler_service_configuration. Omit both fields to disable scheduler
+  // APIs.
+  repeated NamedScheduler named_schedulers = 18;
+
+  // Default for legacy URLs. Required with multiple named schedulers; a single
+  // named scheduler is automatically the default. Must identify a configured
+  // ID.
+  string default_scheduler_id = 19;
 }

@@ -4,9 +4,20 @@ import {
   BuildQueueStateDefinition,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 
-const grpcChannel = createChannel("/api/v1/grpcweb");
+const clients = new Map<string, BuildQueueStateClient>();
 
-export const buildQueueStateClient: BuildQueueStateClient = createClient(
-  BuildQueueStateDefinition,
-  grpcChannel,
-);
+export function getBuildQueueStateClient(
+  schedulerId: string,
+): BuildQueueStateClient {
+  let client = clients.get(schedulerId);
+  if (!client) {
+    client = createClient(
+      BuildQueueStateDefinition,
+      createChannel(
+        `/api/v1/schedulers/${encodeURIComponent(schedulerId)}/grpcweb`,
+      ),
+    );
+    clients.set(schedulerId, client);
+  }
+  return client;
+}

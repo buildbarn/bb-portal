@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "multischeduler_test",
+    srcs = ["integration_test.go"],
+    deps = [
+        "//internal/api/common",
+        "//pkg/grpcweb/schedulerservice",
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//credentials/insecure",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/known/emptypb",
+    ],
+)

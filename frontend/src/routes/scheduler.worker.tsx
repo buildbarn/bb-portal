@@ -39,7 +39,10 @@ export const Route = createFileRoute("/scheduler/worker")({
   validateSearch: (search) => WorkerSearchSchema.parse(search),
   beforeLoad: ({ search }) => {
     if (!search.sizeClassQueueName) {
-      throw redirect({ to: "/scheduler" });
+      throw redirect({
+        to: "/scheduler",
+        search: { scheduler: search.scheduler },
+      });
     }
   },
   head: (_ctx) => ({
