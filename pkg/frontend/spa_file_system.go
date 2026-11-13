@@ -16,7 +16,7 @@ type modifiedFile struct {
 }
 
 // Close is a no-op
-func (m *modifiedFile) Close() error { return nil }
+func (*modifiedFile) Close() error { return nil }
 
 // Stat returns a custom FileInfo
 func (m *modifiedFile) Stat() (fs.FileInfo, error) {

@@ -72,7 +72,7 @@ func NewBuildEventServer(
 }
 
 // PublishLifecycleEvent handles life cycle events.
-func (s *BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
+func (*BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 

@@ -100,12 +100,12 @@ func (s *BuildQueueStateServerImpl) ListPlatformQueues(ctx context.Context, req 
 }
 
 // ListInvocationChildren proxies ListInvocationChildren requests to the client.
-func (s *BuildQueueStateServerImpl) ListInvocationChildren(ctx context.Context, req *buildqueuestate.ListInvocationChildrenRequest) (*buildqueuestate.ListInvocationChildrenResponse, error) {
+func (*BuildQueueStateServerImpl) ListInvocationChildren(ctx context.Context, req *buildqueuestate.ListInvocationChildrenRequest) (*buildqueuestate.ListInvocationChildrenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
 // ListQueuedOperations proxies ListQueuedOperations requests to the client.
-func (s *BuildQueueStateServerImpl) ListQueuedOperations(ctx context.Context, req *buildqueuestate.ListQueuedOperationsRequest) (*buildqueuestate.ListQueuedOperationsResponse, error) {
+func (*BuildQueueStateServerImpl) ListQueuedOperations(ctx context.Context, req *buildqueuestate.ListQueuedOperationsRequest) (*buildqueuestate.ListQueuedOperationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
@@ -131,22 +131,22 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 }
 
 // TerminateWorkers proxies TerminateWorkers requests to the client.
-func (s *BuildQueueStateServerImpl) TerminateWorkers(ctx context.Context, req *buildqueuestate.TerminateWorkersRequest) (*emptypb.Empty, error) {
+func (*BuildQueueStateServerImpl) TerminateWorkers(ctx context.Context, req *buildqueuestate.TerminateWorkersRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
 // ListDrains proxies ListDrains requests to the client.
-func (s *BuildQueueStateServerImpl) ListDrains(ctx context.Context, req *buildqueuestate.ListDrainsRequest) (*buildqueuestate.ListDrainsResponse, error) {
+func (*BuildQueueStateServerImpl) ListDrains(ctx context.Context, req *buildqueuestate.ListDrainsRequest) (*buildqueuestate.ListDrainsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
 // AddDrain proxies AddDrain requests to the client.
-func (s *BuildQueueStateServerImpl) AddDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
+func (*BuildQueueStateServerImpl) AddDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
 // RemoveDrain proxies RemoveDrain requests to the client.
-func (s *BuildQueueStateServerImpl) RemoveDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
+func (*BuildQueueStateServerImpl) RemoveDrain(ctx context.Context, req *buildqueuestate.AddOrRemoveDrainRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
