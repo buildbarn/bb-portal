@@ -22,7 +22,7 @@ import (
 )
 
 // TimeSinceLastConnectionMillis is the resolver for the timeSinceLastConnectionMillis field.
-func (r *connectionMetadataResolver) TimeSinceLastConnectionMillis(ctx context.Context, obj *ent.ConnectionMetadata) (int, error) {
+func (*connectionMetadataResolver) TimeSinceLastConnectionMillis(ctx context.Context, obj *ent.ConnectionMetadata) (int, error) {
 	return int(time.Since(obj.ConnectionLastOpenAt).Milliseconds()), nil
 }
 

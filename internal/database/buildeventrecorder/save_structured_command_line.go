@@ -91,7 +91,7 @@ func (r *buildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Cl
 	return nil
 }
 
-func (r *buildEventRecorder) recordBuildTags(ctx context.Context, tx *ent.Client, buildDbID int64, tags map[string]string) error {
+func (*buildEventRecorder) recordBuildTags(ctx context.Context, tx *ent.Client, buildDbID int64, tags map[string]string) error {
 	keys := make([]string, 0, len(tags))
 	for k := range tags {
 		keys = append(keys, k)

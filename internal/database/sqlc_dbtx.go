@@ -73,11 +73,11 @@ func (r *sqlcRows) Err() error {
 	return r.rows.Err()
 }
 
-func (r *sqlcRows) CommandTag() pgconn.CommandTag {
+func (*sqlcRows) CommandTag() pgconn.CommandTag {
 	return pgconn.CommandTag{}
 }
 
-func (r *sqlcRows) FieldDescriptions() []pgconn.FieldDescription {
+func (*sqlcRows) FieldDescriptions() []pgconn.FieldDescription {
 	return nil
 }
 
@@ -89,15 +89,15 @@ func (r *sqlcRows) Scan(dest ...any) error {
 	return r.rows.Scan(dest...)
 }
 
-func (r *sqlcRows) Values() ([]any, error) {
+func (*sqlcRows) Values() ([]any, error) {
 	return nil, fmt.Errorf("not supported")
 }
 
-func (r *sqlcRows) RawValues() [][]byte {
+func (*sqlcRows) RawValues() [][]byte {
 	return nil
 }
 
-func (r *sqlcRows) Conn() *pgx.Conn {
+func (*sqlcRows) Conn() *pgx.Conn {
 	return nil
 }
 

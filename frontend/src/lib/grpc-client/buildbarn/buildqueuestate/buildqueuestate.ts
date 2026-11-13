@@ -124,13 +124,9 @@ export interface OperationState {
   queued?:
     | Empty
     | undefined;
-  /**
-   * The operation is in the EXECUTING stage.
-   * TODO: Would we want this to use type WorkerState, so that we can
-   * get the ID of the worker on which an operation is executing?
-   */
+  /** The operation is in the EXECUTING stage. */
   executing?:
-    | Empty
+    | WorkerState
     | undefined;
   /** The operation is in the COMPLETED stage. */
   completed?:
@@ -604,7 +600,20 @@ export interface ListWorkersRequest_Filter {
    * against the scheduler that most recently executed an operation
    * belonging to a given invocation.
    */
-  idleSynchronizing?: InvocationName | undefined;
+  idleSynchronizing?:
+    | InvocationName
+    | undefined;
+  /**
+   * The pattern of matching workers to list. This pattern matches
+   * all workers for which the worker ID is a superset of the pattern.
+   * An empty worker ID pattern would match all workers.
+   */
+  workerIdPattern: { [key: string]: string };
+}
+
+export interface ListWorkersRequest_Filter_WorkerIdPatternEntry {
+  key: string;
+  value: string;
 }
 
 export interface ListWorkersRequest_StartAfter {
@@ -1057,7 +1066,7 @@ export const OperationState: MessageFns<OperationState> = {
       Empty.encode(message.queued, writer.uint32(66).fork()).join();
     }
     if (message.executing !== undefined) {
-      Empty.encode(message.executing, writer.uint32(74).fork()).join();
+      WorkerState.encode(message.executing, writer.uint32(74).fork()).join();
     }
     if (message.completed !== undefined) {
       ExecuteResponse.encode(message.completed, writer.uint32(82).fork()).join();
@@ -1145,7 +1154,7 @@ export const OperationState: MessageFns<OperationState> = {
             break;
           }
 
-          message.executing = Empty.decode(reader, reader.uint32());
+          message.executing = WorkerState.decode(reader, reader.uint32());
           continue;
         }
         case 10: {
@@ -1222,7 +1231,7 @@ export const OperationState: MessageFns<OperationState> = {
         : undefined,
       timeout: isSet(object.timeout) ? fromJsonTimestamp(object.timeout) : undefined,
       queued: isSet(object.queued) ? Empty.fromJSON(object.queued) : undefined,
-      executing: isSet(object.executing) ? Empty.fromJSON(object.executing) : undefined,
+      executing: isSet(object.executing) ? WorkerState.fromJSON(object.executing) : undefined,
       completed: isSet(object.completed) ? ExecuteResponse.fromJSON(object.completed) : undefined,
       targetId: isSet(object.targetId)
         ? globalThis.String(object.targetId)
@@ -1267,7 +1276,7 @@ export const OperationState: MessageFns<OperationState> = {
       obj.queued = Empty.toJSON(message.queued);
     }
     if (message.executing !== undefined) {
-      obj.executing = Empty.toJSON(message.executing);
+      obj.executing = WorkerState.toJSON(message.executing);
     }
     if (message.completed !== undefined) {
       obj.completed = ExecuteResponse.toJSON(message.completed);
@@ -1308,7 +1317,7 @@ export const OperationState: MessageFns<OperationState> = {
       ? Empty.fromPartial(object.queued)
       : undefined;
     message.executing = (object.executing !== undefined && object.executing !== null)
-      ? Empty.fromPartial(object.executing)
+      ? WorkerState.fromPartial(object.executing)
       : undefined;
     message.completed = (object.completed !== undefined && object.completed !== null)
       ? ExecuteResponse.fromPartial(object.completed)
@@ -3474,7 +3483,7 @@ export const ListWorkersRequest: MessageFns<ListWorkersRequest> = {
 };
 
 function createBaseListWorkersRequest_Filter(): ListWorkersRequest_Filter {
-  return { all: undefined, executing: undefined, idleSynchronizing: undefined };
+  return { all: undefined, executing: undefined, idleSynchronizing: undefined, workerIdPattern: {} };
 }
 
 export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = {
@@ -3488,6 +3497,10 @@ export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = 
     if (message.idleSynchronizing !== undefined) {
       InvocationName.encode(message.idleSynchronizing, writer.uint32(26).fork()).join();
     }
+    globalThis.Object.entries(message.workerIdPattern).forEach(([key, value]: [string, string]) => {
+      ListWorkersRequest_Filter_WorkerIdPatternEntry.encode({ key: key as any, value }, writer.uint32(34).fork())
+        .join();
+    });
     return writer;
   },
 
@@ -3522,6 +3535,17 @@ export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = 
           message.idleSynchronizing = InvocationName.decode(reader, reader.uint32());
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = ListWorkersRequest_Filter_WorkerIdPatternEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.workerIdPattern[entry4.key] = entry4.value;
+          }
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3540,6 +3564,23 @@ export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = 
         : isSet(object.idle_synchronizing)
         ? InvocationName.fromJSON(object.idle_synchronizing)
         : undefined,
+      workerIdPattern: isObject(object.workerIdPattern)
+        ? (globalThis.Object.entries(object.workerIdPattern) as [string, any][]).reduce(
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
+        : isObject(object.worker_id_pattern)
+        ? (globalThis.Object.entries(object.worker_id_pattern) as [string, any][]).reduce(
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
     };
   },
 
@@ -3553,6 +3594,15 @@ export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = 
     }
     if (message.idleSynchronizing !== undefined) {
       obj.idleSynchronizing = InvocationName.toJSON(message.idleSynchronizing);
+    }
+    if (message.workerIdPattern) {
+      const entries = globalThis.Object.entries(message.workerIdPattern) as [string, string][];
+      if (entries.length > 0) {
+        obj.workerIdPattern = {};
+        entries.forEach(([k, v]) => {
+          obj.workerIdPattern[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -3571,6 +3621,100 @@ export const ListWorkersRequest_Filter: MessageFns<ListWorkersRequest_Filter> = 
     message.idleSynchronizing = (object.idleSynchronizing !== undefined && object.idleSynchronizing !== null)
       ? InvocationName.fromPartial(object.idleSynchronizing)
       : undefined;
+    message.workerIdPattern = (globalThis.Object.entries(object.workerIdPattern ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseListWorkersRequest_Filter_WorkerIdPatternEntry(): ListWorkersRequest_Filter_WorkerIdPatternEntry {
+  return { key: "", value: "" };
+}
+
+export const ListWorkersRequest_Filter_WorkerIdPatternEntry: MessageFns<
+  ListWorkersRequest_Filter_WorkerIdPatternEntry
+> = {
+  encode(
+    message: ListWorkersRequest_Filter_WorkerIdPatternEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListWorkersRequest_Filter_WorkerIdPatternEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListWorkersRequest_Filter_WorkerIdPatternEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListWorkersRequest_Filter_WorkerIdPatternEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ListWorkersRequest_Filter_WorkerIdPatternEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<ListWorkersRequest_Filter_WorkerIdPatternEntry>,
+  ): ListWorkersRequest_Filter_WorkerIdPatternEntry {
+    return ListWorkersRequest_Filter_WorkerIdPatternEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<ListWorkersRequest_Filter_WorkerIdPatternEntry>,
+  ): ListWorkersRequest_Filter_WorkerIdPatternEntry {
+    const message = createBaseListWorkersRequest_Filter_WorkerIdPatternEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
     return message;
   },
 };
