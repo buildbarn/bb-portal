@@ -100,7 +100,7 @@ vite_build(
 
 vitest_test(
     name = "vitest_test",
-    size = "small",
+    size = "medium",
     srcs = FRONTEND_SRCS,
     target_compatible_with = select({
         "@platforms//os:linux": [],
