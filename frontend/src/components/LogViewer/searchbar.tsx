@@ -1,6 +1,6 @@
 import { Input } from "antd";
 import { useCallback, useEffect, useMemo } from "react";
-import { ansiRegex, escapeRegex } from "./utils";
+import { findMatchIndices } from "./utils";
 
 export interface SearchBarProps {
   query: string;
@@ -22,27 +22,10 @@ export const SearchBar = ({
   items,
 }: SearchBarProps) => {
   const matchLimit = 10000;
-  const foundMatches = useMemo(() => {
-    const result: number[] = [];
-    let totalMatches = 0;
-    const escapedQuery = escapeRegex(query);
-
-    // Match all occurrences of the query and store their indices
-    for (let i = 0; i < items.length; i++) {
-      const cleanItem = items[i].replace(ansiRegex(), "");
-
-      for (const _ of cleanItem.matchAll(escapedQuery)) {
-        result.push(i);
-        totalMatches++;
-
-        if (totalMatches >= matchLimit) {
-          return result;
-        }
-      }
-    }
-
-    return result;
-  }, [query, items]);
+  const foundMatches = useMemo(
+    () => findMatchIndices(items, query, matchLimit),
+    [query, items],
+  );
 
   const nextMatch = useCallback(() => {
     setCurrentMatchIndex((i) =>
@@ -79,14 +62,18 @@ export const SearchBar = ({
 
   useEffect(() => {
     setMatchIndexList(foundMatches);
-    setCurrentMatchIndex(0);
-  }, [foundMatches, setCurrentMatchIndex, setMatchIndexList]);
+  }, [foundMatches, setMatchIndexList]);
 
   return (
     <Input.Search
       placeholder="Search"
       onSearch={() => nextMatch()}
-      onChange={(e) => setQuery(e.target.value)}
+      onChange={(e) => {
+        setQuery(e.target.value);
+        // Only a new query starts over from the first match; a log that grew
+        // while being tailed keeps the match the reader is on.
+        setCurrentMatchIndex(0);
+      }}
       value={query}
       suffix={
         <span
