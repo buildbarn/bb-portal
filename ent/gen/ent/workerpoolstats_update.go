@@ -18,8 +18,9 @@ import (
 // WorkerPoolStatsUpdate is the builder for updating WorkerPoolStats entities.
 type WorkerPoolStatsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *WorkerPoolStatsMutation
+	hooks     []Hook
+	mutation  *WorkerPoolStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the WorkerPoolStatsUpdate builder.
@@ -348,6 +349,12 @@ func (_u *WorkerPoolStatsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerPoolStatsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerPoolStatsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerPoolStatsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerpoolstats.Table, workerpoolstats.Columns, sqlgraph.NewFieldSpec(workerpoolstats.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -473,6 +480,7 @@ func (_u *WorkerPoolStatsUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{workerpoolstats.Label}
@@ -488,9 +496,10 @@ func (_u *WorkerPoolStatsUpdate) sqlSave(ctx context.Context) (_node int, err er
 // WorkerPoolStatsUpdateOne is the builder for updating a single WorkerPoolStats entity.
 type WorkerPoolStatsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *WorkerPoolStatsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *WorkerPoolStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetHash sets the "hash" field.
@@ -826,6 +835,12 @@ func (_u *WorkerPoolStatsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerPoolStatsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerPoolStatsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerPoolStatsUpdateOne) sqlSave(ctx context.Context) (_node *WorkerPoolStats, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerpoolstats.Table, workerpoolstats.Columns, sqlgraph.NewFieldSpec(workerpoolstats.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -968,6 +983,7 @@ func (_u *WorkerPoolStatsUpdateOne) sqlSave(ctx context.Context) (_node *WorkerP
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &WorkerPoolStats{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

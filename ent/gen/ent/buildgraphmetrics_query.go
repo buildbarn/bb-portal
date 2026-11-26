@@ -32,8 +32,8 @@ type BuildGraphMetricsQuery struct {
 	withRuleClassCounts      *BuildGraphRuleClassCountQuery
 	withAspectCounts         *BuildGraphAspectCountQuery
 	withFKs                  bool
-	modifiers                []func(*sql.Selector)
 	loadTotal                []func(context.Context, []*BuildGraphMetrics) error
+	modifiers                []func(*sql.Selector)
 	withNamedEvaluationStats map[string]*BuildGraphEvaluationStatQuery
 	withNamedRuleClassCounts map[string]*BuildGraphRuleClassCountQuery
 	withNamedAspectCounts    map[string]*BuildGraphAspectCountQuery
@@ -358,8 +358,9 @@ func (_q *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
 		withRuleClassCounts: _q.withRuleClassCounts.Clone(),
 		withAspectCounts:    _q.withAspectCounts.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -775,6 +776,9 @@ func (_q *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -790,6 +794,12 @@ func (_q *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *BuildGraphMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphMetricsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedEvaluationStats tells the query-builder to eager-load the nodes that are connected to the "evaluation_stats"
@@ -922,4 +932,10 @@ func (_s *BuildGraphMetricsSelect) sqlScan(ctx context.Context, root *BuildGraph
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *BuildGraphMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphMetricsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

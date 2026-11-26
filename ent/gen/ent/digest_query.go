@@ -25,8 +25,8 @@ type DigestQuery struct {
 	inters         []Interceptor
 	predicates     []predicate.Digest
 	withFiles      *FileQuery
-	modifiers      []func(*sql.Selector)
 	loadTotal      []func(context.Context, []*Digest) error
+	modifiers      []func(*sql.Selector)
 	withNamedFiles map[string]*FileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -280,8 +280,9 @@ func (_q *DigestQuery) Clone() *DigestQuery {
 		predicates: append([]predicate.Digest{}, _q.predicates...),
 		withFiles:  _q.withFiles.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *DigestQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *DigestQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *DigestQuery) Modify(modifiers ...func(s *sql.Selector)) *DigestSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
@@ -638,4 +648,10 @@ func (_s *DigestSelect) sqlScan(ctx context.Context, root *DigestQuery, v any) e
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *DigestSelect) Modify(modifiers ...func(s *sql.Selector)) *DigestSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

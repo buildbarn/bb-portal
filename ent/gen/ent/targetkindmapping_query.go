@@ -26,8 +26,8 @@ type TargetKindMappingQuery struct {
 	predicates          []predicate.TargetKindMapping
 	withBazelInvocation *BazelInvocationQuery
 	withTarget          *TargetQuery
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*TargetKindMapping) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -303,8 +303,9 @@ func (_q *TargetKindMappingQuery) Clone() *TargetKindMappingQuery {
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		withTarget:          _q.withTarget.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -586,6 +587,9 @@ func (_q *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -601,6 +605,12 @@ func (_q *TargetKindMappingQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *TargetKindMappingQuery) Modify(modifiers ...func(s *sql.Selector)) *TargetKindMappingSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // TargetKindMappingGroupBy is the group-by builder for TargetKindMapping entities.
@@ -691,4 +701,10 @@ func (_s *TargetKindMappingSelect) sqlScan(ctx context.Context, root *TargetKind
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *TargetKindMappingSelect) Modify(modifiers ...func(s *sql.Selector)) *TargetKindMappingSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

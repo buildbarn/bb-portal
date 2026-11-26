@@ -17,8 +17,9 @@ import (
 // InvocationTagUpdate is the builder for updating InvocationTag entities.
 type InvocationTagUpdate struct {
 	config
-	hooks    []Hook
-	mutation *InvocationTagMutation
+	hooks     []Hook
+	mutation  *InvocationTagMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the InvocationTagUpdate builder.
@@ -67,6 +68,12 @@ func (_u *InvocationTagUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *InvocationTagUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTagUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *InvocationTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -79,6 +86,7 @@ func (_u *InvocationTagUpdate) sqlSave(ctx context.Context) (_node int, err erro
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtag.Label}
@@ -94,9 +102,10 @@ func (_u *InvocationTagUpdate) sqlSave(ctx context.Context) (_node int, err erro
 // InvocationTagUpdateOne is the builder for updating a single InvocationTag entity.
 type InvocationTagUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *InvocationTagMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *InvocationTagMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the InvocationTagMutation object of the builder.
@@ -152,6 +161,12 @@ func (_u *InvocationTagUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *InvocationTagUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTagUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTag, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -181,6 +196,7 @@ func (_u *InvocationTagUpdateOne) sqlSave(ctx context.Context) (_node *Invocatio
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &InvocationTag{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

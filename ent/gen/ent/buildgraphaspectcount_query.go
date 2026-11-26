@@ -25,8 +25,8 @@ type BuildGraphAspectCountQuery struct {
 	predicates            []predicate.BuildGraphAspectCount
 	withBuildGraphMetrics *BuildGraphMetricsQuery
 	withFKs               bool
-	modifiers             []func(*sql.Selector)
 	loadTotal             []func(context.Context, []*BuildGraphAspectCount) error
+	modifiers             []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *BuildGraphAspectCountQuery) Clone() *BuildGraphAspectCountQuery {
 		predicates:            append([]predicate.BuildGraphAspectCount{}, _q.predicates...),
 		withBuildGraphMetrics: _q.withBuildGraphMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *BuildGraphAspectCountQuery) sqlQuery(ctx context.Context) *sql.Selecto
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *BuildGraphAspectCountQuery) sqlQuery(ctx context.Context) *sql.Selecto
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *BuildGraphAspectCountQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphAspectCountSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // BuildGraphAspectCountGroupBy is the group-by builder for BuildGraphAspectCount entities.
@@ -624,4 +634,10 @@ func (_s *BuildGraphAspectCountSelect) sqlScan(ctx context.Context, root *BuildG
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *BuildGraphAspectCountSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphAspectCountSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

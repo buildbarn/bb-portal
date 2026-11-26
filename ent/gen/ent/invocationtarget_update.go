@@ -22,8 +22,9 @@ import (
 // InvocationTargetUpdate is the builder for updating InvocationTarget entities.
 type InvocationTargetUpdate struct {
 	config
-	hooks    []Hook
-	mutation *InvocationTargetMutation
+	hooks     []Hook
+	mutation  *InvocationTargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the InvocationTargetUpdate builder.
@@ -241,6 +242,12 @@ func (_u *InvocationTargetUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *InvocationTargetUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTargetUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *InvocationTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -408,6 +415,7 @@ func (_u *InvocationTargetUpdate) sqlSave(ctx context.Context) (_node int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{invocationtarget.Label}
@@ -423,9 +431,10 @@ func (_u *InvocationTargetUpdate) sqlSave(ctx context.Context) (_node int, err e
 // InvocationTargetUpdateOne is the builder for updating a single InvocationTarget entity.
 type InvocationTargetUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *InvocationTargetMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *InvocationTargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSuccess sets the "success" field.
@@ -650,6 +659,12 @@ func (_u *InvocationTargetUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *InvocationTargetUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *InvocationTargetUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *InvocationTarget, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -834,6 +849,7 @@ func (_u *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invoca
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &InvocationTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

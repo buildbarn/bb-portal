@@ -18,8 +18,9 @@ import (
 // BuildGraphAspectCountUpdate is the builder for updating BuildGraphAspectCount entities.
 type BuildGraphAspectCountUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildGraphAspectCountMutation
+	hooks     []Hook
+	mutation  *BuildGraphAspectCountMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildGraphAspectCountUpdate builder.
@@ -179,6 +180,12 @@ func (_u *BuildGraphAspectCountUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphAspectCountUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphAspectCountUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphAspectCountUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphaspectcount.Table, buildgraphaspectcount.Columns, sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -247,6 +254,7 @@ func (_u *BuildGraphAspectCountUpdate) sqlSave(ctx context.Context) (_node int, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildgraphaspectcount.Label}
@@ -262,9 +270,10 @@ func (_u *BuildGraphAspectCountUpdate) sqlSave(ctx context.Context) (_node int, 
 // BuildGraphAspectCountUpdateOne is the builder for updating a single BuildGraphAspectCount entity.
 type BuildGraphAspectCountUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildGraphAspectCountMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildGraphAspectCountMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetKey sets the "key" field.
@@ -431,6 +440,12 @@ func (_u *BuildGraphAspectCountUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphAspectCountUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphAspectCountUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphAspectCountUpdateOne) sqlSave(ctx context.Context) (_node *BuildGraphAspectCount, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphaspectcount.Table, buildgraphaspectcount.Columns, sqlgraph.NewFieldSpec(buildgraphaspectcount.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -516,6 +531,7 @@ func (_u *BuildGraphAspectCountUpdateOne) sqlSave(ctx context.Context) (_node *B
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &BuildGraphAspectCount{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

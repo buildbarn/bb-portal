@@ -32,8 +32,8 @@ type ActionSummaryQuery struct {
 	withRunnerCount           *RunnerCountQuery
 	withActionCacheStatistics *ActionCacheStatisticsQuery
 	withFKs                   bool
-	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*ActionSummary) error
+	modifiers                 []func(*sql.Selector)
 	withNamedActionData       map[string]*ActionDataQuery
 	withNamedRunnerCount      map[string]*RunnerCountQuery
 	// intermediate query (i.e. traversal path).
@@ -357,8 +357,9 @@ func (_q *ActionSummaryQuery) Clone() *ActionSummaryQuery {
 		withRunnerCount:           _q.withRunnerCount.Clone(),
 		withActionCacheStatistics: _q.withActionCacheStatistics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -757,6 +758,9 @@ func (_q *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -772,6 +776,12 @@ func (_q *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *ActionSummaryQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionSummarySelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedActionData tells the query-builder to eager-load the nodes that are connected to the "action_data"
@@ -890,4 +900,10 @@ func (_s *ActionSummarySelect) sqlScan(ctx context.Context, root *ActionSummaryQ
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *ActionSummarySelect) Modify(modifiers ...func(s *sql.Selector)) *ActionSummarySelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

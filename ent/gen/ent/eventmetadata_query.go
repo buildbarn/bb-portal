@@ -24,8 +24,8 @@ type EventMetadataQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.EventMetadata
 	withBazelInvocation *BazelInvocationQuery
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*EventMetadata) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -278,8 +278,9 @@ func (_q *EventMetadataQuery) Clone() *EventMetadataQuery {
 		predicates:          append([]predicate.EventMetadata{}, _q.predicates...),
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -511,6 +512,9 @@ func (_q *EventMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -526,6 +530,12 @@ func (_q *EventMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *EventMetadataQuery) Modify(modifiers ...func(s *sql.Selector)) *EventMetadataSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // EventMetadataGroupBy is the group-by builder for EventMetadata entities.
@@ -616,4 +626,10 @@ func (_s *EventMetadataSelect) sqlScan(ctx context.Context, root *EventMetadataQ
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *EventMetadataSelect) Modify(modifiers ...func(s *sql.Selector)) *EventMetadataSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

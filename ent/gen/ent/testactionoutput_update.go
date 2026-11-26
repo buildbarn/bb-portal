@@ -17,8 +17,9 @@ import (
 // TestActionOutputUpdate is the builder for updating TestActionOutput entities.
 type TestActionOutputUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestActionOutputMutation
+	hooks     []Hook
+	mutation  *TestActionOutputMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestActionOutputUpdate builder.
@@ -70,6 +71,12 @@ func (_u *TestActionOutputUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestActionOutputUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestActionOutputUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestActionOutputUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -82,6 +89,7 @@ func (_u *TestActionOutputUpdate) sqlSave(ctx context.Context) (_node int, err e
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testactionoutput.Label}
@@ -97,9 +105,10 @@ func (_u *TestActionOutputUpdate) sqlSave(ctx context.Context) (_node int, err e
 // TestActionOutputUpdateOne is the builder for updating a single TestActionOutput entity.
 type TestActionOutputUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestActionOutputMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestActionOutputMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the TestActionOutputMutation object of the builder.
@@ -158,6 +167,12 @@ func (_u *TestActionOutputUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestActionOutputUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestActionOutputUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestActionOutputUpdateOne) sqlSave(ctx context.Context) (_node *TestActionOutput, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -187,6 +202,7 @@ func (_u *TestActionOutputUpdateOne) sqlSave(ctx context.Context) (_node *TestAc
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &TestActionOutput{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

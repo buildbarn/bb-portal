@@ -25,8 +25,8 @@ type PackageLoadMetricsQuery struct {
 	predicates         []predicate.PackageLoadMetrics
 	withPackageMetrics *PackageMetricsQuery
 	withFKs            bool
-	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*PackageLoadMetrics) error
+	modifiers          []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *PackageLoadMetricsQuery) Clone() *PackageLoadMetricsQuery {
 		predicates:         append([]predicate.PackageLoadMetrics{}, _q.predicates...),
 		withPackageMetrics: _q.withPackageMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *PackageLoadMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *PackageLoadMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *PackageLoadMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *PackageLoadMetricsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // PackageLoadMetricsGroupBy is the group-by builder for PackageLoadMetrics entities.
@@ -624,4 +634,10 @@ func (_s *PackageLoadMetricsSelect) sqlScan(ctx context.Context, root *PackageLo
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *PackageLoadMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *PackageLoadMetricsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

@@ -18,8 +18,9 @@ import (
 // EventMetadataUpdate is the builder for updating EventMetadata entities.
 type EventMetadataUpdate struct {
 	config
-	hooks    []Hook
-	mutation *EventMetadataMutation
+	hooks     []Hook
+	mutation  *EventMetadataMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the EventMetadataUpdate builder.
@@ -109,6 +110,12 @@ func (_u *EventMetadataUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *EventMetadataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EventMetadataUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *EventMetadataUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -133,6 +140,7 @@ func (_u *EventMetadataUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	if value, ok := _u.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{eventmetadata.Label}
@@ -148,9 +156,10 @@ func (_u *EventMetadataUpdate) sqlSave(ctx context.Context) (_node int, err erro
 // EventMetadataUpdateOne is the builder for updating a single EventMetadata entity.
 type EventMetadataUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *EventMetadataMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *EventMetadataMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetHandled sets the "handled" field.
@@ -247,6 +256,12 @@ func (_u *EventMetadataUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *EventMetadataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EventMetadataUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMetadata, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -288,6 +303,7 @@ func (_u *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMeta
 	if value, ok := _u.mutation.AddedVersion(); ok {
 		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &EventMetadata{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

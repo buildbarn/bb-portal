@@ -21,8 +21,9 @@ import (
 // ActionSummaryUpdate is the builder for updating ActionSummary entities.
 type ActionSummaryUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ActionSummaryMutation
+	hooks     []Hook
+	mutation  *ActionSummaryMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ActionSummaryUpdate builder.
@@ -293,6 +294,12 @@ func (_u *ActionSummaryUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ActionSummaryUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionSummaryUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ActionSummaryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -486,6 +493,7 @@ func (_u *ActionSummaryUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{actionsummary.Label}
@@ -501,9 +509,10 @@ func (_u *ActionSummaryUpdate) sqlSave(ctx context.Context) (_node int, err erro
 // ActionSummaryUpdateOne is the builder for updating a single ActionSummary entity.
 type ActionSummaryUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ActionSummaryMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ActionSummaryMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetActionsCreated sets the "actions_created" field.
@@ -781,6 +790,12 @@ func (_u *ActionSummaryUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ActionSummaryUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionSummaryUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionSummary, err error) {
 	_spec := sqlgraph.NewUpdateSpec(actionsummary.Table, actionsummary.Columns, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -991,6 +1006,7 @@ func (_u *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionSum
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &ActionSummary{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

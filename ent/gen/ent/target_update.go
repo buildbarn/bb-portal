@@ -21,8 +21,9 @@ import (
 // TargetUpdate is the builder for updating Target entities.
 type TargetUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TargetMutation
+	hooks     []Hook
+	mutation  *TargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TargetUpdate builder.
@@ -227,6 +228,12 @@ func (_u *TargetUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TargetUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -396,6 +403,7 @@ func (_u *TargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{target.Label}
@@ -411,9 +419,10 @@ func (_u *TargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 // TargetUpdateOne is the builder for updating a single Target entity.
 type TargetUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TargetMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetLabel sets the "label" field.
@@ -625,6 +634,12 @@ func (_u *TargetUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TargetUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -811,6 +826,7 @@ func (_u *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &Target{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

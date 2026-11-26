@@ -32,8 +32,8 @@ type InvocationTargetQuery struct {
 	withConfiguration    *ConfigurationQuery
 	withTestSummary      *TestSummaryQuery
 	withFKs              bool
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*InvocationTarget) error
+	modifiers            []func(*sql.Selector)
 	withNamedTestSummary map[string]*TestSummaryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -356,8 +356,9 @@ func (_q *InvocationTargetQuery) Clone() *InvocationTargetQuery {
 		withConfiguration:   _q.withConfiguration.Clone(),
 		withTestSummary:     _q.withTestSummary.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -753,6 +754,9 @@ func (_q *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -768,6 +772,12 @@ func (_q *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *InvocationTargetQuery) Modify(modifiers ...func(s *sql.Selector)) *InvocationTargetSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedTestSummary tells the query-builder to eager-load the nodes that are connected to the "test_summary"
@@ -872,4 +882,10 @@ func (_s *InvocationTargetSelect) sqlScan(ctx context.Context, root *InvocationT
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *InvocationTargetSelect) Modify(modifiers ...func(s *sql.Selector)) *InvocationTargetSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

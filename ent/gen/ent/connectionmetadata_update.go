@@ -19,8 +19,9 @@ import (
 // ConnectionMetadataUpdate is the builder for updating ConnectionMetadata entities.
 type ConnectionMetadataUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ConnectionMetadataMutation
+	hooks     []Hook
+	mutation  *ConnectionMetadataMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ConnectionMetadataUpdate builder.
@@ -100,6 +101,12 @@ func (_u *ConnectionMetadataUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ConnectionMetadataUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConnectionMetadataUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -144,6 +151,7 @@ func (_u *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (_node int, err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{connectionmetadata.Label}
@@ -159,9 +167,10 @@ func (_u *ConnectionMetadataUpdate) sqlSave(ctx context.Context) (_node int, err
 // ConnectionMetadataUpdateOne is the builder for updating a single ConnectionMetadata entity.
 type ConnectionMetadataUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ConnectionMetadataMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ConnectionMetadataMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetConnectionLastOpenAt sets the "connection_last_open_at" field.
@@ -248,6 +257,12 @@ func (_u *ConnectionMetadataUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ConnectionMetadataUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConnectionMetadataUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *ConnectionMetadata, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -309,6 +324,7 @@ func (_u *ConnectionMetadataUpdateOne) sqlSave(ctx context.Context) (_node *Conn
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &ConnectionMetadata{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

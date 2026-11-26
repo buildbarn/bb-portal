@@ -17,8 +17,9 @@ import (
 // TargetKindMappingUpdate is the builder for updating TargetKindMapping entities.
 type TargetKindMappingUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TargetKindMappingMutation
+	hooks     []Hook
+	mutation  *TargetKindMappingMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TargetKindMappingUpdate builder.
@@ -70,6 +71,12 @@ func (_u *TargetKindMappingUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TargetKindMappingUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetKindMappingUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TargetKindMappingUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -82,6 +89,7 @@ func (_u *TargetKindMappingUpdate) sqlSave(ctx context.Context) (_node int, err 
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetkindmapping.Label}
@@ -97,9 +105,10 @@ func (_u *TargetKindMappingUpdate) sqlSave(ctx context.Context) (_node int, err 
 // TargetKindMappingUpdateOne is the builder for updating a single TargetKindMapping entity.
 type TargetKindMappingUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TargetKindMappingMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TargetKindMappingMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the TargetKindMappingMutation object of the builder.
@@ -158,6 +167,12 @@ func (_u *TargetKindMappingUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TargetKindMappingUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetKindMappingUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *TargetKindMapping, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -187,6 +202,7 @@ func (_u *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Targe
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &TargetKindMapping{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

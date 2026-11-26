@@ -18,8 +18,9 @@ import (
 // WorkerStatsUpdate is the builder for updating WorkerStats entities.
 type WorkerStatsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *WorkerStatsMutation
+	hooks     []Hook
+	mutation  *WorkerStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the WorkerStatsUpdate builder.
@@ -193,6 +194,12 @@ func (_u *WorkerStatsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerStatsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerStatsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerStatsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerstats.Table, workerstats.Columns, sqlgraph.NewFieldSpec(workerstats.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -267,6 +274,7 @@ func (_u *WorkerStatsUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{workerstats.Label}
@@ -282,9 +290,10 @@ func (_u *WorkerStatsUpdate) sqlSave(ctx context.Context) (_node int, err error)
 // WorkerStatsUpdateOne is the builder for updating a single WorkerStats entity.
 type WorkerStatsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *WorkerStatsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *WorkerStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetCollectTimeInMs sets the "collect_time_in_ms" field.
@@ -465,6 +474,12 @@ func (_u *WorkerStatsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerStatsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerStatsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerStatsUpdateOne) sqlSave(ctx context.Context) (_node *WorkerStats, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerstats.Table, workerstats.Columns, sqlgraph.NewFieldSpec(workerstats.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -556,6 +571,7 @@ func (_u *WorkerStatsUpdateOne) sqlSave(ctx context.Context) (_node *WorkerStats
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &WorkerStats{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -17,8 +17,9 @@ import (
 // TestTargetUpdate is the builder for updating TestTarget entities.
 type TestTargetUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestTargetMutation
+	hooks     []Hook
+	mutation  *TestTargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestTargetUpdate builder.
@@ -67,6 +68,12 @@ func (_u *TestTargetUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestTargetUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestTargetUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -79,6 +86,7 @@ func (_u *TestTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testtarget.Label}
@@ -94,9 +102,10 @@ func (_u *TestTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 // TestTargetUpdateOne is the builder for updating a single TestTarget entity.
 type TestTargetUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestTargetMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestTargetMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the TestTargetMutation object of the builder.
@@ -152,6 +161,12 @@ func (_u *TestTargetUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestTargetUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestTargetUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -181,6 +196,7 @@ func (_u *TestTargetUpdateOne) sqlSave(ctx context.Context) (_node *TestTarget, 
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &TestTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

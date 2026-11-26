@@ -19,8 +19,9 @@ import (
 // ConfigurationUpdate is the builder for updating Configuration entities.
 type ConfigurationUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ConfigurationMutation
+	hooks     []Hook
+	mutation  *ConfigurationMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ConfigurationUpdate builder.
@@ -233,6 +234,12 @@ func (_u *ConfigurationUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ConfigurationUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConfigurationUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -365,6 +372,7 @@ func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{configuration.Label}
@@ -380,9 +388,10 @@ func (_u *ConfigurationUpdate) sqlSave(ctx context.Context) (_node int, err erro
 // ConfigurationUpdateOne is the builder for updating a single Configuration entity.
 type ConfigurationUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ConfigurationMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ConfigurationMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetMnemonic sets the "mnemonic" field.
@@ -602,6 +611,12 @@ func (_u *ConfigurationUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ConfigurationUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ConfigurationUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configuration, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -751,6 +766,7 @@ func (_u *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configura
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &Configuration{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

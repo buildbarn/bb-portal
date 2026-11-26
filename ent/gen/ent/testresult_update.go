@@ -22,8 +22,9 @@ import (
 // TestResultUpdate is the builder for updating TestResult entities.
 type TestResultUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestResultMutation
+	hooks     []Hook
+	mutation  *TestResultMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestResultUpdate builder.
@@ -385,6 +386,12 @@ func (_u *TestResultUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestResultUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestResultUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -593,6 +600,7 @@ func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testresult.Label}
@@ -608,9 +616,10 @@ func (_u *TestResultUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 // TestResultUpdateOne is the builder for updating a single TestResult entity.
 type TestResultUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestResultMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestResultMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetStatus sets the "status" field.
@@ -979,6 +988,12 @@ func (_u *TestResultUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *TestResultUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestResultUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -1204,6 +1219,7 @@ func (_u *TestResultUpdateOne) sqlSave(ctx context.Context) (_node *TestResult, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &TestResult{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -19,8 +19,9 @@ import (
 // NetworkMetricsUpdate is the builder for updating NetworkMetrics entities.
 type NetworkMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *NetworkMetricsMutation
+	hooks     []Hook
+	mutation  *NetworkMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the NetworkMetricsUpdate builder.
@@ -111,6 +112,12 @@ func (_u *NetworkMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *NetworkMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NetworkMetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *NetworkMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -178,6 +185,7 @@ func (_u *NetworkMetricsUpdate) sqlSave(ctx context.Context) (_node int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{networkmetrics.Label}
@@ -193,9 +201,10 @@ func (_u *NetworkMetricsUpdate) sqlSave(ctx context.Context) (_node int, err err
 // NetworkMetricsUpdateOne is the builder for updating a single NetworkMetrics entity.
 type NetworkMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *NetworkMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *NetworkMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -293,6 +302,12 @@ func (_u *NetworkMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *NetworkMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NetworkMetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *NetworkMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(networkmetrics.Table, networkmetrics.Columns, sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -377,6 +392,7 @@ func (_u *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *NetworkM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &NetworkMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

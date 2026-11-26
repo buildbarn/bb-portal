@@ -29,8 +29,8 @@ type TestSummaryQuery struct {
 	withInvocationTarget *InvocationTargetQuery
 	withTestResults      *TestResultQuery
 	withFKs              bool
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*TestSummary) error
+	modifiers            []func(*sql.Selector)
 	withNamedTestResults map[string]*TestResultQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -307,8 +307,9 @@ func (_q *TestSummaryQuery) Clone() *TestSummaryQuery {
 		withInvocationTarget: _q.withInvocationTarget.Clone(),
 		withTestResults:      _q.withTestResults.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -610,6 +611,9 @@ func (_q *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -625,6 +629,12 @@ func (_q *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *TestSummaryQuery) Modify(modifiers ...func(s *sql.Selector)) *TestSummarySelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedTestResults tells the query-builder to eager-load the nodes that are connected to the "test_results"
@@ -729,4 +739,10 @@ func (_s *TestSummarySelect) sqlScan(ctx context.Context, root *TestSummaryQuery
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *TestSummarySelect) Modify(modifiers ...func(s *sql.Selector)) *TestSummarySelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

@@ -18,8 +18,9 @@ import (
 // BuildGraphRuleClassCountUpdate is the builder for updating BuildGraphRuleClassCount entities.
 type BuildGraphRuleClassCountUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildGraphRuleClassCountMutation
+	hooks     []Hook
+	mutation  *BuildGraphRuleClassCountMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildGraphRuleClassCountUpdate builder.
@@ -179,6 +180,12 @@ func (_u *BuildGraphRuleClassCountUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphRuleClassCountUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphRuleClassCountUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphRuleClassCountUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphruleclasscount.Table, buildgraphruleclasscount.Columns, sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -247,6 +254,7 @@ func (_u *BuildGraphRuleClassCountUpdate) sqlSave(ctx context.Context) (_node in
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildgraphruleclasscount.Label}
@@ -262,9 +270,10 @@ func (_u *BuildGraphRuleClassCountUpdate) sqlSave(ctx context.Context) (_node in
 // BuildGraphRuleClassCountUpdateOne is the builder for updating a single BuildGraphRuleClassCount entity.
 type BuildGraphRuleClassCountUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildGraphRuleClassCountMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildGraphRuleClassCountMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetKey sets the "key" field.
@@ -431,6 +440,12 @@ func (_u *BuildGraphRuleClassCountUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphRuleClassCountUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphRuleClassCountUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphRuleClassCountUpdateOne) sqlSave(ctx context.Context) (_node *BuildGraphRuleClassCount, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphruleclasscount.Table, buildgraphruleclasscount.Columns, sqlgraph.NewFieldSpec(buildgraphruleclasscount.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -516,6 +531,7 @@ func (_u *BuildGraphRuleClassCountUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &BuildGraphRuleClassCount{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

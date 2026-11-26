@@ -18,8 +18,9 @@ import (
 // AuthenticatedUserUpdate is the builder for updating AuthenticatedUser entities.
 type AuthenticatedUserUpdate struct {
 	config
-	hooks    []Hook
-	mutation *AuthenticatedUserMutation
+	hooks     []Hook
+	mutation  *AuthenticatedUserMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the AuthenticatedUserUpdate builder.
@@ -128,6 +129,12 @@ func (_u *AuthenticatedUserUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *AuthenticatedUserUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *AuthenticatedUserUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -194,6 +201,7 @@ func (_u *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (_node int, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{authenticateduser.Label}
@@ -209,9 +217,10 @@ func (_u *AuthenticatedUserUpdate) sqlSave(ctx context.Context) (_node int, err 
 // AuthenticatedUserUpdateOne is the builder for updating a single AuthenticatedUser entity.
 type AuthenticatedUserUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *AuthenticatedUserMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *AuthenticatedUserMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetDisplayName sets the "display_name" field.
@@ -327,6 +336,12 @@ func (_u *AuthenticatedUserUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *AuthenticatedUserUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *AuthenticatedUserUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *AuthenticatedUser, err error) {
 	_spec := sqlgraph.NewUpdateSpec(authenticateduser.Table, authenticateduser.Columns, sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -410,6 +425,7 @@ func (_u *AuthenticatedUserUpdateOne) sqlSave(ctx context.Context) (_node *Authe
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &AuthenticatedUser{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
