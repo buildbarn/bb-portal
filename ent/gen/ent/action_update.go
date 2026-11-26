@@ -19,8 +19,9 @@ import (
 // ActionUpdate is the builder for updating Action entities.
 type ActionUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ActionMutation
+	hooks     []Hook
+	mutation  *ActionMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ActionUpdate builder.
@@ -251,6 +252,12 @@ func (_u *ActionUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ActionUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -322,6 +329,7 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{action.Label}
@@ -337,9 +345,10 @@ func (_u *ActionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 // ActionUpdateOne is the builder for updating a single Action entity.
 type ActionUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ActionMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ActionMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetLabel sets the "label" field.
@@ -577,6 +586,12 @@ func (_u *ActionUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ActionUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ActionUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -665,6 +680,7 @@ func (_u *ActionUpdateOne) sqlSave(ctx context.Context) (_node *Action, err erro
 	if _u.mutation.FailureMessageCleared() {
 		_spec.ClearField(action.FieldFailureMessage, field.TypeString)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &Action{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

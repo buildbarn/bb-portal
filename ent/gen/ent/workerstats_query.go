@@ -25,8 +25,8 @@ type WorkerStatsQuery struct {
 	predicates        []predicate.WorkerStats
 	withWorkerMetrics *WorkerMetricsQuery
 	withFKs           bool
-	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*WorkerStats) error
+	modifiers         []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *WorkerStatsQuery) Clone() *WorkerStatsQuery {
 		predicates:        append([]predicate.WorkerStats{}, _q.predicates...),
 		withWorkerMetrics: _q.withWorkerMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *WorkerStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *WorkerStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *WorkerStatsQuery) Modify(modifiers ...func(s *sql.Selector)) *WorkerStatsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WorkerStatsGroupBy is the group-by builder for WorkerStats entities.
@@ -624,4 +634,10 @@ func (_s *WorkerStatsSelect) sqlScan(ctx context.Context, root *WorkerStatsQuery
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *WorkerStatsSelect) Modify(modifiers ...func(s *sql.Selector)) *WorkerStatsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

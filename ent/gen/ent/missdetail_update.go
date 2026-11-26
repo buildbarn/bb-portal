@@ -18,8 +18,9 @@ import (
 // MissDetailUpdate is the builder for updating MissDetail entities.
 type MissDetailUpdate struct {
 	config
-	hooks    []Hook
-	mutation *MissDetailMutation
+	hooks     []Hook
+	mutation  *MissDetailMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
@@ -126,6 +127,12 @@ func (_u *MissDetailUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *MissDetailUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -176,6 +183,7 @@ func (_u *MissDetailUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{missdetail.Label}
@@ -191,9 +199,10 @@ func (_u *MissDetailUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 // MissDetailUpdateOne is the builder for updating a single MissDetail entity.
 type MissDetailUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *MissDetailMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *MissDetailMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetReason sets the "reason" field.
@@ -307,6 +316,12 @@ func (_u *MissDetailUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -374,6 +389,7 @@ func (_u *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &MissDetail{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

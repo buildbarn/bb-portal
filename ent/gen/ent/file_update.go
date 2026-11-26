@@ -21,8 +21,9 @@ import (
 // FileUpdate is the builder for updating File entities.
 type FileUpdate struct {
 	config
-	hooks    []Hook
-	mutation *FileMutation
+	hooks     []Hook
+	mutation  *FileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the FileUpdate builder.
@@ -252,6 +253,12 @@ func (_u *FileUpdate) check() error {
 		return errors.New(`ent: clearing a required unique edge "File.file_path"`)
 	}
 	return nil
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *FileUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *FileUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
 }
 
 func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
@@ -491,6 +498,7 @@ func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{file.Label}
@@ -506,9 +514,10 @@ func (_u *FileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 // FileUpdateOne is the builder for updating a single File entity.
 type FileUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *FileMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *FileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // AddActionStdoutIDs adds the "action_stdout" edge to the Action entity by IDs.
@@ -745,6 +754,12 @@ func (_u *FileUpdateOne) check() error {
 		return errors.New(`ent: clearing a required unique edge "File.file_path"`)
 	}
 	return nil
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *FileUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *FileUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
 }
 
 func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
@@ -1001,6 +1016,7 @@ func (_u *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &File{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

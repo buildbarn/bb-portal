@@ -17,8 +17,9 @@ import (
 // IncompleteBuildLogUpdate is the builder for updating IncompleteBuildLog entities.
 type IncompleteBuildLogUpdate struct {
 	config
-	hooks    []Hook
-	mutation *IncompleteBuildLogMutation
+	hooks     []Hook
+	mutation  *IncompleteBuildLogMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
@@ -67,6 +68,12 @@ func (_u *IncompleteBuildLogUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *IncompleteBuildLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -79,6 +86,7 @@ func (_u *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (_node int, err
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{incompletebuildlog.Label}
@@ -94,9 +102,10 @@ func (_u *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (_node int, err
 // IncompleteBuildLogUpdateOne is the builder for updating a single IncompleteBuildLog entity.
 type IncompleteBuildLogUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *IncompleteBuildLogMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *IncompleteBuildLogMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
@@ -152,6 +161,12 @@ func (_u *IncompleteBuildLogUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *IncompleteBuildLogUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -181,6 +196,7 @@ func (_u *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *Inco
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &IncompleteBuildLog{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

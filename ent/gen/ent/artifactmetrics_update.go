@@ -18,8 +18,9 @@ import (
 // ArtifactMetricsUpdate is the builder for updating ArtifactMetrics entities.
 type ArtifactMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ArtifactMetricsMutation
+	hooks     []Hook
+	mutation  *ArtifactMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ArtifactMetricsUpdate builder.
@@ -301,6 +302,12 @@ func (_u *ArtifactMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ArtifactMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArtifactMetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -411,6 +418,7 @@ func (_u *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (_node int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{artifactmetrics.Label}
@@ -426,9 +434,10 @@ func (_u *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (_node int, err er
 // ArtifactMetricsUpdateOne is the builder for updating a single ArtifactMetrics entity.
 type ArtifactMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ArtifactMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ArtifactMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
@@ -717,6 +726,12 @@ func (_u *ArtifactMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *ArtifactMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArtifactMetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *ArtifactMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -844,6 +859,7 @@ func (_u *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artifac
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &ArtifactMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

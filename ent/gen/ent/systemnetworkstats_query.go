@@ -25,8 +25,8 @@ type SystemNetworkStatsQuery struct {
 	predicates         []predicate.SystemNetworkStats
 	withNetworkMetrics *NetworkMetricsQuery
 	withFKs            bool
-	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*SystemNetworkStats) error
+	modifiers          []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *SystemNetworkStatsQuery) Clone() *SystemNetworkStatsQuery {
 		predicates:         append([]predicate.SystemNetworkStats{}, _q.predicates...),
 		withNetworkMetrics: _q.withNetworkMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *SystemNetworkStatsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *SystemNetworkStatsQuery) Modify(modifiers ...func(s *sql.Selector)) *SystemNetworkStatsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // SystemNetworkStatsGroupBy is the group-by builder for SystemNetworkStats entities.
@@ -624,4 +634,10 @@ func (_s *SystemNetworkStatsSelect) sqlScan(ctx context.Context, root *SystemNet
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *SystemNetworkStatsSelect) Modify(modifiers ...func(s *sql.Selector)) *SystemNetworkStatsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

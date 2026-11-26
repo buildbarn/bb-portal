@@ -19,8 +19,9 @@ import (
 // PackageMetricsUpdate is the builder for updating PackageMetrics entities.
 type PackageMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *PackageMetricsMutation
+	hooks     []Hook
+	mutation  *PackageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the PackageMetricsUpdate builder.
@@ -149,6 +150,12 @@ func (_u *PackageMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *PackageMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageMetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *PackageMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packagemetrics.Table, packagemetrics.Columns, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -241,6 +248,7 @@ func (_u *PackageMetricsUpdate) sqlSave(ctx context.Context) (_node int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{packagemetrics.Label}
@@ -256,9 +264,10 @@ func (_u *PackageMetricsUpdate) sqlSave(ctx context.Context) (_node int, err err
 // PackageMetricsUpdateOne is the builder for updating a single PackageMetrics entity.
 type PackageMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *PackageMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *PackageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetPackagesLoaded sets the "packages_loaded" field.
@@ -394,6 +403,12 @@ func (_u *PackageMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *PackageMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageMetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *PackageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packagemetrics.Table, packagemetrics.Columns, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -503,6 +518,7 @@ func (_u *PackageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &PackageMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

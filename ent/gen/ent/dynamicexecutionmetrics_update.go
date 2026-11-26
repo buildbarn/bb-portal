@@ -19,8 +19,9 @@ import (
 // DynamicExecutionMetricsUpdate is the builder for updating DynamicExecutionMetrics entities.
 type DynamicExecutionMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *DynamicExecutionMetricsMutation
+	hooks     []Hook
+	mutation  *DynamicExecutionMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the DynamicExecutionMetricsUpdate builder.
@@ -122,6 +123,12 @@ func (_u *DynamicExecutionMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *DynamicExecutionMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *DynamicExecutionMetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.Columns, sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -205,6 +212,7 @@ func (_u *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (_node int
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{dynamicexecutionmetrics.Label}
@@ -220,9 +228,10 @@ func (_u *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (_node int
 // DynamicExecutionMetricsUpdateOne is the builder for updating a single DynamicExecutionMetrics entity.
 type DynamicExecutionMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *DynamicExecutionMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *DynamicExecutionMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -331,6 +340,12 @@ func (_u *DynamicExecutionMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *DynamicExecutionMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *DynamicExecutionMetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_node *DynamicExecutionMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.Columns, sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -431,6 +446,7 @@ func (_u *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_node 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &DynamicExecutionMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

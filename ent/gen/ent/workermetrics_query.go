@@ -30,8 +30,8 @@ type WorkerMetricsQuery struct {
 	withWorkerIds        *WorkerIDQuery
 	withWorkerStats      *WorkerStatsQuery
 	withFKs              bool
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*WorkerMetrics) error
+	modifiers            []func(*sql.Selector)
 	withNamedWorkerIds   map[string]*WorkerIDQuery
 	withNamedWorkerStats map[string]*WorkerStatsQuery
 	// intermediate query (i.e. traversal path).
@@ -332,8 +332,9 @@ func (_q *WorkerMetricsQuery) Clone() *WorkerMetricsQuery {
 		withWorkerIds:   _q.withWorkerIds.Clone(),
 		withWorkerStats: _q.withWorkerStats.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -686,6 +687,9 @@ func (_q *WorkerMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -701,6 +705,12 @@ func (_q *WorkerMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *WorkerMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *WorkerMetricsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedWorkerIds tells the query-builder to eager-load the nodes that are connected to the "worker_ids"
@@ -819,4 +829,10 @@ func (_s *WorkerMetricsSelect) sqlScan(ctx context.Context, root *WorkerMetricsQ
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *WorkerMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *WorkerMetricsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

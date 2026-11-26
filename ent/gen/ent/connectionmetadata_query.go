@@ -25,8 +25,8 @@ type ConnectionMetadataQuery struct {
 	predicates          []predicate.ConnectionMetadata
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*ConnectionMetadata) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *ConnectionMetadataQuery) Clone() *ConnectionMetadataQuery {
 		predicates:          append([]predicate.ConnectionMetadata{}, _q.predicates...),
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *ConnectionMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *ConnectionMetadataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *ConnectionMetadataQuery) Modify(modifiers ...func(s *sql.Selector)) *ConnectionMetadataSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // ConnectionMetadataGroupBy is the group-by builder for ConnectionMetadata entities.
@@ -624,4 +634,10 @@ func (_s *ConnectionMetadataSelect) sqlScan(ctx context.Context, root *Connectio
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *ConnectionMetadataSelect) Modify(modifiers ...func(s *sql.Selector)) *ConnectionMetadataSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

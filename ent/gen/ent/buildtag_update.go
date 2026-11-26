@@ -17,8 +17,9 @@ import (
 // BuildTagUpdate is the builder for updating BuildTag entities.
 type BuildTagUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildTagMutation
+	hooks     []Hook
+	mutation  *BuildTagMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildTagUpdate builder.
@@ -67,6 +68,12 @@ func (_u *BuildTagUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildTagUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildTagUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -79,6 +86,7 @@ func (_u *BuildTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildtag.Label}
@@ -94,9 +102,10 @@ func (_u *BuildTagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 // BuildTagUpdateOne is the builder for updating a single BuildTag entity.
 type BuildTagUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildTagMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildTagMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Mutation returns the BuildTagMutation object of the builder.
@@ -152,6 +161,12 @@ func (_u *BuildTagUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildTagUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildTagUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -181,6 +196,7 @@ func (_u *BuildTagUpdateOne) sqlSave(ctx context.Context) (_node *BuildTag, err 
 			}
 		}
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &BuildTag{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -30,8 +30,9 @@ import (
 // MetricsUpdate is the builder for updating Metrics entities.
 type MetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *MetricsMutation
+	hooks     []Hook
+	mutation  *MetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the MetricsUpdate builder.
@@ -406,6 +407,12 @@ func (_u *MetricsUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *MetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
 }
 
 func (_u *MetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
@@ -810,6 +817,7 @@ func (_u *MetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{metrics.Label}
@@ -825,9 +833,10 @@ func (_u *MetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 // MetricsUpdateOne is the builder for updating a single Metrics entity.
 type MetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *MetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *MetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
@@ -1209,6 +1218,12 @@ func (_u *MetricsUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *MetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
 }
 
 func (_u *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err error) {
@@ -1630,6 +1645,7 @@ func (_u *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &Metrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

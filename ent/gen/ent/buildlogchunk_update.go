@@ -18,8 +18,9 @@ import (
 // BuildLogChunkUpdate is the builder for updating BuildLogChunk entities.
 type BuildLogChunkUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildLogChunkMutation
+	hooks     []Hook
+	mutation  *BuildLogChunkMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildLogChunkUpdate builder.
@@ -154,6 +155,12 @@ func (_u *BuildLogChunkUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildLogChunkUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildLogChunkUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildLogChunkUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -216,6 +223,7 @@ func (_u *BuildLogChunkUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildlogchunk.Label}
@@ -231,9 +239,10 @@ func (_u *BuildLogChunkUpdate) sqlSave(ctx context.Context) (_node int, err erro
 // BuildLogChunkUpdateOne is the builder for updating a single BuildLogChunk entity.
 type BuildLogChunkUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildLogChunkMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildLogChunkMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetData sets the "data" field.
@@ -375,6 +384,12 @@ func (_u *BuildLogChunkUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildLogChunkUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildLogChunkUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildLogChunk, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
@@ -454,6 +469,7 @@ func (_u *BuildLogChunkUpdateOne) sqlSave(ctx context.Context) (_node *BuildLogC
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &BuildLogChunk{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

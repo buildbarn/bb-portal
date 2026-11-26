@@ -18,8 +18,9 @@ import (
 // DynamicExecutionRaceStatisticUpdate is the builder for updating DynamicExecutionRaceStatistic entities.
 type DynamicExecutionRaceStatisticUpdate struct {
 	config
-	hooks    []Hook
-	mutation *DynamicExecutionRaceStatisticMutation
+	hooks     []Hook
+	mutation  *DynamicExecutionRaceStatisticMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the DynamicExecutionRaceStatisticUpdate builder.
@@ -199,6 +200,12 @@ func (_u *DynamicExecutionRaceStatisticUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *DynamicExecutionRaceStatisticUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *DynamicExecutionRaceStatisticUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *DynamicExecutionRaceStatisticUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(dynamicexecutionracestatistic.Table, dynamicexecutionracestatistic.Columns, sqlgraph.NewFieldSpec(dynamicexecutionracestatistic.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -273,6 +280,7 @@ func (_u *DynamicExecutionRaceStatisticUpdate) sqlSave(ctx context.Context) (_no
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{dynamicexecutionracestatistic.Label}
@@ -288,9 +296,10 @@ func (_u *DynamicExecutionRaceStatisticUpdate) sqlSave(ctx context.Context) (_no
 // DynamicExecutionRaceStatisticUpdateOne is the builder for updating a single DynamicExecutionRaceStatistic entity.
 type DynamicExecutionRaceStatisticUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *DynamicExecutionRaceStatisticMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *DynamicExecutionRaceStatisticMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetMnemonic sets the "mnemonic" field.
@@ -477,6 +486,12 @@ func (_u *DynamicExecutionRaceStatisticUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *DynamicExecutionRaceStatisticUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *DynamicExecutionRaceStatisticUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *DynamicExecutionRaceStatisticUpdateOne) sqlSave(ctx context.Context) (_node *DynamicExecutionRaceStatistic, err error) {
 	_spec := sqlgraph.NewUpdateSpec(dynamicexecutionracestatistic.Table, dynamicexecutionracestatistic.Columns, sqlgraph.NewFieldSpec(dynamicexecutionracestatistic.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -568,6 +583,7 @@ func (_u *DynamicExecutionRaceStatisticUpdateOne) sqlSave(ctx context.Context) (
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &DynamicExecutionRaceStatistic{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

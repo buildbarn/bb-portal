@@ -19,8 +19,9 @@ import (
 // WorkerPoolMetricsUpdate is the builder for updating WorkerPoolMetrics entities.
 type WorkerPoolMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *WorkerPoolMetricsMutation
+	hooks     []Hook
+	mutation  *WorkerPoolMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the WorkerPoolMetricsUpdate builder.
@@ -122,6 +123,12 @@ func (_u *WorkerPoolMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerPoolMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerPoolMetricsUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerPoolMetricsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerpoolmetrics.Table, workerpoolmetrics.Columns, sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -205,6 +212,7 @@ func (_u *WorkerPoolMetricsUpdate) sqlSave(ctx context.Context) (_node int, err 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{workerpoolmetrics.Label}
@@ -220,9 +228,10 @@ func (_u *WorkerPoolMetricsUpdate) sqlSave(ctx context.Context) (_node int, err 
 // WorkerPoolMetricsUpdateOne is the builder for updating a single WorkerPoolMetrics entity.
 type WorkerPoolMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *WorkerPoolMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *WorkerPoolMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -331,6 +340,12 @@ func (_u *WorkerPoolMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *WorkerPoolMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *WorkerPoolMetricsUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *WorkerPoolMetricsUpdateOne) sqlSave(ctx context.Context) (_node *WorkerPoolMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(workerpoolmetrics.Table, workerpoolmetrics.Columns, sqlgraph.NewFieldSpec(workerpoolmetrics.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -431,6 +446,7 @@ func (_u *WorkerPoolMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Worke
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &WorkerPoolMetrics{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -25,8 +25,8 @@ type DynamicExecutionRaceStatisticQuery struct {
 	predicates                  []predicate.DynamicExecutionRaceStatistic
 	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
 	withFKs                     bool
-	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*DynamicExecutionRaceStatistic) error
+	modifiers                   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *DynamicExecutionRaceStatisticQuery) Clone() *DynamicExecutionRaceStati
 		predicates:                  append([]predicate.DynamicExecutionRaceStatistic{}, _q.predicates...),
 		withDynamicExecutionMetrics: _q.withDynamicExecutionMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -521,6 +522,9 @@ func (_q *DynamicExecutionRaceStatisticQuery) sqlQuery(ctx context.Context) *sql
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -536,6 +540,12 @@ func (_q *DynamicExecutionRaceStatisticQuery) sqlQuery(ctx context.Context) *sql
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *DynamicExecutionRaceStatisticQuery) Modify(modifiers ...func(s *sql.Selector)) *DynamicExecutionRaceStatisticSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // DynamicExecutionRaceStatisticGroupBy is the group-by builder for DynamicExecutionRaceStatistic entities.
@@ -626,4 +636,10 @@ func (_s *DynamicExecutionRaceStatisticSelect) sqlScan(ctx context.Context, root
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *DynamicExecutionRaceStatisticSelect) Modify(modifiers ...func(s *sql.Selector)) *DynamicExecutionRaceStatisticSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

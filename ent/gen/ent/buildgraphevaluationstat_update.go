@@ -18,8 +18,9 @@ import (
 // BuildGraphEvaluationStatUpdate is the builder for updating BuildGraphEvaluationStat entities.
 type BuildGraphEvaluationStatUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildGraphEvaluationStatMutation
+	hooks     []Hook
+	mutation  *BuildGraphEvaluationStatMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildGraphEvaluationStatUpdate builder.
@@ -152,6 +153,12 @@ func (_u *BuildGraphEvaluationStatUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphEvaluationStatUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphEvaluationStatUpdate {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphEvaluationStatUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphevaluationstat.Table, buildgraphevaluationstat.Columns, sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -211,6 +218,7 @@ func (_u *BuildGraphEvaluationStatUpdate) sqlSave(ctx context.Context) (_node in
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{buildgraphevaluationstat.Label}
@@ -226,9 +234,10 @@ func (_u *BuildGraphEvaluationStatUpdate) sqlSave(ctx context.Context) (_node in
 // BuildGraphEvaluationStatUpdateOne is the builder for updating a single BuildGraphEvaluationStat entity.
 type BuildGraphEvaluationStatUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildGraphEvaluationStatMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildGraphEvaluationStatMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetOperation sets the "operation" field.
@@ -368,6 +377,12 @@ func (_u *BuildGraphEvaluationStatUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (_u *BuildGraphEvaluationStatUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildGraphEvaluationStatUpdateOne {
+	_u.modifiers = append(_u.modifiers, modifiers...)
+	return _u
+}
+
 func (_u *BuildGraphEvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *BuildGraphEvaluationStat, err error) {
 	_spec := sqlgraph.NewUpdateSpec(buildgraphevaluationstat.Table, buildgraphevaluationstat.Columns, sqlgraph.NewFieldSpec(buildgraphevaluationstat.FieldID, field.TypeInt64))
 	id, ok := _u.mutation.ID()
@@ -444,6 +459,7 @@ func (_u *BuildGraphEvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(_u.modifiers...)
 	_node = &BuildGraphEvaluationStat{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

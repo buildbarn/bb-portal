@@ -28,8 +28,8 @@ type FilePathQuery struct {
 	predicates          []predicate.FilePath
 	withBepInstanceName *InstanceNameQuery
 	withFiles           *FileQuery
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*FilePath) error
+	modifiers           []func(*sql.Selector)
 	withNamedFiles      map[string]*FileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (_q *FilePathQuery) Clone() *FilePathQuery {
 		withBepInstanceName: _q.withBepInstanceName.Clone(),
 		withFiles:           _q.withFiles.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -601,6 +602,9 @@ func (_q *FilePathQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -616,6 +620,12 @@ func (_q *FilePathQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *FilePathQuery) Modify(modifiers ...func(s *sql.Selector)) *FilePathSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
@@ -720,4 +730,10 @@ func (_s *FilePathSelect) sqlScan(ctx context.Context, root *FilePathQuery, v an
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *FilePathSelect) Modify(modifiers ...func(s *sql.Selector)) *FilePathSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

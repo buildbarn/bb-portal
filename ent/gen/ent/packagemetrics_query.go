@@ -28,8 +28,8 @@ type PackageMetricsQuery struct {
 	withMetrics                 *MetricsQuery
 	withPackageLoadMetrics      *PackageLoadMetricsQuery
 	withFKs                     bool
-	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*PackageMetrics) error
+	modifiers                   []func(*sql.Selector)
 	withNamedPackageLoadMetrics map[string]*PackageLoadMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (_q *PackageMetricsQuery) Clone() *PackageMetricsQuery {
 		withMetrics:            _q.withMetrics.Clone(),
 		withPackageLoadMetrics: _q.withPackageLoadMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -605,6 +606,9 @@ func (_q *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -620,6 +624,12 @@ func (_q *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *PackageMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *PackageMetricsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedPackageLoadMetrics tells the query-builder to eager-load the nodes that are connected to the "package_load_metrics"
@@ -724,4 +734,10 @@ func (_s *PackageMetricsSelect) sqlScan(ctx context.Context, root *PackageMetric
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *PackageMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *PackageMetricsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

@@ -25,8 +25,8 @@ type SourceControlQuery struct {
 	predicates          []predicate.SourceControl
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*SourceControl) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (_q *SourceControlQuery) Clone() *SourceControlQuery {
 		predicates:          append([]predicate.SourceControl{}, _q.predicates...),
 		withBazelInvocation: _q.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (_q *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (_q *SourceControlQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *SourceControlQuery) Modify(modifiers ...func(s *sql.Selector)) *SourceControlSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // SourceControlGroupBy is the group-by builder for SourceControl entities.
@@ -624,4 +634,10 @@ func (_s *SourceControlSelect) sqlScan(ctx context.Context, root *SourceControlQ
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *SourceControlSelect) Modify(modifiers ...func(s *sql.Selector)) *SourceControlSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

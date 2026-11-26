@@ -28,8 +28,8 @@ type MemoryMetricsQuery struct {
 	withMetrics             *MetricsQuery
 	withGarbageMetrics      *GarbageMetricsQuery
 	withFKs                 bool
-	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*MemoryMetrics) error
+	modifiers               []func(*sql.Selector)
 	withNamedGarbageMetrics map[string]*GarbageMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (_q *MemoryMetricsQuery) Clone() *MemoryMetricsQuery {
 		withMetrics:        _q.withMetrics.Clone(),
 		withGarbageMetrics: _q.withGarbageMetrics.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -603,6 +604,9 @@ func (_q *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -618,6 +622,12 @@ func (_q *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *MemoryMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *MemoryMetricsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedGarbageMetrics tells the query-builder to eager-load the nodes that are connected to the "garbage_metrics"
@@ -722,4 +732,10 @@ func (_s *MemoryMetricsSelect) sqlScan(ctx context.Context, root *MemoryMetricsQ
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *MemoryMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *MemoryMetricsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }

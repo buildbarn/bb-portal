@@ -28,8 +28,8 @@ type ActionCacheStatisticsQuery struct {
 	withActionSummary    *ActionSummaryQuery
 	withMissDetails      *MissDetailQuery
 	withFKs              bool
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*ActionCacheStatistics) error
+	modifiers            []func(*sql.Selector)
 	withNamedMissDetails map[string]*MissDetailQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (_q *ActionCacheStatisticsQuery) Clone() *ActionCacheStatisticsQuery {
 		withActionSummary: _q.withActionSummary.Clone(),
 		withMissDetails:   _q.withMissDetails.Clone(),
 		// clone intermediate query.
-		sql:  _q.sql.Clone(),
-		path: _q.path,
+		sql:       _q.sql.Clone(),
+		path:      _q.path,
+		modifiers: append([]func(*sql.Selector){}, _q.modifiers...),
 	}
 }
 
@@ -603,6 +604,9 @@ func (_q *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selecto
 	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range _q.modifiers {
+		m(selector)
+	}
 	for _, p := range _q.predicates {
 		p(selector)
 	}
@@ -618,6 +622,12 @@ func (_q *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selecto
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_q *ActionCacheStatisticsQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionCacheStatisticsSelect {
+	_q.modifiers = append(_q.modifiers, modifiers...)
+	return _q.Select()
 }
 
 // WithNamedMissDetails tells the query-builder to eager-load the nodes that are connected to the "miss_details"
@@ -722,4 +732,10 @@ func (_s *ActionCacheStatisticsSelect) sqlScan(ctx context.Context, root *Action
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (_s *ActionCacheStatisticsSelect) Modify(modifiers ...func(s *sql.Selector)) *ActionCacheStatisticsSelect {
+	_s.modifiers = append(_s.modifiers, modifiers...)
+	return _s
 }
