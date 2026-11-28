@@ -4,8 +4,9 @@ import {
   getExecutionStageFromOperationStatus,
   OperationStatus,
 } from "@/components/OperationFilterSelector";
+import OperationsError from "@/components/OperationsError";
 import { OperationsPage, PAGE_SIZE } from "@/components/pages/Operations";
-import { buildQueueStateClient } from "@/grpc/buildQueueStateClient";
+import { getBuildQueueStateClient } from "@/grpc/buildQueueStateClient";
 import { RequestMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import { generatePageTitle } from "@/utils/generatePageTitle";
 
@@ -18,6 +19,7 @@ const OperationsFilterSchema = z
   .optional()
   .refine(
     (data) =>
+      data === undefined ||
       (data?.toolInvocationId && !data?.correlatedInvocationsId) ||
       (!data?.toolInvocationId && data?.correlatedInvocationsId),
     "Either toolInvocationId or correlatedInvocationsId must be provided, but not both",
@@ -32,12 +34,17 @@ const OperationsSearchSchema = z.object({
 
 export const Route = createFileRoute("/operations/")({
   component: RouteComponent,
+  errorComponent: OperationsError,
   validateSearch: (search) => OperationsSearchSchema.parse(search),
-  loaderDeps: ({ search: { filter, statusFilter } }) => ({
+  loaderDeps: ({ search: { filter, statusFilter, scheduler } }) => ({
+    scheduler,
     filter,
     statusFilter: statusFilter ?? OperationStatus.ALL,
   }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context, abortController }) => {
+    const client = getBuildQueueStateClient(
+      context.scheduler.instanceNamePrefix,
+    );
     const invocationFilter = deps.filter
       ? {
           typeUrl: deps.filter["@type"],
@@ -47,11 +54,14 @@ export const Route = createFileRoute("/operations/")({
         }
       : undefined;
 
-    const response = await buildQueueStateClient.listOperations({
-      pageSize: PAGE_SIZE,
-      filterInvocationId: invocationFilter,
-      filterStage: getExecutionStageFromOperationStatus(deps.statusFilter),
-    });
+    const response = await client.listOperations(
+      {
+        pageSize: PAGE_SIZE,
+        filterInvocationId: invocationFilter,
+        filterStage: getExecutionStageFromOperationStatus(deps.statusFilter),
+      },
+      { signal: abortController.signal },
+    );
 
     return { operations: response.operations };
   },

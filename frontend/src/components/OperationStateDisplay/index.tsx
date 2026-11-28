@@ -21,9 +21,14 @@ import {
 
 interface Props {
   operation: OperationState;
+  // Instance name prefix of the scheduler being shown. Links stay on it.
+  selectedScheduler?: string;
 }
 
-const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
+const OperationStateDisplay: React.FC<Props> = ({
+  operation,
+  selectedScheduler,
+}) => {
   const invocationMetadata = operation.invocationName?.ids?.map((value) => {
     return JSON.stringify(protobufToObjectWithTypeField(value, false));
   });
@@ -67,6 +72,9 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
                 <Link
                   to="/operations"
                   search={{
+                    ...(selectedScheduler === undefined
+                      ? {}
+                      : { scheduler: selectedScheduler }),
                     filter: metadataObject,
                   }}
                 >

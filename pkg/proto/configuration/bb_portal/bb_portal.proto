@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 import "github.com/buildbarn/bb-portal/pkg/proto/configuration/frontend/frontend.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/builder/builder.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/grpc/grpc.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/http/server/server.proto";
@@ -240,9 +241,27 @@ message BuildEventStreamService {
 }
 
 message SchedulerService {
-  // Configures the gRPC-Web proxies that are used from the web UI to
-  // communicate with the Buildbarn.
+  // Single BuildQueueState API serving every instance name. Equivalent to
+  // schedulers[""] with only an endpoint. Must not be combined with
+  // schedulers.
   buildbarn.configuration.grpc.ClientConfiguration build_queue_state_client = 1;
+
+  // BuildQueueState APIs keyed by instance name prefix, matched in the
+  // same way as bb_storage's schedulers: the longest matching prefix wins,
+  // the matched prefix is removed, and add_instance_name_prefix is
+  // prepended before forwarding. Responses are rewritten back, so
+  // authorizers and the web UI only see the original instance names.
+  //
+  // endpoint must point to the scheduler's BuildQueueState API, which is
+  // typically served separately from the client API that bb_storage
+  // forwards Execute requests to.
+  //
+  // Requests that carry an instance name (e.g., ListWorkers) are routed by
+  // that name. Requests that do not (e.g., ListPlatformQueues,
+  // GetOperation) are routed by the instance name the web UI selected,
+  // which is only required when more than one scheduler is configured.
+  map<string, buildbarn.configuration.builder.SchedulerConfiguration>
+      schedulers = 5;
 
   // Authorizer that is used to determine which instances names the user is
   // allowed to kill operations in.
