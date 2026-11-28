@@ -158,9 +158,8 @@ func (s *BuildQueueStateServerImpl) IsAllowedToKillOperation(ctx context.Context
 	if err != nil {
 		return false
 	}
-	// Check if the user is allowed to kill the operation.
-	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
-	return common.IsInstanceNameAllowed(ctx, s.killOperationsAuthorizer, platformQueueName.InstanceNamePrefix)
+	// Check the full Portal instance name, including the operation's suffix.
+	return isOperationAllowed(ctx, s.killOperationsAuthorizer, response.GetOperation())
 }
 
 // CheckKillOperationAuthorization is a HTTP endpoint that checks if the user
