@@ -102,7 +102,7 @@ Once you have BEP files produced by Bazel, you can upload them via the applicati
 
 ### BB-scheduler
 
-BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `schedulerServiceConfiguration` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu.
+BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `schedulerServiceConfiguration` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu. To show several schedulers routed by instance name prefix, see [multiple schedulers](docs/multi-scheduler.md).
 
 ### BB-browser
 
